@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 class matrix {
@@ -51,24 +52,23 @@ public:
         // data will be like this "1.1 2 3.5;9.6 5.2 4.7"
         // these are 2 rows and three columns (';' separates rows .. ' ' separates colums)
         // initialize using initialize function provided above then assign values
-	int start=0;
-	int end;
-	for(int i = 0 ; i<data.length ; i++){
-	if (data[i]==' '||data[i]==';'){	end=i;
-						row.push_back(data.substr(start,end));
-						start=i+1;
-						if(data[i]==';')
-							{
-							values.push_back(row);
-							row.clear();
-							}
-				
-					}
-	
-        }
-
-	
-    }
+		int start=0;
+		int end;
+		vector<float> row;
+		for(int i = 0 ; i< data.length(); i++){
+			if (data[i]==' '||data[i]==';'){
+				end=i;
+				row.push_back(atof(data.substr(start,end).c_str()));
+				start=i+1;
+				if(data[i]==';'){
+					this->values.push_back(row);
+					row.clear();
+				}
+			}
+		}
+		this->num_rows = this->values.size();
+		this->num_columns = this->values[0].size();
+	}
 
     matrix add_matrix( matrix m){
         //Aya
