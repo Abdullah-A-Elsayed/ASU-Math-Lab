@@ -58,8 +58,6 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
         // return result
-        m.values[0][0] = 5;
-        return m;
     }
 
     matrix sub_matrix( matrix m){
