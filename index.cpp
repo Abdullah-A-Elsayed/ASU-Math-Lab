@@ -51,6 +51,23 @@ public:
         // data will be like this "1.1 2 3.5;9.6 5.2 4.7"
         // these are 2 rows and three columns (';' separates rows .. ' ' separates colums)
         // initialize using initialize function provided above then assign values
+	int start=0;
+	int end;
+	for(int i = 0 ; i<data.length ; i++){
+	if (data[i]==' '||data[i]==';'){	end=i;
+						row.push_back(data.substr(start,end));
+						start=i+1;
+						if(data[i]==';')
+							{
+							values.push_back(row);
+							row.clear();
+							}
+				
+					}
+	
+        }
+
+	
     }
 
     matrix add_matrix( matrix m){
