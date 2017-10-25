@@ -70,12 +70,26 @@ public:
 		this->num_columns = this->values[0].size();
 	}
 
-    matrix add_matrix( matrix m){
+     matrix add_matrix( matrix m){
         //Aya
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
         // return result
+         	//aya
+
+
+     matrix result;
+     result.initialize(this->num_rows,this->num_columns);
+     for(int i=0;i<this->num_rows;i++){
+      for(int j=0;j<this->num_columns;j++){
+     result.values[i][j] = this->values[i][j]+m.values[i][j];
+        }
+     }
+
+        return result;
+
     }
+
 
     matrix sub_matrix( matrix m){
         //Do'aa
