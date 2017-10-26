@@ -159,8 +159,8 @@ public:
     // tasks:
     void fill_matrix (string data1){
         // Aly
-        // data will be like this "1.1 2 3.5;9.6 5.2 4.7"
-        // these are 2 rows and three columns (';' separates rows .. ' ' separates colums)
+        // data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
+        // these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
         // initialize using initialize function provided above then assign values
 		int start=0;
 		int end;
@@ -168,10 +168,11 @@ public:
 
 		vector<float> row;
 		for(int i = 0 ; i< data.length(); i++){
-			if (data[i]==' '||data[i]==';'){
+			if ((data[i]==' '&&data[i-1]!=';')||(data[i]==';')){
 				end=i;
-				row.push_back(atof(data.substr(start,end).c_str()));
-				start=i;
+				//ading previous num
+				row.push_back(atof(data.substr(start, end-start).c_str()));
+				start=i+1;
 				if(data[i]==';'){
 					this->values.push_back(row);
 					row.clear();
@@ -188,14 +189,13 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
         // return result
-<<<<<<< HEAD
-=======
+
 		//error handling:
 		if(this->num_columns!=m.num_columns || this->num_rows != m.num_rows){
 			string error = "can't sum 2 matrices with different dimensions, Aborting ...";
 			throw(error);
 		}
->>>>>>> 333fa19fbec6e2858d4fe075f4197c498f5d8525
+
          matrix result;
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
@@ -212,16 +212,21 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this - m
         // return result
+
+		//error handling:
+		if(this->num_columns!=m.num_columns || this->num_rows != m.num_rows){
+			string error = "can't subtract 2 matrices with different dimensions, Aborting ...";
+			throw(error);
+		}
               matrix r;
      r.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
-     r.values[i][j] = this->values[i][j]- m.values[i][j];
+	  r.values[i][j] = this->values[i][j]- m.values[i][j];
         }
      }
 
         return r;
-
     }
 
     matrix mult_matrix( matrix m){
@@ -232,17 +237,6 @@ public:
     }
 
 	/*------------------------------------------------START GASSER inverse-mat--------------------------------------------------------------*/
-
-	// fill matrix with test values
-	void fill_mat_test() //to be deleted when Aly makes his func
-	{
-		this->values[0][0] = 1; this->values[0][1] = 2; this->values[0][2] = 3; this->values[0][3] = 5;
-		this->values[1][0] = 4; this->values[1][1] = 5; this->values[1][2] = 6; this->values[1][3] = 3;
-		this->values[2][0] = 7; this->values[2][1] = 8; this->values[2][2] = 9; this->values[2][3] = 3;
-		this->values[3][0] = 7; this->values[3][1] = 8; this->values[3][2] = 8; this->values[3][3] = 8;
-	}
-
-
 
     // find inverse matrix
 	matrix inverse_matrix()
@@ -278,38 +272,32 @@ public:
 
 int main()
 {
+	//whole testing:
+	/*
+	matrix u;
+	u.fill_matrix("1 2 3; 5 5 6; 7 8 9");
+	u.print_matrix();
+	cout<<endl<<"width is: "<<u.get_num_rows()<<endl;
+	cout<<endl<<"height is: "<<u.get_num_columns()<<endl;
 
-		// code test for inverse
-	/*
-		matrix x; matrix y;
-		x.initialize(4, 4);
-		x.fill_mat_test();
-		x.print_matrix();
-		cout << endl;
-		try{ // inverse can't be calculated if matrix isn't square nor determinant equal zero
-			y= x.inverse_matrix();
-			cout << "Inverse Matrix\n" << endl;
-			y.print_matrix();
-			cout << endl;
-		}
-	*/
-	//testing adding
-	/*
-		matrix x; matrix y;
-		x.initialize(4, 4);
-		x.fill_mat_test();
-		x.print_matrix();
-		cout << endl;
-		y.initialize(4,4);
-		y.fill_mat_test();
-		try{
-			matrix r = x.add_matrix(y);
-			r.print_matrix();
-		}
-	//handling errors:
-	catch(string error){
-			cout <<error<<endl;
+	matrix p;
+	p.fill_matrix("2 5 7; 9 6 3; 1 2 3");
+	p.print_matrix();
+	try{
+		matrix r = u.add_matrix(p);
+		cout<<"summing:"<<endl;
+		r.print_matrix();
+
+		r = u.sub_matrix(p);
+		cout<<"subtract:"<<endl;
+		r.print_matrix();
+
+		r = u.inverse_matrix();
+		cout<<"inverse:"<<endl;
+		r.print_matrix();
 	}
+	catch(string err){ cout<<err;}
 	*/
+
     return 0;
 }
