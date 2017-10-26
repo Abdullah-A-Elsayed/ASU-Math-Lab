@@ -188,6 +188,11 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
         // return result
+		//error handling:
+		if(this->num_columns!=m.num_columns || this->num_rows != m.num_rows){
+			string error = "can't sum 2 matrices with different dimensions, Aborting ...";
+			throw(error);
+		}
          matrix result;
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
@@ -274,9 +279,24 @@ int main()
 			y.print_matrix();
 			cout << endl;
 		}
-		catch(string error){
-			cout <<error<<endl;
+	*/
+	//testing adding
+	/*
+		matrix x; matrix y;
+		x.initialize(4, 4);
+		x.fill_mat_test();
+		x.print_matrix();
+		cout << endl;
+		y.initialize(4,4);
+		y.fill_mat_test();
+		try{
+			matrix r = x.add_matrix(y);
+			r.print_matrix();
 		}
+	//handling errors:
+	catch(string error){
+			cout <<error<<endl;
+	}
 	*/
     return 0;
 }
