@@ -234,6 +234,23 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this * m
         // return result
+        	int a =this-> num_rows;
+		int b = m.get_num_columns();
+		int c = m.get_num_rows();
+		int d =this-> num_columns;
+		matrix result;
+
+		result.initialize(a,b);
+		for(int i=0; i< a; i++){
+			for(int j=0; j<b; j++){
+				for (int k =0; k<c; k++){
+					result.values[i][j]+=this->values[i][k]*m.values[k][j];
+				}
+			}
+		}
+
+		return result;
+
     }
 
 	/*------------------------------------------------START GASSER inverse-mat--------------------------------------------------------------*/
@@ -267,6 +284,18 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this * m inversed
         // use previous functions
+        int a = this ->num_rows;
+		int b = m.get_num_columns();
+
+		matrix result;
+		result.initialize(a,b);
+		matrix x = m.inverse_matrix();
+		result = this->mult_matrix(x);
+
+		return result;
+
+
+
     }
 };
 
