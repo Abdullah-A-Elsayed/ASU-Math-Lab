@@ -12,60 +12,11 @@ private:
     int num_columns;
     vector< vector<float> > values; //2d dynamic array of float using vector class
 
-<<<<<<< HEAD
-     matrix add_matrix( matrix m){
-        //Aya
-        // create a result matrix with correct dimensions then initialize it using initialize function provided above
-        // result = this + m
-        // return result
-         	//aya
-
-
-     matrix result;
-     result.initialize(this->num_rows,this->num_columns);
-     for(int i=0;i<this->num_rows;i++){
-      for(int j=0;j<this->num_columns;j++){
-     result.values[i][j] = this->values[i][j]+m.values[i][j];
-        }
-     }
-
-        return result;
-
-    }
-
-
-    matrix sub_matrix( matrix m){
-        //Do'aa
-        // create a result matrix with correct dimensions then initialize it using initialize function provided above 
-        // result = this - m
-        // return result
-    }
-
-    matrix mult_matrix( matrix m){
-        //Amira
-        // create a result matrix with correct dimensions then initialize it using initialize function provided above
-        // result = this * m
-        // return result
-    }
-
-	/*------------------------------------------------START GASSER inverse-mat--------------------------------------------------------------*/
-	
-	// fill matrix with test values
-	void fill_mat_test()
-	{
-		this->values[0][0] = 3; this->values[0][1] = 0; this->values[0][2] = 2;
-		this->values[1][0] = 2; this->values[1][1] = 0; this->values[1][2] = -2;
-		this->values[2][0] = 0; this->values[2][1] = 1; this->values[2][2] = 1;
-	}
-
-	// calculate determine func
-=======
 	/*------------------------------Gasser assisting private functions to calculate inverse------------------------------------*/
 		// calculate determine func
->>>>>>> d2b3aaa7e643f7c2e58738ea70fd5a97f649b70d
 	float cal_determin_sq(int num_rows)
 	{
-		float s = 1, det = 0; 
+		float s = 1, det = 0;
 		matrix b; b.initialize(this->num_rows, this->num_columns);
 		int i, j, m, n, c, k = num_rows;
 		if (k == 1)
@@ -139,7 +90,7 @@ private:
 				fac.values[q][p] = pow(float(-1), p+q) * b.cal_determin_sq((f - 1));
 			}
 		}
-		
+
 		return (this->transpose(fac, f));
 	}
 
@@ -206,22 +157,25 @@ public:
 
 
     // tasks:
-    void fill_matrix (string data){
+    void fill_matrix (string data1){
         // Aly
         // data will be like this "1.1 2 3.5;9.6 5.2 4.7"
         // these are 2 rows and three columns (';' separates rows .. ' ' separates colums)
         // initialize using initialize function provided above then assign values
 		int start=0;
 		int end;
+					string data = data1 +";";
+
 		vector<float> row;
 		for(int i = 0 ; i< data.length(); i++){
 			if (data[i]==' '||data[i]==';'){
 				end=i;
 				row.push_back(atof(data.substr(start,end).c_str()));
-				start=i+1;
+				start=i;
 				if(data[i]==';'){
 					this->values.push_back(row);
 					row.clear();
+					start++;
 				}
 			}
 		}
@@ -234,13 +188,32 @@ public:
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
         // return result
+         matrix result;
+     result.initialize(this->num_rows,this->num_columns);
+     for(int i=0;i<this->num_rows;i++){
+      for(int j=0;j<this->num_columns;j++){
+     result.values[i][j] = this->values[i][j]+m.values[i][j];
+        }
+     }
+
+        return result;
     }
 
     matrix sub_matrix( matrix m){
         //Do'aa
-        // create a result matrix with correct dimensions then initialize it using initialize function provided above 
+        // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this - m
         // return result
+              matrix r;
+     r.initialize(this->num_rows,this->num_columns);
+     for(int i=0;i<this->num_rows;i++){
+      for(int j=0;j<this->num_columns;j++){
+     r.values[i][j] = this->values[i][j]- m.values[i][j];
+        }
+     }
+
+        return r;
+
     }
 
     matrix mult_matrix( matrix m){
@@ -251,7 +224,7 @@ public:
     }
 
 	/*------------------------------------------------START GASSER inverse-mat--------------------------------------------------------------*/
-	
+
 	// fill matrix with test values
 	void fill_mat_test() //to be deleted when Aly makes his func
 	{
@@ -269,7 +242,7 @@ public:
 		float det_val = this->cal_determin_sq(this->num_rows); // calculate determine value for the matrix
 
 		// intialize the inverse matrix with zeros & check if it is a square matrix
-		matrix m; m.initialize(this->num_rows, this->num_columns); 
+		matrix m; m.initialize(this->num_rows, this->num_columns);
 		string error;
 		if (this->num_rows != this->num_columns){ error = "No inverse for non-square matrix, calculating inverse is aborted"; throw(error); }
 
@@ -297,7 +270,7 @@ public:
 
 int main()
 {
-	 
+
 		// code test for inverse
 	/*
 		matrix x; matrix y;
