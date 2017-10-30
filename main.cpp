@@ -36,9 +36,9 @@ int main()
         matrix F = A.div_matrix(B);
 		cout<<"dividing: F"<<endl;
         F.print_matrix();
-        cout<<endl;
+        cout<<endl; 
 
-        matrix G = A.inverse_matrix();
+        matrix G = A.transpose_matrix();
 		cout<<"A' : G"<<endl;
         G.print_matrix();
         cout<<endl;

@@ -1,3 +1,6 @@
+#ifndef MAT_H
+
+#define MAT_H
 #include <string>
 #include <vector>
 using namespace std;
@@ -24,6 +27,9 @@ public:
     matrix add_matrix( matrix m);
     matrix sub_matrix( matrix m);
     matrix mult_matrix( matrix m);
-	matrix inverse_matrix();
+    matrix inverse_matrix();
+    matrix transpose_matrix();
     matrix div_matrix( matrix m);
 };
+
+#endif

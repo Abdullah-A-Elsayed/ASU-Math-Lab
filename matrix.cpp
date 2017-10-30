@@ -257,7 +257,18 @@ using namespace std;
 			return (m);
 		}
 
-    }
+	}
+	
+	matrix matrix::transpose_matrix(){
+		matrix r;
+		r.initialize(this->num_columns,this->num_rows);
+		for(int i = 0; i<num_rows ; ++i){
+			for(int j = 0; j<num_columns ; ++j){
+				r.values[j][i] = this->values[i][j];
+			}
+		}
+		return r;
+	}
 
     matrix matrix::div_matrix( matrix m){
         //Alaa Ayman
