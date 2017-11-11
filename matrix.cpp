@@ -1,5 +1,8 @@
 #include <iostream>
-
+#include <fstream>
+#include <map>
+#include <stdio.h>
+#include <algorithm>
 #include <cstdlib>
 #include <math.h>
 #include "matrix.h"
@@ -114,6 +117,10 @@ using namespace std;
     //public:
     matrix::matrix(){ // constructing ...
         this->num_rows = this->num_columns =0;
+	}
+	
+	matrix::matrix(string nums){ // constructing ...
+        this->fill_matrix(nums);
     }
 
     void matrix::initialize(int rows, int cols){ // taking dimensions
@@ -132,7 +139,7 @@ using namespace std;
     void matrix::print_matrix(){ // print matrix for testing
         for(int i=0 ; i< this-> num_rows ; ++i){
             for(int j=0 ; j< this->num_columns ; ++j){
-                cout<<this->values[i][j]<<"    ";
+                printf("%g \t",this->values[i][j]);
             }
             cout<<endl;
         }
@@ -144,7 +151,12 @@ using namespace std;
         // Aly
         // data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
         // these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
-        // initialize using initialize function provided above then assign values
+		// initialize using initialize function provided above then assign values
+		if(num_rows){ // resetting
+			values.clear();
+			num_columns =0;
+			num_rows = 0;
+		}
 		int start=0;
 		int end;
 					string data = data1 +";";
@@ -288,3 +300,87 @@ using namespace std;
 
 
     }
+	void matrix::handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index){
+		string values = command.substr(op_index+1,command.length()-op_index-2);
+		matrix x(values);
+		matrices[name0] = x;
+	}
+	void matrix::decode(string command,string& name1,string& name2,int op_index){
+		int equal_index = command.find_last_of('=');
+		name1 = command.substr(equal_index+2,op_index-equal_index-3);
+		transform(name1.begin(),name1.end(),name1.begin(),::toupper);
+
+		name2 = command.substr(op_index+2,command.length()-op_index-2);
+		transform(name2.begin(),name2.end(),name2.begin(),::toupper);
+	}
+	void matrix::run(string fpath){
+		ifstream file (fpath.c_str());
+		if(file){//opened safely
+			map<const string, matrix> matrices;
+			string command, name0, name1, name2;
+			int op_index;
+			while(getline(file,command)){
+				if(command == "") continue;
+
+				name0 = command.substr(0,command.find('=')-1);
+				transform(name0.begin(),name0.end(),name0.begin(),::toupper);
+
+				op_index = command.find('[');
+				if(op_index != -1){
+					handle_read(matrices,command,name0,op_index);
+					continue;
+				}
+
+				op_index = command.find('+');
+				if(op_index != -1){
+					decode(command,name1,name2,op_index);
+					matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
+					continue;
+				}
+
+				op_index = command.find('-');
+				if(op_index != -1){
+					decode(command,name1,name2,op_index);
+					matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
+					continue;
+				}
+
+				op_index = command.find('*');
+				if(op_index != -1){
+					decode(command,name1,name2,op_index);
+					matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
+					continue;
+				}
+
+				op_index = command.find("./");
+				if(op_index != -1){
+					decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
+					matrices[name0] = matrices[name2].inverse_matrix();
+					continue;
+				}
+
+				op_index = command.find('/');
+				if(op_index != -1){
+					decode(command,name1,name2,op_index);
+					matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
+					continue;
+				}
+
+				op_index = command.find("'");
+				if(op_index != -1){
+					command+="extra";
+					decode(command,name1,name2,op_index+1);
+					matrices[name0] = matrices[name1].transpose_matrix();
+					continue;
+				}
+			}
+			file.close();
+			//looping through matrices map
+			for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
+				cout<<i->first<<":\n";i->second.print_matrix();cout<<endl;
+			}
+		}
+		else{
+			cout<<"error opening file"<<endl;
+		}
+	}
