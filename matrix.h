@@ -16,7 +16,7 @@ private:
 	// calculate co-factor func
 	matrix cal_cofactor(int num_rows);
 	// find transpose func
-    matrix transpose(matrix fac, double r);
+    matrix transpose(matrix& fac, double r);
     static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
     static void decode(string command,string& name1,string& name2,int op_index);
 public:
@@ -28,12 +28,12 @@ public:
     void print_matrix();
     // tasks:
     void fill_matrix (string data1);
-    matrix add_matrix( matrix m);
-    matrix sub_matrix( matrix m);
-    matrix mult_matrix( matrix m);
+    matrix add_matrix( matrix& m);
+    matrix sub_matrix( matrix& m);
+    matrix mult_matrix( matrix& m);
     matrix inverse_matrix();
     matrix transpose_matrix();
-    matrix div_matrix( matrix m);
+    matrix div_matrix( matrix& m);
     static void run(string fpath);
 };
 

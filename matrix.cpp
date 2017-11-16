@@ -89,7 +89,7 @@ using namespace std;
 	}
 
 	// find transpose func
-	matrix matrix::transpose(matrix fac, double r)
+	matrix matrix::transpose(matrix& fac, double r)
 	{
 		int i, j;
 		matrix b; b.initialize(this->num_rows, this->num_columns);
@@ -179,7 +179,7 @@ using namespace std;
 		this->num_columns = this->values[0].size();
 	}
 
-    matrix matrix::add_matrix( matrix m){
+    matrix matrix::add_matrix( matrix& m){
         //Aya
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this + m
@@ -202,7 +202,7 @@ using namespace std;
         return result;
     }
 
-    matrix matrix::sub_matrix( matrix m){
+    matrix matrix::sub_matrix( matrix& m){
         //Do'aa
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this - m
@@ -224,7 +224,7 @@ using namespace std;
         return r;
     }
 
-    matrix matrix::mult_matrix( matrix m){
+    matrix matrix::mult_matrix( matrix& m){
         //Amira
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this * m
@@ -282,7 +282,7 @@ using namespace std;
 		return r;
 	}
 
-    matrix matrix::div_matrix( matrix m){
+    matrix matrix::div_matrix( matrix& m){
         //Alaa Ayman
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this * m inversed
