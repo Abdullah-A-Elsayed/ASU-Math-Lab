@@ -357,6 +357,8 @@ using namespace std;
 					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
 					continue;
 				}
 
@@ -365,6 +367,8 @@ using namespace std;
 					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
 					continue;
 				}
 
@@ -373,22 +377,8 @@ using namespace std;
 					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
-					continue;
-				}
-
-				op_index = command.find("./");
-				if(op_index != -1){
-					remove_back_slashes(command);
-					decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
-					matrices[name0] = matrices[name2].inverse_matrix();
-					continue;
-				}
-
-				op_index = command.find('/');
-				if(op_index != -1){
-					remove_back_slashes(command);
-					decode(command,name1,name2,op_index);
-					matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
 					continue;
 				}
 
@@ -398,14 +388,36 @@ using namespace std;
 					command+="extra";
 					decode(command,name1,name2,op_index+1);
 					matrices[name0] = matrices[name1].transpose_matrix();
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
+					continue;
+				}
+
+				op_index = command.find("./");
+				if(op_index != -1){
+					remove_back_slashes(command);
+					decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
+					matrices[name0] = matrices[name2].inverse_matrix();
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
+					continue;
+				}
+
+				op_index = command.find('/');
+				if(op_index != -1){
+					remove_back_slashes(command);
+					decode(command,name1,name2,op_index);
+					matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
+					cout<<name0<<": "<<endl;
+					matrices[name0].print_matrix();cout<<endl;
 					continue;
 				}
 			}
 			file.close();
-			for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
-				cout<<i->second.get_num_rows()<<"*"<<i->second.get_num_columns();
-				cout<<" "<<i->first<<":\n";i->second.print_matrix();cout<<endl;
-			}
+			// for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
+			// 	cout<<i->second.get_num_rows()<<"*"<<i->second.get_num_columns();
+			// 	cout<<" "<<i->first<<":\n";i->second.print_matrix();cout<<endl;
+			// }
 		}
 		else{
 			cout<<"error opening file"<<endl;
