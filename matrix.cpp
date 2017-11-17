@@ -349,6 +349,11 @@ using namespace std;
 					//cout<<command<<endl<<endl;
 					remove_back_slashes(command);
 					handle_read(matrices,command,name0,op_index);
+					if (command[command.length()-1]!=';')
+					{
+						cout<<name0<<": "<<endl;
+						matrices[name0].print_matrix();cout<<endl;
+					}
 					continue;
 				}
 
