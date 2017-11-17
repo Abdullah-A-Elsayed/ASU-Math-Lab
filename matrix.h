@@ -17,8 +17,6 @@ private:
 	matrix cal_cofactor(int num_rows);
 	// find transpose func
     matrix transpose(matrix& fac, double r);
-    static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
-    static void decode(string command,string& name1,string& name2,int op_index);
 public:
     matrix();
     matrix(string values);
@@ -35,6 +33,9 @@ public:
     matrix transpose_matrix();
     matrix div_matrix( matrix& m);
     static void run(string fpath);
+    static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
+    static void decode(string command,string& name1,string& name2,int op_index);
+    static void remove_back_slashes(string& s);
 };
 
 #endif

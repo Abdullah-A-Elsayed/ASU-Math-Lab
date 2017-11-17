@@ -147,7 +147,7 @@ using namespace std;
 
 
     // tasks:
-    void matrix::fill_matrix (string data1){
+    void matrix::fill_matrix (string data){
         // Aly
         // data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
         // these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
@@ -159,7 +159,7 @@ using namespace std;
 		}
 		int start=0;
 		int end;
-					string data = data1 +";";
+		if(data[data.length()-1]!=';') {data = data +";";}
 
 		vector<double> row;
 		for(unsigned int i = 0 ; i< data.length(); i++){
@@ -171,7 +171,7 @@ using namespace std;
 				if(data[i]==';'){
 					this->values.push_back(row);
 					row.clear();
-					start++;
+					if(data[start]==' ') start++;
 				}
 			}
 		}
@@ -301,7 +301,9 @@ using namespace std;
 
     }
 	void matrix::handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index){
-		string values = command.substr(op_index+1,command.length()-op_index-2);
+		int n_deleted = 1;
+		if(command[command.length()-1]==';') n_deleted++;
+		string values = command.substr(op_index+1,command.length()-op_index-1-n_deleted);
 		matrix x(values);
 		matrices[name0] = x;
 	}
@@ -313,11 +315,21 @@ using namespace std;
 		name2 = command.substr(op_index+2,command.length()-op_index-2);
 		transform(name2.begin(),name2.end(),name2.begin(),::toupper);
 	}
+
+	void matrix::remove_back_slashes(string& s){
+		string u="";
+		for(int i=0; i<s.length();++i){
+			if(s[i]=='\r') continue;
+			u+=s[i];
+		}
+		s = u;
+	}
+
 	void matrix::run(string fpath){
 		ifstream file (fpath.c_str());
 		if(file){//opened safely
 			map<const string, matrix> matrices;
-			string command, name0, name1, name2;
+			string command, name0, name1, name2, sub_command="",line;
 			int op_index;
 			while(getline(file,command)){
 				if(command == "") continue;
@@ -327,12 +339,22 @@ using namespace std;
 
 				op_index = command.find('[');
 				if(op_index != -1){
+					if(command.find("]")==-1){//not exist
+						while(getline(file,line)){
+							remove_back_slashes(command);
+							command+=line;
+							if(line.find(']')!=-1)break;
+						}
+					}
+					//cout<<command<<endl<<endl;
+					remove_back_slashes(command);
 					handle_read(matrices,command,name0,op_index);
 					continue;
 				}
 
 				op_index = command.find('+');
 				if(op_index != -1){
+					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
 					continue;
@@ -340,6 +362,7 @@ using namespace std;
 
 				op_index = command.find('-');
 				if(op_index != -1){
+					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
 					continue;
@@ -347,6 +370,7 @@ using namespace std;
 
 				op_index = command.find('*');
 				if(op_index != -1){
+					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 					continue;
@@ -354,6 +378,7 @@ using namespace std;
 
 				op_index = command.find("./");
 				if(op_index != -1){
+					remove_back_slashes(command);
 					decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
 					matrices[name0] = matrices[name2].inverse_matrix();
 					continue;
@@ -361,6 +386,7 @@ using namespace std;
 
 				op_index = command.find('/');
 				if(op_index != -1){
+					remove_back_slashes(command);
 					decode(command,name1,name2,op_index);
 					matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
 					continue;
@@ -368,6 +394,7 @@ using namespace std;
 
 				op_index = command.find("'");
 				if(op_index != -1){
+					remove_back_slashes(command);
 					command+="extra";
 					decode(command,name1,name2,op_index+1);
 					matrices[name0] = matrices[name1].transpose_matrix();
@@ -375,9 +402,9 @@ using namespace std;
 				}
 			}
 			file.close();
-			//looping through matrices map
 			for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
-				cout<<i->first<<":\n";i->second.print_matrix();cout<<endl;
+				cout<<i->second.get_num_rows()<<"*"<<i->second.get_num_columns();
+				cout<<" "<<i->first<<":\n";i->second.print_matrix();cout<<endl;
 			}
 		}
 		else{
