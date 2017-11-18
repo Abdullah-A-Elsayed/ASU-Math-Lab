@@ -17,6 +17,7 @@ private:
 	matrix cal_cofactor(int num_rows);
 	// find transpose func
     matrix transpose(matrix& fac, double r);
+	int check_zero_dete();
 public:
     matrix();
     matrix(string values);

@@ -8,6 +8,25 @@
 #include "matrix.h"
 using namespace std;
 //private
+	int matrix::check_zero_dete()
+	{
+		int zfg=0;
+		for(int i =0;i<num_rows;i++)
+		{
+					for(int j=i+1;j<num_rows;j++)
+				{
+					if(values[i][0]==values[j][0])
+						{
+							int counter=1;
+							for (int k=1;k<num_columns;k++) 
+							{if (values[i][k]==values[j][k]) counter++;else break;}
+							if (counter==num_columns) { zfg=1; return zfg;}
+						}
+				}
+		}
+
+	return zfg;
+	}
 	double matrix::cal_determin_sq(int num_rows)
 	{
 		double s = 1, det = 0;
@@ -48,7 +67,7 @@ using namespace std;
 		}
 
 		return (det);
-	}
+}
 
 	// calculate co-factor func
 	matrix matrix::cal_cofactor(int num_rows)
@@ -171,7 +190,9 @@ using namespace std;
 				if(data[i]==';'){
 					this->values.push_back(row);
 					row.clear();
-					if(data[start]==' ') start++;
+					if(start<data.length()){
+						if(data[start]==' ') start++;
+					}
 				}
 			}
 		}
@@ -229,11 +250,12 @@ using namespace std;
         // create a result matrix with correct dimensions then initialize it using initialize function provided above
         // result = this * m
         // return result
+		string error;
         int a =this-> num_rows;
 		int b = m.get_num_columns();
 		int c = m.get_num_rows();
         int d =this-> num_columns;
-        if(d!=c) throw("can't multiply 2 matrices while 1st cols not equal to 2nd rows");
+		if(d!=c){ error="can't multiply 2 matrices while 1st cols not equal to 2nd rows"; throw(error);}
         
         matrix result;
 		result.initialize(a,b);
@@ -251,24 +273,32 @@ using namespace std;
 
     // find inverse matrix
 	matrix matrix::inverse_matrix()
-	{
-		double det_val = this->cal_determin_sq(this->num_rows); // calculate determine value for the matrix
-
-		// intialize the inverse matrix with zeros & check if it is a square matrix
-		matrix m; m.initialize(this->num_rows, this->num_columns);
+	{	
 		string error;
-		if (this->num_rows != this->num_columns){ error = "No inverse for non-square matrix, calculating inverse is aborted"; throw(error); }
-
-		// check if determine equals zero
-		else if (det_val == 0){error = "No inverse for this zero-determine matrix, calculating inverse is aborted" ; throw(error); }
-
-		// strat to get the inverse for the matrix
-		else
-		{
-			m = this->cal_cofactor(this->num_rows);
-			return (m);
+		double det_val;
+		if (this->num_rows != this->num_columns){
+			error = "No inverse for non-square matrix, calculating inverse is aborted"; throw(error);
 		}
-
+		else if(this->check_zero_dete()==1){
+			//cout<<"check is reason"<<endl;
+			error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ;throw(error);
+		}
+		else {
+			det_val = this->cal_determin_sq(this->num_rows); // calculate determine value for the matrix
+			if (det_val == 0){
+				//cout<<"det_val is reason"<<endl;
+				error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ; throw(error);
+			}
+				
+			// strat to get the inverse for the matrix
+			else
+			{
+				cout<<det_val<<endl;
+				matrix m; m.initialize(this->num_rows, this->num_columns);
+				m = this->cal_cofactor(this->num_rows);
+				return (m);
+			}
+		}
 	}
 	
 	matrix matrix::transpose_matrix(){
