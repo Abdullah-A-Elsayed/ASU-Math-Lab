@@ -293,7 +293,7 @@ using namespace std;
 			// strat to get the inverse for the matrix
 			else
 			{
-				cout<<det_val<<endl;
+		//		cout<<det_val<<endl;
 				matrix m; m.initialize(this->num_rows, this->num_columns);
 				m = this->cal_cofactor(this->num_rows);
 				return (m);
