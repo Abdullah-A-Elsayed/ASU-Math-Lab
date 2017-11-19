@@ -6,8 +6,208 @@
 #include <cstdlib>
 #include <math.h>
 #include "matrix.h"
+#include <iomanip>
 using namespace std;
 //private
+	matrix matrix::inverse_2(){
+
+		//*********************gauss jordan***************************
+		int i, j, k, n;
+		n = this->num_rows;
+		vector< vector<double> > a;
+		a = this->values;
+		//extending a
+		vector<double> zes(2*n+1,0);
+		for(i=0; i<n ; ++i){
+			for(j=0;j<=n;++j) a[i].push_back(0);
+		}
+		
+		for(i=0;i<=n;++i){
+			a.push_back(zes);
+		}
+		//
+		double d; //?
+
+		for (i = 1; i <= n; i++)
+
+			for (j = 1; j <= 2 * n; j++)
+
+				if (j == (i + n))
+
+					a[i][j] = 1;
+
+ 
+
+		/************** partial pivoting **************/
+
+		for (i = n; i > 1; i--)
+
+		{
+
+			if (a[i - 1][1] < a[i][1])
+
+				for (j = 1; j <= n * 2; j++)
+
+				{
+
+					d = a[i][j];
+
+					a[i][j] = a[i - 1][j];
+
+					a[i - 1][j] = d;
+
+				}
+
+		}
+
+		//cout << "pivoted output: " << endl;
+
+		//for (i = 1; i <= n; i++)
+
+		//{
+
+		//	for (j = 1; j <= n * 2; j++)
+
+		//		cout << a[i][j] << "    ";
+
+		//	cout << endl;
+
+		//}
+
+		/********** reducing to diagonal  matrix ***********/
+
+ 
+
+		for (i = 1; i <= n; i++)
+
+		{
+
+			for (j = 1; j <= n * 2; j++)
+
+				if (j != i)
+
+				{
+
+					d = a[j][i] / a[i][i];
+
+					for (k = 1; k <= n * 2; k++)
+
+						a[j][k] -= a[i][k] * d;
+
+				}
+
+		}
+
+		/************** reducing to unit matrix *************/
+
+		for (i = 1; i <= n; i++)
+
+		{
+
+			d = a[i][i];
+
+			for (j = 1; j <= n * 2; j++)
+
+				a[i][j] = a[i][j] / d;
+
+		}
+
+		matrix r; r.num_columns=n;r.num_rows=n;
+	//	cout << "your solutions: " << endl;
+		vector<double> row;
+		for (i = 1; i <= n; i++)
+		{
+			
+			for (j = n + 1; j <= n * 2; j++)
+				row.push_back(a[i][j]);
+				//cout << a[i][j] << "    ";
+			r.values.push_back(row);
+			row.clear();
+		}
+
+		return r;
+		//************************************************
+	}
+	double matrix::determinant_2(int n){ //gauss elimination
+		int i,j,k,swaps=1;
+		//cout.precision(4);        //set precision
+		//cout.setf(ios::fixed);
+        //declare an array to store the elements of augmented-matrix  
+		vector< vector<double> > a;
+		a = this->values;
+		double det=1; 
+		int flag=0; 
+		
+		for (i=0;i<n;i++)                    //Pivotisation
+			for (k=i+1;k<n;k++)
+				if (abs(a[i][i])<abs(a[k][i])){
+            		flag++;
+            		for (j=0;j<n;j++){
+						double temp=a[i][j];
+						a[i][j]=a[k][j];
+						a[k][j]=temp;
+					}
+				}
+                
+		//cout<<"\nThe matrix after Pivotisation is:\n";
+		//for (i=0;i<n;i++)            //print the new matrix
+		//{
+		//	for (j=0;j<n;j++)
+		//		cout<<a[i][j]<<setw(16);
+		//	cout<<"\n";
+		//}   
+		for (i=0;i<n-1;i++){            //loop to perform the gauss elimination
+			//me:******avoiding zeros in i i position
+			if(a[i][i]==0){
+				int good_row = i;//will be changed
+				for(int s=i+1; s<n ;++s){ //looking for good row
+					if(a[s][i]!=0){
+						swaps*=-1;
+						good_row= s;
+						break;
+					}
+				}
+				if(good_row==i) return 0;
+				//swapping
+				double st;
+				for(int s=0; s<n;++s){
+					st = a[i][s];
+					a[i][s] = a[good_row][s];
+					a[good_row][s] = st;
+				}
+			}
+			//***********************************
+			for (k=i+1;k<n;k++)
+				{
+					double t=a[k][i]/a[i][i];  //dividing here <<<
+					for (j=0;j<n;j++)
+						a[k][j]=a[k][j]-t*a[i][j];    //make the elements below the pivot elements equal to zero or elimnate the variables
+				}
+		}
+    
+		//cout<<"\n\nThe matrix after gauss-elimination is as follows:\n";
+		//for (i=0;i<n;i++)            //print the new matrix
+		//{
+		//	for (j=0;j<n;j++)
+		//		cout<<a[i][j]<<setw(16);
+		//	cout<<"\n";
+		//}
+	
+		for(i=0;i<n;i++){
+			det=det*a[i][i];
+		}            
+		if (flag%2==0){
+			det=det;
+		}else{
+			det=-det;
+		}
+		det*=swaps;
+		//cout<<"\n\n The determinant is: "<<det;
+		//if(det != det) return 0;
+		return det;
+	}
+
+
 	int matrix::check_zero_dete()
 	{
 		int zfg=0;
@@ -100,7 +300,7 @@ using namespace std;
 						}
 					}
 				}
-				fac.values[q][p] = pow(double(-1), p+q) * b.cal_determin_sq((f - 1));
+				fac.values[q][p] = pow(double(-1), p+q) * b.determinant_2((f - 1));
 			}
 		}
 
@@ -279,26 +479,19 @@ using namespace std;
 		if (this->num_rows != this->num_columns){
 			error = "No inverse for non-square matrix, calculating inverse is aborted"; throw(error);
 		}
-		else if(this->check_zero_dete()==1){
-			//cout<<"check is reason"<<endl;
+		det_val = this->determinant_2(this->num_rows);
+		if(det_val == 0){
 			error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ;throw(error);
 		}
-		else {
-			det_val = this->cal_determin_sq(this->num_rows); // calculate determine value for the matrix
-			if (det_val == 0){
-				//cout<<"det_val is reason"<<endl;
-				error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ; throw(error);
-			}
 				
-			// strat to get the inverse for the matrix
-			else
-			{
-				cout<<det_val<<endl;
-				matrix m; m.initialize(this->num_rows, this->num_columns);
-				m = this->cal_cofactor(this->num_rows);
-				return (m);
-			}
+		// strat to get the inverse for the matrix
+		else
+		{
+			matrix m; m.initialize(this->num_rows, this->num_columns);
+			m = this->cal_cofactor(this->num_rows);
+			return (m);
 		}
+		//return this->inverse_2();
 	}
 	
 	matrix matrix::transpose_matrix(){
@@ -362,7 +555,7 @@ using namespace std;
 			string command, name0, name1, name2, sub_command="",line;
 			int op_index;
 			while(getline(file,command)){
-				if(command == "") continue;
+				if(command == "" || command[0]=='#'|| (command[0]=='/'&&command[1]=='/')) continue;
 
 				name0 = command.substr(0,command.find('=')-1);
 				transform(name0.begin(),name0.end(),name0.begin(),::toupper);

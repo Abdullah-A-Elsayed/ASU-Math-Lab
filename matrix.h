@@ -13,6 +13,7 @@ private:
     vector< vector<double> > values; //2d dynamic array of double using vector class
 		// calculate determine func
 	double cal_determin_sq(int num_rows);
+	matrix inverse_2();
 	// calculate co-factor func
 	matrix cal_cofactor(int num_rows);
 	// find transpose func
@@ -26,6 +27,7 @@ public:
     int get_num_columns (){  return this->num_columns; }
     void print_matrix();
     // tasks:
+	double determinant_2(int n);
     void fill_matrix (string data1);
     matrix add_matrix( matrix& m);
     matrix sub_matrix( matrix& m);
