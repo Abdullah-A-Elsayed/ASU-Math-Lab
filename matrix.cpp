@@ -587,8 +587,8 @@ double my_abs(double& m ){
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index);
-						matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
@@ -597,8 +597,8 @@ double my_abs(double& m ){
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index);
-						matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
@@ -607,8 +607,8 @@ double my_abs(double& m ){
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index);
-						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
@@ -618,8 +618,8 @@ double my_abs(double& m ){
 						remove_back_slashes(command);
 						command+="extra";
 						decode(command,name1,name2,op_index+1);
-						matrices[name0] = matrices[name1].transpose_matrix();
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name1].transpose_matrix();
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
@@ -628,8 +628,8 @@ double my_abs(double& m ){
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
-						matrices[name0] = matrices[name2].inverse_matrix();
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name2].inverse_matrix();
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
@@ -638,8 +638,8 @@ double my_abs(double& m ){
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index);
-						matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
 						cout<<name0<<": "<<endl;
+						matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
 					}
