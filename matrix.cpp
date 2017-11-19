@@ -8,6 +8,9 @@
 #include "matrix.h"
 #include <iomanip>
 using namespace std;
+double my_abs(double& m ){
+	return (m<0)? -m:m;
+}
 //private
 	matrix matrix::inverse_2(){
 
@@ -140,7 +143,7 @@ using namespace std;
 		
 		for (i=0;i<n;i++)                    //Pivotisation
 			for (k=i+1;k<n;k++)
-				if (abs(a[i][i])<abs(a[k][i])){
+				if (my_abs(a[i][i])<my_abs(a[k][i])){
             		flag++;
             		for (j=0;j<n;j++){
 						double temp=a[i][j];
