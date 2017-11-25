@@ -425,6 +425,21 @@ double my_abs(double& m ){
 
         return result;
     }
+	matrix matrix:: bitwisediv2_matrix(double c){
+		 matrix result;
+		 
+     result.initialize(this->num_rows,this->num_columns);
+     for(int i=0;i<this->num_rows;i++){
+      for(int j=0;j<this->num_columns;j++){
+     result.values[i][j] = c / this->values[i][j];
+        }
+     }
+
+        return result;
+
+	}
+
+// assuming bitwisediv_matrix exists....
 
     matrix matrix::sub_matrix( matrix& m){
         //Do'aa
@@ -439,6 +454,7 @@ double my_abs(double& m ){
 		}
               matrix r;
      r.initialize(this->num_rows,this->num_columns);
+
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
 	  r.values[i][j] = this->values[i][j]- m.values[i][j];
@@ -533,13 +549,24 @@ double my_abs(double& m ){
 		matrix x(values);
 		matrices[name0] = x;
 	}
-	void matrix::decode(string command,string& name1,string& name2,int op_index){
+	/*void matrix::decode(string command,string& name1,string& name2,int op_index){
 		int equal_index = command.find_last_of('=');
 		name1 = command.substr(equal_index+2,op_index-equal_index-3);
 		transform(name1.begin(),name1.end(),name1.begin(),::toupper);
 
 		name2 = command.substr(op_index+2,command.length()-op_index-2);
 		transform(name2.begin(),name2.end(),name2.begin(),::toupper);
+	}*/
+		void matrix::decode(string command,string& name1,string& name2,int op_index){
+		int equal_index = command.find_last_of('=');
+		name1 = command.substr(equal_index+2,op_index-equal_index-3);
+		transform(name1.begin(),name1.end(),name1.begin(),::toupper);
+
+		int name2_begin = op_index + 2;
+		if(command[op_index]=='.') name2_begin++;
+		name2 = command.substr(name2_begin,command.length()-name2_begin);
+		transform(name2.begin(),name2.end(),name2.begin(),::toupper);
+		
 	}
 
 	void matrix::remove_back_slashes(string& s){
@@ -624,28 +651,46 @@ double my_abs(double& m ){
 						continue;
 					}
 
-					op_index = command.find("./");
-					if(op_index != -1){
-						remove_back_slashes(command);
-						decode(command,name1,name2,op_index+1);//+1 to get correct name2 and name1 is not important
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name2].inverse_matrix();
-						matrices[name0].print_matrix();cout<<endl;
-						continue;
+					//
+					op_index = command.find_last_of('.');
+					int bitWise =  command.find('/');
+					if(op_index != -1 && bitWise != -1){
+					//int equal_index = command.find_last_of('=');
+					//string b = command.substr(equal_index+2,op_index-equal_index-3);
+					remove_back_slashes(command);
+					decode(command,name1,name2,op_index); string b = name1;
+					for (int i =0; i<b.length(); i++) {
+						if((b[i] >= 'A' && b[i] <= 'Z') || (b[i] >= 'a' && b[i] <= 'z')) {
+							cout<<name0<<": "<<endl;
+							matrices[name0] = matrices[name1].bitwisediv_matrix(matrices[name2]);
+							matrices[name0].print_matrix();cout<<endl;
+							break;
+						}
+						else if(i==b.length()-1){
+						    double c = atof(b.c_str());
+							cout<<name0<<": "<<endl;
+							matrices[name0] = matrices[name2].bitwisediv2_matrix(c);
+							matrices[name0].print_matrix();cout<<endl;
+					   }
 					}
+					continue ;
+				}
+					//
 
-					op_index = command.find('/');
+					op_index = command.find("/");
 					if(op_index != -1){
 						remove_back_slashes(command);
 						decode(command,name1,name2,op_index);
 						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
+						matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
+						
+
 					}
-				}
-				catch(string e){ cout<<e<<endl;}
 			}
+			catch(string e){ cout<<e<<endl;}
+		}
 			file.close();
 			// for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
 			// 	cout<<i->second.get_num_rows()<<"*"<<i->second.get_num_columns();

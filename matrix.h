@@ -35,6 +35,8 @@ public:
     matrix inverse_matrix();
     matrix transpose_matrix();
     matrix div_matrix( matrix& m);
+	matrix bitwisediv_matrix(matrix &m);
+	matrix bitwisediv2_matrix(double c);
     static void run(string fpath);
     static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
     static void decode(string command,string& name1,string& name2,int op_index);
