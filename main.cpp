@@ -196,7 +196,6 @@ int main(int argc, char** argv)
 		string fpath = argv[1];
 		matrix::run(fpath);
 	}
-	
-	system("Pause");
+
 	return 0;
 }
