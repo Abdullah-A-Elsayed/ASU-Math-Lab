@@ -17,27 +17,33 @@ double my_abs(double& m ){
 		//*********************gauss jordan***************************
 		int i, j, k, n;
 		n = this->num_rows;
-		vector< vector<double> > a;
-		a = this->values;
-		//extending a
-		vector<double> zes(2*n+1,0);
-		for(i=0; i<n ; ++i){
-			for(j=0;j<=n;++j) a[i].push_back(0);
+		//a should have dimensions 2n+1 * 2n+1
+		vector< vector<double> > a(2*n+1);
+		//pushing with zeros
+		for(i=0;i<2*n+1;++i){
+			for(j=0;j<2*n+1;++j){
+				a[i].push_back(0);
+			}
 		}
-		
-		for(i=0;i<=n;++i){
-			a.push_back(zes);
+		// taking from this->values from 1 to n
+		for(i=0;i<n;++i){
+			for(j=0;j<n;++j){
+				a[i+1][j+1]=this->values[i][j];
+			}
 		}
-		//
+		// modifing extension to eye
 		double d; //?
 
-		for (i = 1; i <= n; i++)
+		for (i = 1; i <= n; i++){
 
-			for (j = 1; j <= 2 * n; j++)
+			for (j = 1; j <= 2 * n; j++){
 
-				if (j == (i + n))
+				if (j == (i + n)){
 
 					a[i][j] = 1;
+				}
+			}
+		}
 
  
 
@@ -63,19 +69,19 @@ double my_abs(double& m ){
 
 		}
 
-		//cout << "pivoted output: " << endl;
+		/*cout << "pivoted output: " << endl;
 
-		//for (i = 1; i <= n; i++)
+		for (i = 1; i <= n; i++)
 
-		//{
+		{
 
-		//	for (j = 1; j <= n * 2; j++)
+			for (j = 1; j <= n * 2; j++)
 
-		//		cout << a[i][j] << "    ";
+				cout << a[i][j] << "    ";
 
-		//	cout << endl;
+			cout << endl;
 
-		//}
+		}*/
 
 		/********** reducing to diagonal  matrix ***********/
 
@@ -90,7 +96,26 @@ double my_abs(double& m ){
 				if (j != i)
 
 				{
-
+					//if diagonal has zeros?
+					//me:******avoiding zeros in i i position
+			if(a[i][i]==0){
+				int good_row = i;//will be changed
+				for(int s=i+1; s<=n ;++s){ //looking for good row
+					if(a[s][i]!=0){
+						good_row= s;
+						break;
+					}
+				}
+				if(good_row==i){string e = "non invertable matrix"; throw(e);};
+				//swapping  what is pay for swapping ?? row in good pos is * -1
+				double st;
+				for(int s=1; s<=2*n;++s){
+					st = a[i][s];
+					a[i][s] = a[good_row][s];
+					a[good_row][s] = -st;
+				}
+			}
+			//***********************************
 					d = a[j][i] / a[i][i];
 
 					for (k = 1; k <= n * 2; k++)
@@ -431,6 +456,10 @@ double my_abs(double& m ){
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
+		  if(this->values[i][j]==0){
+			  string e = "Warning: Divivding by Zero element, aborting \n";
+			  throw(e);
+		  }
      result.values[i][j] = c / this->values[i][j];
         }
      }
@@ -439,17 +468,20 @@ double my_abs(double& m ){
 
 	}
 
-// assuming bitwisediv_matrix exists....
 	matrix matrix:: bitwisediv_matrix(matrix &m){
 	if(this->num_columns!=m.num_columns || this->num_rows != m.num_rows){
 			string error = "can't div 2 matrices with different dimensions, Aborting ...";
 			throw(error);
 		}
 
-         matrix result;
+     matrix result;
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
+		  if(m.values[i][j]==0){
+			  string e = "Warning: Divivding by Zero element, aborting.. \n";
+			  throw(e);
+		  }
      result.values[i][j] = this->values[i][j]/m.values[i][j];
         }
      }
@@ -517,17 +549,17 @@ double my_abs(double& m ){
 		}
 		det_val = this->determinant_2(this->num_rows);
 		if(det_val == 0){
-			error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ;throw(error);
+			error = "warning: Dividing by zero, aborting... \n" ; throw(error);
 		}
 				
 		// strat to get the inverse for the matrix
 		else
 		{
-			matrix m; m.initialize(this->num_rows, this->num_columns);
-			m = this->cal_cofactor(this->num_rows);
-			return (m);
+			//matrix m; m.initialize(this->num_rows, this->num_columns);
+			//m = this->cal_cofactor(this->num_rows); //very very slow
+			//using inverse2
+			return this->inverse_2();
 		}
-		//return this->inverse_2();
 	}
 	
 	matrix matrix::transpose_matrix(){
@@ -671,7 +703,7 @@ double my_abs(double& m ){
 					//
 					op_index = command.find_last_of('.');
 					int bitWise =  command.find('/');
-					if(op_index != -1 && bitWise != -1){
+					if(op_index != -1 && bitWise != -1 && bitWise==op_index+1){
 					//int equal_index = command.find_last_of('=');
 					//string b = command.substr(equal_index+2,op_index-equal_index-3);
 					remove_back_slashes(command);
