@@ -431,6 +431,10 @@ double my_abs(double& m ){
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
+		  if(this->values[i][j]==0){
+			  string e = "Warning: Divivding by Zero element, aborting \n";
+			  throw(e);
+		  }
      result.values[i][j] = c / this->values[i][j];
         }
      }
@@ -439,17 +443,20 @@ double my_abs(double& m ){
 
 	}
 
-// assuming bitwisediv_matrix exists....
 	matrix matrix:: bitwisediv_matrix(matrix &m){
 	if(this->num_columns!=m.num_columns || this->num_rows != m.num_rows){
 			string error = "can't div 2 matrices with different dimensions, Aborting ...";
 			throw(error);
 		}
 
-         matrix result;
+     matrix result;
      result.initialize(this->num_rows,this->num_columns);
      for(int i=0;i<this->num_rows;i++){
       for(int j=0;j<this->num_columns;j++){
+		  if(m.values[i][j]==0){
+			  string e = "Warning: Divivding by Zero element, aborting.. \n";
+			  throw(e);
+		  }
      result.values[i][j] = this->values[i][j]/m.values[i][j];
         }
      }
