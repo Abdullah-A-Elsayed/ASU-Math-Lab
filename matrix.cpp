@@ -517,7 +517,7 @@ double my_abs(double& m ){
 		}
 		det_val = this->determinant_2(this->num_rows);
 		if(det_val == 0){
-			error = "No inverse for this zero-determinant matrix, calculating inverse is aborted" ;throw(error);
+			error = "warning: Dividing by zero, aborting... \n" ; throw(error);
 		}
 				
 		// strat to get the inverse for the matrix
@@ -671,7 +671,7 @@ double my_abs(double& m ){
 					//
 					op_index = command.find_last_of('.');
 					int bitWise =  command.find('/');
-					if(op_index != -1 && bitWise != -1){
+					if(op_index != -1 && bitWise != -1 && bitWise==op_index+1){
 					//int equal_index = command.find_last_of('=');
 					//string b = command.substr(equal_index+2,op_index-equal_index-3);
 					remove_back_slashes(command);
