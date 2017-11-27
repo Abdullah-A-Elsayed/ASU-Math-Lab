@@ -644,7 +644,7 @@ double my_abs(double& m ){
 		if(file){//opened safely
 			map<const string, matrix> matrices;
 			string command, name0, name1, name2, sub_command="",line;
-			int op_index;
+			int op_index; //holds position of the operation
 			while(getline(file,command)){
 				if(command == "" || command[0]=='#'|| (command[0]=='/'&&command[1]=='/')) continue;
 
