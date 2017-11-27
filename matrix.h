@@ -23,6 +23,7 @@ public:
     matrix();
     matrix(string values);
     void initialize(int rows, int cols);
+	void initialize_by1(int rows, int cols);
     int get_num_rows (){ return this->num_rows;}
     int get_num_columns (){  return this->num_columns; }
     void print_matrix();
@@ -45,9 +46,9 @@ public:
 
 
 	
-	void Solve(string data);//AMERA
+  static matrix  Solve(string data);//AMERA
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
-   	and return value */
+   	and return matrix */
 	
 	void fill_matrix2(string data);//AYA
 	/* take data and fill matrix
@@ -97,7 +98,7 @@ ans =
     43.090    23.840   219.554
 */
 
-	matrix Rand(int a,int b);//AMERA
+static	matrix Rand(int a,int b);//AMERA
 	/*rand(4,4)
 	ans =
 
@@ -108,7 +109,7 @@ ans =
 
 
 	*/
-	matrix Eye (int a,int b);//AMERA
+	static matrix Eye (int a,int b);//AMERA
 	/*eye(4, 4)
 
 Diagonal Matrix
@@ -117,14 +118,14 @@ Diagonal Matrix
    0   1   0   0
    0   0   1   0
    0   0   0   1  */
-	matrix Zeros (int a,int b);//ALAA
+	static matrix Zeros (int a,int b);//ALAA
 	/*zeros(2, 3)
 	ans =
    0   0   0
    0   0   0
 	*/
 
-	matrix ones (int a,int b);//ALAA
+	static matrix ones (int a,int b);//ALAA
 	/*ones(3, 6)
 	ans =
    1   1   1   1   1   1

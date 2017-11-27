@@ -381,6 +381,18 @@ double my_abs(double& m ){
             }
             values.push_back(row);
         }
+    } 
+	void matrix::initialize_by1(int rows, int cols){ 
+        this->num_rows = rows;
+        this->num_columns = cols;
+         //pushing values with zeros (initialization)
+         for(int i=0 ; i<rows ; ++i){ //rows
+            vector<double> row;
+            for(int j=0 ; j<cols ; ++j){ //columns
+                row.push_back(1);
+            }
+            values.push_back(row);
+        }
     }
 
     void matrix::print_matrix(){ // print matrix for testing
@@ -750,3 +762,31 @@ double my_abs(double& m ){
 			cout<<"error opening file"<<endl;
 		}
 	}
+	matrix matrix ::Sin(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]= sin(this->values[i][j]);
+			
+			}
+		}
+
+	return result;
+	}
+
+	matrix matrix:: Sqrt(){
+
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]=sqrt(this->values[i][j]);
+			
+			}
+		}
+		return result;
+
+	}
+
+	
