@@ -603,6 +603,34 @@ double my_abs(double& m ){
 
 
     }
+	matrix matrix ::Rand(int a,int b){
+	 matrix result;
+		result.initialize(a,b);
+		for(int i=0; i< a; i++){
+			for(int j=0; j<b; j++){
+				result.values[i][j]+=rand();
+				
+			}
+		}
+
+		return result;
+	    }
+	matrix matrix:: Eye (int a,int b){
+	 matrix result;
+		result.initialize(a,b);
+		for(int i=0; i< a; i++){
+			for(int j=0; j<b; j++){
+				if(i==j){
+				result.values[i][j]=1;
+				}
+				else {
+                result.values[i][j]=0;
+		}
+		}
+		}
+		return result;
+	
+	}
 	void matrix::handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index){
 		int n_deleted = 1;
 		if(command[command.length()-1]==';') n_deleted++;

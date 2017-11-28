@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 if(argc < 2){
 		//matrix::run("example.m");
 		//to be changed ...
+	
 		cout<<"Enter your commands ..."<<endl;
 		int op_index;
 		string command,name0,name1,name2;
