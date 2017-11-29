@@ -816,5 +816,12 @@ double my_abs(double& m ){
 		return result;
 
 	}
-
+	matrix matrix:: Pow(int n){
+		matrix result;
+		result=matrix::Eye(this->num_rows,this->num_columns);
+		for(int i=0;i<n;i++){
+			result = this->mult_matrix(result);
+		}
+		return result;
+	}
 	
