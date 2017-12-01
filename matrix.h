@@ -50,12 +50,12 @@ public:
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and return matrix */
 	                                                                                      
-	static matrix column_by_column (matrix& a, matrix& b);
+	static matrix column_by_column (matrix& a, matrix& b);//AYA
 	/* ex: if a=  3    3     b= 1                c=a b  ->c= 3  3  1  2    // 2*2 2*1->2*3
 	                                                           
 	              4    4        6                            4  4  6  6
     */
-	static matrix row_by_row(matrix& a,matrix& b);
+	static matrix row_by_row(matrix& a,matrix& b); //AYA
 	                  /* ex: if a=  3    3     b= 1  6           c=a   ->c= 3  3     // 2*2 1*2->3*2
 					                4    4                         b        4  4
 	                                                                        1  6
