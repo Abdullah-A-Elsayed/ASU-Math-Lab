@@ -592,10 +592,20 @@ double my_abs(double& m ){
 		result = this->mult_matrix(x);
 
 		return result;
+	}
+
+	matrix matrix:: ones(int n,int m){
+		matrix result;
+		result.initialize(n,m);
+		for (int i=0; i<n;i++){
+			for(int j=0; j<m;j++){
+				result.values[i][j]= 1;
+			}
+		}
+		return result;
+	}
 
 
-
-    }
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
 		result.initialize(a,b);
@@ -879,9 +889,8 @@ double my_abs(double& m ){
 						matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
-						
-
 					}
+
 			}
 			catch(string e){ cout<<e<<endl;}
 		}
