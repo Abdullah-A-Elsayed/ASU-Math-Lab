@@ -35,7 +35,7 @@ public:
     matrix mult_matrix( matrix& m);
     matrix inverse_matrix();  //you can use it as it calls the good one
     matrix transpose_matrix();
-    matrix div_matrix( matrix& m);
+    matrix div_matrix( matrix& m); 
 	matrix bitwisediv_matrix(matrix &m); //solved issue
 	matrix bitwisediv2_matrix(double c);
     static void run(string fpath);
@@ -46,7 +46,7 @@ public:
 
 
 	
-  static matrix  Solve(string data);//AMERA
+  static matrix  Solve(string data);//AMERA ,ALAA EZZ
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and return matrix */
 	                                                                                      

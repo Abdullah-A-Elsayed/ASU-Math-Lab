@@ -652,9 +652,10 @@ double my_abs(double& m ){
 	}
 	matrix matrix:: Pow(int n){
 		matrix result;
-		result=matrix::Eye(this->num_rows,this->num_columns);
-		for(int i=0;i<n;i++){
-			result = this->mult_matrix(result);
+		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
+		                                                                                                     //    0 1       4  6
+		for(int i=0;i<n;i++){                                                                                 //ans=   2     3
+			result = this->mult_matrix(result);                                                              //        4      6
 		}
 		return result;
 	}
