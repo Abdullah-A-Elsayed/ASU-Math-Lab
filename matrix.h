@@ -23,7 +23,7 @@ public:
     matrix();
     matrix(string values);
     void initialize(int rows, int cols); 
-	void initialize_by1(int rows, int cols);
+	
     int get_num_rows (){ return this->num_rows;}
     int get_num_columns (){  return this->num_columns; }
     void print_matrix();
@@ -49,30 +49,22 @@ public:
   static matrix  Solve(string data);//AMERA
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and return matrix */
-	
-	void fill_matrix2(string data);//AYA
-	/* take data and fill matrix
-	B = [1.2 2.3 A;[1.3 2.4;4.6 1.3],[3.2;7.8]];
-	B =
+	                                                                                      
+	static matrix column_by_column (matrix& a, matrix& b);
+	/* ex: if a=  3    3     b= 1                c=a b  ->c= 3  3  1  2    // 2*2 2*1->2*3
+	                                                           
+	              4    4        6                            4  4  6  6
+    */
+	static matrix row_by_row(matrix& a,matrix& b);
+	                  /* ex: if a=  3    3     b= 1  6           c=a   ->c= 3  3     // 2*2 1*2->3*2
+					                4    4                         b        4  4
+	                                                                        1  6
+	              
+    */                                                     
 
-    1.2000    2.3000   33.5986
-    1.3000    2.4000    3.2000
-    4.6000    1.3000    7.8000
 
-                   */
 
-	void fill_matrix3(string data);  //ALAA
-	/* taka data and fill matrix
-	C = [[B [3.4; 2.1; 3.5+9.1]]
-     1.2^3 3+1.2 15/(2.1+10*sin(0.12))  1.2]
-	 C =
-    1.2000    2.3000   33.5986    3.4000
-    1.3000    2.4000    3.2000    2.1000
-    4.6000    1.3000    7.8000   12.6000
-    1.7280    4.2000    4.5494    1.2000
 
-	
-	*/
 
 	matrix Sin();//AYA
 	/* sin(B)

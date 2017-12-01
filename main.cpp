@@ -4,10 +4,13 @@
 #include "matrix.h"
 #include <map>
 #include <algorithm>
+#include <ctype.h>
 using namespace std;
 int main(int argc, char** argv)
-{
 
+{   
+
+  	
 if(argc < 2){
 		//matrix::run("example.m");
 		//to be changed ...
