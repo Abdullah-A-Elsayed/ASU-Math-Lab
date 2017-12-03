@@ -208,6 +208,6 @@ if(argc < 2){
 		matrix::run(fpath);
 	}
 	
-//system ("pause");
+//	system ("pause");
 	return 0;
 }

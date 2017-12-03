@@ -114,12 +114,7 @@ Diagonal Matrix
    0   1   0   0
    0   0   1   0
    0   0   0   1  */
-	static matrix Zeros (int a,int b);//ALAA
-	/*zeros(2, 3)
-	ans =
-   0   0   0
-   0   0   0
-	*/
+	
 
 	static matrix ones (int a,int b);//ALAA
 	/*ones(3, 6)
@@ -128,23 +123,18 @@ Diagonal Matrix
    1   1   1   1   1   1
    1   1   1   1   1   1
 	*/
-	 void fill_matrix2 (string data);//ALAA EZZ
-	  /*
-	take data as 
-	"[1.2 2.3 A;[1.3 2.4;4.6 1.3],[3.2;7.8]];"
-	and ouput as
-	A= 4    A IS  MATRIX 1*1
-   1.2   2.3   4
-   1.3   2.4   3.2
-   4.6   1.3   7.8
+	 
 
-    */
-	  void fill_matrix3 (string data);//ALAA EZZ
-	  /*
-	take data as  [[B [3.4; 2.1; 3.5+9.1]]
-     1.2^3 3+1.2 15/(2.1+10*sin(0.12))  1.2]
+	
+	
+	  string getString();
+	  /* 
+	  returns a string with the values of
+	  matrix elements
+	  */
 
-	*/
+	  matrix add_const(double a);
+
 };
 
 #endif

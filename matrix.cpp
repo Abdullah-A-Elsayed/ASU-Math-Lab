@@ -236,14 +236,14 @@ double my_abs(double& m ){
 		//if(det != det) return 0;
 		return det;
 	}
-	int matrix::is_identify(double m){
-		int n=0;
+	int matrix::is_identify(double n){
+		int m=0;
 		for(int i=0;i<10;i++){
-			if(m==(2*i+1)*pi/2){
-				return n=1;
+			if(n==(2*i+1)*pi/2){
+				return m=1;
 				break;
 			}
-			else return n=0;
+			else return m=0;
 		}
 }
 	
@@ -603,10 +603,20 @@ double my_abs(double& m ){
 		result = this->mult_matrix(x);
 
 		return result;
+	}
+
+	matrix matrix:: ones(int n,int m){
+		matrix result;
+		result.initialize(n,m);
+		for (int i=0; i<n;i++){
+			for(int j=0; j<m;j++){
+				result.values[i][j]= 1;
+			}
+		}
+		return result;
+	}
 
 
-
-    }
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
 		result.initialize(a,b);
@@ -704,6 +714,46 @@ double my_abs(double& m ){
 	}
 	
 	//////////
+
+	string matrix :: getString(){
+		string result;
+		result.clear();
+
+		char substring[100];
+		for(int i=0; i< this->num_rows; i++){
+			for(int j=0; j<this->num_columns; j++){
+				
+				sprintf(substring, "%f", this->values[i][j]);
+				result+=substring;
+
+				if(j+1<this->num_columns) result+=" ";
+				else if(i+1<this->num_rows) result+= "; ";
+				else continue;
+			}
+		}
+	//	cout<<result<<endl;
+		return result;
+	}
+
+	
+	matrix matrix:: add_const(double a){
+		matrix result;
+		result.initialize(this->num_rows, this->num_columns);
+
+		for(int i=0; i<this->num_rows; i++){
+			for(int j=0; j<num_columns;j++){
+				result.values[i][j]=a+this->values[i][j];
+			}
+		}
+	//	result.print_matrix();
+		return result;
+	}
+
+	
+
+
+
+
 
 
 	matrix matrix::column_by_column(matrix &a , matrix &b){
@@ -874,6 +924,7 @@ double my_abs(double& m ){
 						cout<<name0<<": "<<endl;
 						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
+
 						continue;
 					}
 
@@ -922,9 +973,8 @@ double my_abs(double& m ){
 						matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
-						
-
 					}
+
 			}
 			catch(string e){ cout<<e<<endl;}
 		}
