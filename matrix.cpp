@@ -7,6 +7,7 @@
 #include <math.h>
 #include "matrix.h"
 #include <iomanip>
+#include<vector>
 using namespace std;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
@@ -817,4 +818,143 @@ double my_abs(double& m ){
 
 	}
 
+    void matrix :: call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result){
+	int sec_element=index+1;
+	        fix_arr1.erase(fix_arr1.begin() + sec_element);
+			fix_arr1.erase(fix_arr1.begin() + index);
+	       fix_arr1.insert(fix_arr1.begin() + index,result);
+		   arr2.erase( arr2.begin() + index );
+		   }
+	matrix  matrix ::Solve(string data){
+	vector<string>arr1;
+	vector<string>arr2;
+    vector<double>fix_arr1;
+	vector<string>::iterator it;
+	int am=0;
+	string first_element="";
+	for(unsigned int i=0;i<data.length();i++){
+		if (data[i]=='^'||data[i]=='*'||data[i]=='/'||data[i]=='+'||data[i]=='-'){
+		first_element=data.substr(0,i);	
+		arr1.push_back(first_element);
+		 am=i;
+		 string of_op=data.substr(i,1);
+			arr2.push_back(of_op);
+		 data=data.erase(0,am+1);
+		 i=0;
+		}}
+	arr1.push_back(data);
+	
+	//for(unsigned int j=0;j<arr2.size();j++){
+	//cout<<arr2[j]<<endl;}
+	//cout<<nof_op;
+	/*******fix arr1 ***********************************/
+	double res_tri;
+   for(unsigned int j=0;j<arr1.size();j++)
+   {
+	string a=arr1[j];//put every data in string a 
+	if(a[0] != ' '){
+	if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
+	  {//check on first char 
+		string ins=a.substr(4,a.find(')')-4);
+		double inside=stod(ins); 
+		if(a[0]=='s')
+		{res_tri=sin(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		if(a[0]=='c')
+		{ res_tri=cos(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		if(a[0]=='t')
+		{ res_tri=tan(inside);
+		fix_arr1.push_back(res_tri);
+		}
+      }
+	else{//number
+		double num=stod(a);fix_arr1.push_back(num);
+        }
+	}
+	else
+	{    if((a[1] >= 'A' && a[1] <= 'Z') || (a[1] >= 'a' && a[1] <='z'))
+	  {//check on second char 
+		string ins=a.substr(5,a.find(')')-5);
+		double inside=stod(ins); 
+		if(a[1]=='s')
+		{res_tri=sin(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		if(a[1]=='c')
+		{ res_tri=cos(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		if(a[1]=='t')
+		{ res_tri=tan(inside);
+		fix_arr1.push_back(res_tri);
+		}
+      }
+	else{//number
+		double num=stod(a);fix_arr1.push_back(num);
+        }
+	}
+	}
+//for(unsigned int k=0;k<fix_arr1.size();k++){
+	//cout<<fix_arr1[k]<<endl;}
+//cout<<endl;
+/************************operations*******************/
+   while(arr2.size()>0){
+	   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )
+	   {
+		   it=find(arr2.begin(), arr2.end(), "^");
+		   int pos = distance(arr2.begin(), it);
+		   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]);
+		   call(arr2,fix_arr1,pos,part_result);
+
+	   }
+	  
+    else if(find(arr2.begin(), arr2.end(), "*") != arr2.end() )
+	  { it=find(arr2.begin(), arr2.end(), "*");
+	   int pos = distance(arr2.begin(), it);
+		   double part_result=fix_arr1[pos]*fix_arr1[pos+1];
+		   //fix_arr1.push_back(part_result);
+		    call(arr2,fix_arr1,pos,part_result);
+	  }
+	else if(find(arr2.begin(), arr2.end(), "/") != arr2.end() )
+	  {
+		   it=find(arr2.begin(), arr2.end(), "/");
+		   int pos = distance(arr2.begin(), it);
+		   double part_result=fix_arr1[pos]/fix_arr1[pos+1];
+		  // fix_arr1.push_back(part_result);
+		   call(arr2,fix_arr1,pos,part_result);
+	  }
+	 else if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
+	 {
+				it=find(arr2.begin(), arr2.end(), "+");
+		        int pos = distance(arr2.begin(), it);
+		        double part_result=fix_arr1[pos]+fix_arr1[pos+1];   
+				call(arr2,fix_arr1,pos,part_result);
+	 }
+	 else{ if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
+	 {
+						 it=find(arr2.begin(), arr2.end(), "-");
+		        int pos = distance(arr2.begin(), it);
+		        double part_result=fix_arr1[pos]-fix_arr1[pos+1];
+				call(arr2,fix_arr1,pos,part_result);
+		          
+	 }}
+	   
+   }
+   for(unsigned int z=0;z<fix_arr1.size();z++){
+	cout<<fix_arr1[z]<<endl;}
+ double re=fix_arr1[0];
+   matrix result;
+     result.initialize(1,1);
+     for(int i=0;i<1;i++){
+      for(int j=0;j<1;j++){
+     result.values[i][j] = re;
+        }
+     }
+
+        return result;
+ 
+}
 	
