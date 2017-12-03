@@ -4,22 +4,36 @@
 #include "matrix.h"
 #include <map>
 #include <algorithm>
+#include <ctype.h>
 using namespace std;
 int main(int argc, char** argv)
-{
-	
+
+{ 
+ 
+ 
+
+
+
+  	
 if(argc < 2){
 		//matrix::run("example.m");
 		//to be changed ...
+<<<<<<< HEAD
 
 	 
 		cout<<"Enter your commands ..."<<endl;
+=======
+	
+		cout<<"Enter your commands ..."<<endl; 
+>>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 		int op_index;
 		string command,name0,name1,name2;
 		matrix input;
 		map<const string, matrix> matrices;
 		short print_flag = 1;
-		try {
+		try { 
+ 
+
 			while(1){
 				if(print_flag&&command!=""){
 					//cout<<name0<<endl;
@@ -200,6 +214,6 @@ if(argc < 2){
 		matrix::run(fpath);
 	}
 	
-//system ("pause");
+//	system ("pause");
 	return 0;
 }

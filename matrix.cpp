@@ -7,7 +7,12 @@
 #include <math.h>
 #include "matrix.h"
 #include <iomanip>
+<<<<<<< HEAD
 #include<vector>
+=======
+#include <wctype.h>
+#define pi 3.1416
+>>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 using namespace std;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
@@ -235,7 +240,17 @@ double my_abs(double& m ){
 		//if(det != det) return 0;
 		return det;
 	}
-
+	int matrix::is_identify(double n){
+		int m=0;
+		for(int i=0;i<10;i++){
+			if(n==(2*i+1)*pi/2){
+				return m=1;
+				break;
+			}
+			else return m=0;
+		}
+}
+	
 
 	int matrix::check_zero_dete()
 	{
@@ -383,18 +398,9 @@ double my_abs(double& m ){
             values.push_back(row);
         }
     } 
-	void matrix::initialize_by1(int rows, int cols){ 
-        this->num_rows = rows;
-        this->num_columns = cols;
-         //pushing values with zeros (initialization)
-         for(int i=0 ; i<rows ; ++i){ //rows
-            vector<double> row;
-            for(int j=0 ; j<cols ; ++j){ //columns
-                row.push_back(1);
-            }
-            values.push_back(row);
-        }
-    }
+	
+        
+   
 
     void matrix::print_matrix(){ // print matrix for testing
         for(int i=0 ; i< this-> num_rows ; ++i){
@@ -425,7 +431,8 @@ double my_abs(double& m ){
 		for(unsigned int i = 0 ; i< data.length(); i++){
 			if ((data[i]==' '&&data[i-1]!=';')||(data[i]==';')){
 				end=i;
-				//ading previous num
+			  //ading previous num
+		
 				row.push_back(atof(data.substr(start, end-start).c_str()));
 				start=i+1;
 				if(data[i]==';'){
@@ -600,10 +607,20 @@ double my_abs(double& m ){
 		result = this->mult_matrix(x);
 
 		return result;
+	}
+
+	matrix matrix:: ones(int n,int m){
+		matrix result;
+		result.initialize(n,m);
+		for (int i=0; i<n;i++){
+			for(int j=0; j<m;j++){
+				result.values[i][j]= 1;
+			}
+		}
+		return result;
+	}
 
 
-
-    }
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
 		result.initialize(a,b);
@@ -632,6 +649,209 @@ double my_abs(double& m ){
 		return result;
 	
 	}
+		matrix matrix ::Sin(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]= sin(this->values[i][j]);
+			
+			}
+		}
+
+	return result;
+	}
+				matrix matrix ::Cos(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]= cos( this->values[i][j]);
+			
+			}
+		}
+
+		return result;
+	}
+		
+		matrix matrix ::Tan(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+	
+			if(is_identify(this->values[i][j])==1){
+			string error="math error";
+			 throw(error);
+			}
+			else{result.values[i][j]= tan(this->values[i][j]);}
+			
+			}
+		}
+
+	return result;
+	}
+
+
+
+
+		matrix matrix :: element_wise_power(double a){
+		
+		matrix result;
+		result.initialize(this->num_rows,this->num_columns);
+
+		for(int i=0; i< this->num_rows; i++){
+			for(int j=0; j< this->num_columns; j++){
+			
+				result.values[i][j]= pow(this->values[i][j], a);
+
+			}
+		}
+//		result.print_matrix();
+		return result;
+		
+		}
+
+
+	matrix matrix:: Sqrt(){
+
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]=sqrt(this->values[i][j]);
+			
+			}
+		}
+		return result;
+
+	}
+	matrix matrix:: Pow(int n){
+		matrix result;
+		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
+		                                                                                                     //    0 1       4  6
+		for(int i=0;i<n;i++){                                                                                 //ans=   2     3
+			result = this->mult_matrix(result);                                                              //        4      6
+		}
+		return result;
+	}
+	
+	//////////
+
+	string matrix :: getString(){
+		string result;
+		result.clear();
+
+		char substring[100];
+		for(int i=0; i< this->num_rows; i++){
+			for(int j=0; j<this->num_columns; j++){
+				
+				sprintf(substring, "%f", this->values[i][j]);
+				result+=substring;
+
+				if(j+1<this->num_columns) result+=" ";
+				else if(i+1<this->num_rows) result+= "; ";
+				else continue;
+			}
+		}
+	//	cout<<result<<endl;
+		return result;
+	}
+
+	
+	matrix matrix:: add_const(double a){
+		matrix result;
+		result.initialize(this->num_rows, this->num_columns);
+
+		for(int i=0; i<this->num_rows; i++){
+			for(int j=0; j<num_columns;j++){
+				result.values[i][j]=a+this->values[i][j];
+			}
+		}
+	//	result.print_matrix();
+		return result;
+	}
+
+	
+
+
+
+
+
+
+	matrix matrix::column_by_column(matrix &a , matrix &b){
+		matrix r;
+		int n;
+         int c;
+	 if(a.get_num_rows()!=b.get_num_rows()){
+		 string e="mismach number of rows";
+		throw(e);
+
+		}
+			
+		else{c=(a.get_num_columns() + b.get_num_columns());  
+
+			r.initialize(a.get_num_rows(),c);
+	
+			for(int i=0;i<a.get_num_rows();i++){
+				 n=a.get_num_columns();
+				for(int j=0;j<c;j++){  
+					if(j<n)
+                  r.values[i][j]=a.values[i][j];
+
+				else{
+					r.values[i][j]=b.values[i][j-n];
+				
+				}
+					
+				
+				}
+
+			}
+		}
+		
+			return r;
+}
+	//////////
+		matrix matrix::row_by_row(matrix &a , matrix &b){
+		matrix r;
+		int n;
+         int c;
+	 if(a.get_num_columns()!=b.get_num_columns()){
+		 string e="mismach number of columns";
+		throw(e);
+
+		}
+			
+		else{c=(a.get_num_rows() + b.get_num_rows());  
+
+			r.initialize(c,a.get_num_columns());
+	              n=a.get_num_rows();
+			for(int i=0;i<c;i++){
+		       
+				for(int j=0;j<a.get_num_columns();j++){  
+					if(i<n)
+                  r.values[i][j]=a.values[i][j];
+
+				else{
+					r.values[i][j]=b.values[i-n][j];
+						}
+					
+				
+				}
+
+			}
+		}
+		
+			return r;
+}
+	//////////
+
+	
+		             
+
+
+
 	void matrix::handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index){
 		int n_deleted = 1;
 		if(command[command.length()-1]==';') n_deleted++;
@@ -727,6 +947,7 @@ double my_abs(double& m ){
 						cout<<name0<<": "<<endl;
 						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
+
 						continue;
 					}
 
@@ -775,9 +996,8 @@ double my_abs(double& m ){
 						matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
 						continue;
-						
-
 					}
+
 			}
 			catch(string e){ cout<<e<<endl;}
 		}
@@ -791,6 +1011,7 @@ double my_abs(double& m ){
 			cout<<"error opening file"<<endl;
 		}
 	}
+<<<<<<< HEAD
 	matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -957,4 +1178,7 @@ double my_abs(double& m ){
         return result;
  
 }
+=======
+	
+>>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 	

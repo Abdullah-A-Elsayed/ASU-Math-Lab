@@ -19,11 +19,12 @@ private:
 	// find transpose func
     matrix transpose(matrix& fac, double r); //bad
 	int check_zero_dete(); //bad
+	int is_identify(double n);
 public:
     matrix();
     matrix(string values);
     void initialize(int rows, int cols); 
-	void initialize_by1(int rows, int cols);
+	
     int get_num_rows (){ return this->num_rows;}
     int get_num_columns (){  return this->num_columns; }
     void print_matrix();
@@ -35,7 +36,7 @@ public:
     matrix mult_matrix( matrix& m);
     matrix inverse_matrix();  //you can use it as it calls the good one
     matrix transpose_matrix();
-    matrix div_matrix( matrix& m);
+    matrix div_matrix( matrix& m); 
 	matrix bitwisediv_matrix(matrix &m); //solved issue
 	matrix bitwisediv2_matrix(double c);
     static void run(string fpath);
@@ -45,34 +46,31 @@ public:
 	
 
 
+<<<<<<< HEAD
   static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
   static matrix  Solve(string data);//AMERA
+=======
+	
+  static matrix  Solve(string data);//AMERA 
+>>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and return matrix */
-	
-	void fill_matrix2(string data);//AYA
-	/* take data and fill matrix
-	B = [1.2 2.3 A;[1.3 2.4;4.6 1.3],[3.2;7.8]];
-	B =
+	                                                                                      
+	static matrix column_by_column (matrix& a, matrix& b);//AYA
+	/* ex: if a=  3    3     b= 1                c=a b  ->c= 3  3  1  2    // 2*2 2*1->2*3
+	                                                           
+	              4    4        6                            4  4  6  6
+    */
+	static matrix row_by_row(matrix& a,matrix& b); //AYA
+	                  /* ex: if a=  3    3     b= 1  6           c=a   ->c= 3  3     // 2*2 1*2->3*2
+					                4    4                         b        4  4
+	                                                                        1  6
+	              
+    */                                                     
 
-    1.2000    2.3000   33.5986
-    1.3000    2.4000    3.2000
-    4.6000    1.3000    7.8000
 
-                   */
 
-	void fill_matrix3(string data);  //ALAA
-	/* taka data and fill matrix
-	C = [[B [3.4; 2.1; 3.5+9.1]]
-     1.2^3 3+1.2 15/(2.1+10*sin(0.12))  1.2]
-	 C =
-    1.2000    2.3000   33.5986    3.4000
-    1.3000    2.4000    3.2000    2.1000
-    4.6000    1.3000    7.8000   12.6000
-    1.7280    4.2000    4.5494    1.2000
 
-	
-	*/
 
 	matrix Sin();//AYA
 	/* sin(B)
@@ -82,6 +80,8 @@ ans =
    0.963558   0.675463  -0.058374
   -0.993691   0.963558   0.998543
 */
+    matrix Cos();//AYA
+    matrix Tan();//AYA
 	matrix Sqrt();//AYA
 	/* sqrt(B)
 ans =
@@ -119,12 +119,7 @@ Diagonal Matrix
    0   1   0   0
    0   0   1   0
    0   0   0   1  */
-	static matrix Zeros (int a,int b);//ALAA
-	/*zeros(2, 3)
-	ans =
-   0   0   0
-   0   0   0
-	*/
+	
 
 	static matrix ones (int a,int b);//ALAA
 	/*ones(3, 6)
@@ -133,12 +128,31 @@ Diagonal Matrix
    1   1   1   1   1   1
    1   1   1   1   1   1
 	*/
+	 
+
 	
 	
-	
+	  string getString();
+	  /* 
+	  returns a string with the values of
+	  matrix elements
+	  */
+
+	  matrix add_const(double a);
+	  /*
+	  adds double constant and
+	  every element in the matrix then
+	  returns the result as a matrix
+	  */
 
 
-    
+	  matrix element_wise_power(double a);
+	  /*
+	  Every element in the matrix to
+	  power of (double constant)
+	  */
+
+
 };
 
 #endif
