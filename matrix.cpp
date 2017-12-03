@@ -8,6 +8,7 @@
 #include "matrix.h"
 #include <iomanip>
 #include <wctype.h>
+#define pi 3.1416
 using namespace std;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
@@ -235,7 +236,17 @@ double my_abs(double& m ){
 		//if(det != det) return 0;
 		return det;
 	}
-
+	int matrix::is_identify(double m){
+		int n=0;
+		for(int i=0;i<10;i++){
+			if(m==(2*i+1)*pi/2){
+				return n=1;
+				break;
+			}
+			else return n=0;
+		}
+}
+	
 
 	int matrix::check_zero_dete()
 	{
@@ -636,6 +647,38 @@ double my_abs(double& m ){
 
 	return result;
 	}
+				matrix matrix ::Cos(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+				result.values[i][j]= cos( this->values[i][j]);
+			
+			}
+		}
+
+		return result;
+	}
+		
+		matrix matrix ::Tan(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+	
+			if(is_identify(this->values[i][j])==1){
+			string error="math error";
+			 throw(error);
+			}
+			else{result.values[i][j]= tan(this->values[i][j]);}
+			
+			}
+		}
+
+	return result;
+	}
+	
+	
 
 	matrix matrix:: Sqrt(){
 

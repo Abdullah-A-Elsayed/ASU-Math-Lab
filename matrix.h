@@ -19,6 +19,7 @@ private:
 	// find transpose func
     matrix transpose(matrix& fac, double r); //bad
 	int check_zero_dete(); //bad
+	int is_identify(double n);
 public:
     matrix();
     matrix(string values);
@@ -74,6 +75,8 @@ ans =
    0.963558   0.675463  -0.058374
   -0.993691   0.963558   0.998543
 */
+    matrix Cos();//AYA
+    matrix Tan();//AYA
 	matrix Sqrt();//AYA
 	/* sqrt(B)
 ans =
