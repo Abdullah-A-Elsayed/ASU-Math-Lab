@@ -142,6 +142,14 @@ Diagonal Matrix
      1.2^3 3+1.2 15/(2.1+10*sin(0.12))  1.2]
 
 	*/
+	  string getString();
+	  /* 
+	  returns a string with the values of
+	  matrix elements
+	  */
+
+	  matrix add_const(double a);
+
 };
 
 #endif

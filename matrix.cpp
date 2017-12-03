@@ -672,6 +672,46 @@ double my_abs(double& m ){
 	
 	//////////
 
+	string matrix :: getString(){
+		string result;
+		result.clear();
+
+		char substring[100];
+		for(int i=0; i< this->num_rows; i++){
+			for(int j=0; j<this->num_columns; j++){
+				
+				sprintf(substring, "%f", this->values[i][j]);
+				result+=substring;
+
+				if(j+1<this->num_columns) result+=" ";
+				else if(i+1<this->num_rows) result+= "; ";
+				else continue;
+			}
+		}
+	//	cout<<result<<endl;
+		return result;
+	}
+
+	
+	matrix matrix:: add_const(double a){
+		matrix result;
+		result.initialize(this->num_rows, this->num_columns);
+
+		for(int i=0; i<this->num_rows; i++){
+			for(int j=0; j<num_columns;j++){
+				result.values[i][j]=a+this->values[i][j];
+			}
+		}
+	//	result.print_matrix();
+		return result;
+	}
+
+	
+
+
+
+
+
 
 	matrix matrix::column_by_column(matrix &a , matrix &b){
 		matrix r;
@@ -841,6 +881,7 @@ double my_abs(double& m ){
 						cout<<name0<<": "<<endl;
 						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
 						matrices[name0].print_matrix();cout<<endl;
+
 						continue;
 					}
 
