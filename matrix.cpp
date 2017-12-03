@@ -687,8 +687,27 @@ double my_abs(double& m ){
 
 	return result;
 	}
-	
-	
+
+
+
+
+		matrix matrix :: element_wise_power(double a){
+		
+		matrix result;
+		result.initialize(this->num_rows,this->num_columns);
+
+		for(int i=0; i< this->num_rows; i++){
+			for(int j=0; j< this->num_columns; j++){
+			
+				result.values[i][j]= pow(this->values[i][j], a);
+
+			}
+		}
+//		result.print_matrix();
+		return result;
+		
+		}
+
 
 	matrix matrix:: Sqrt(){
 

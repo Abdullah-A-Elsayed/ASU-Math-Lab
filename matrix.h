@@ -134,6 +134,19 @@ Diagonal Matrix
 	  */
 
 	  matrix add_const(double a);
+	  /*
+	  adds double constant and
+	  every element in the matrix then
+	  returns the result as a matrix
+	  */
+
+
+	  matrix element_wise_power(double a);
+	  /*
+	  Every element in the matrix to
+	  power of (double constant)
+	  */
+
 
 };
 
