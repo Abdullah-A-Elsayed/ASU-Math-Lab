@@ -8,24 +8,11 @@
 using namespace std;
 int main(int argc, char** argv)
 
-{ 
- 
- 
-
-
-
-  	
+{ 	
 if(argc < 2){
 		//matrix::run("example.m");
 		//to be changed ...
-<<<<<<< HEAD
-
-	 
-		cout<<"Enter your commands ..."<<endl;
-=======
-	
 		cout<<"Enter your commands ..."<<endl; 
->>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 		int op_index;
 		string command,name0,name1,name2;
 		matrix input;
@@ -33,11 +20,8 @@ if(argc < 2){
 		short print_flag = 1;
 		try { 
  
-
 			while(1){
-				if(print_flag&&command!=""){
-					//cout<<name0<<endl;
-				}
+				
 				getline(cin,command);	
 				if(command[command.length()-1]==';') print_flag = 0 ;
 				else print_flag = 1;
@@ -46,75 +30,6 @@ if(argc < 2){
 				name0 = command.substr(0,command.find('=')-1);
 				transform(name0.begin(),name0.end(),name0.begin(),::toupper);
 
-				//op_index = command.find('[');
-				//if(op_index != -1){
-				//	matrix::handle_read(matrices,command,name0,op_index);
-				//	continue;
-				//}
-
-				//op_index = command.find('+');
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);
-				//	matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
-				//	continue;
-				//}
-
-				//op_index = command.find('-');
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);
-				//	matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
-				//	continue;
-				//}
-
-				//op_index = command.find('*');
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);
-				//	matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
-				//	continue;
-				//}
-
-				///*op_index = command.find("./");
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);//+1 to get correct name2 and name1 is not important
-				//	matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
-				//	continue;
-				//}*/  op_index = command.find('/');
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);
-				//	matrices[name0] = matrices[name1].div_matrix(matrices[name2]);
-
-				//	continue;
-				//}
-
-				//op_index = command.find('./');
-				//int equal_index = command.find_last_of('=');
-				//	string b = command.substr(equal_index+2,op_index-equal_index-3);
-				//	for (int i =0; i<b.size(); i++) {
-    //        if  ((b[i] >= 'A' && b[i] <= 'Z') ||
-    //               (b[i] >= 'a' && b[i] <= 'z')) {
-				//if(op_index != -1){
-				//	matrix::matrix::decode(command,name1,name2,op_index);
-				//	matrices[name0] = matrices[name1].bitwisediv_matrix(matrices[name2]);
-				//	continue;}
-				//break;}
-			 //else{  
-				//	double c =stod(b);
-				//	if(op_index != -1){
-				//		matrix::matrix::decode(command,name1,name2,op_index+1);
-				//		matrices[name0] = matrices[name2].bitwisediv2_matrix(c);
-				//		continue;}
-			
-				//	   break;}}
-		
-
-				//op_index = command.find("'");
-				//if(op_index != -1){
-				//	command+="extra";
-				//	matrix::matrix::decode(command,name1,name2,op_index+1);
-				//	matrices[name0] = matrices[name1].transpose_matrix();
-				//	continue;
-				//}
-				/*******************/                 
 			op_index = command.find('[');
 					if(op_index != -1){
 						//cout<<command<<endl<<endl;

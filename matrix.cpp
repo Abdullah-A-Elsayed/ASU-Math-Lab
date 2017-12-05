@@ -7,12 +7,9 @@
 #include <math.h>
 #include "matrix.h"
 #include <iomanip>
-<<<<<<< HEAD
 #include<vector>
-=======
 #include <wctype.h>
 #define pi 3.1416
->>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 using namespace std;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
@@ -649,7 +646,7 @@ double my_abs(double& m ){
 		return result;
 	
 	}
-		matrix matrix ::Sin(){
+		/*matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
 		for(int i=0;i<this->num_rows;i++){
@@ -660,8 +657,9 @@ double my_abs(double& m ){
 		}
 
 	return result;
-	}
-				matrix matrix ::Cos(){
+	}*/
+
+		matrix matrix ::Cos(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
 		for(int i=0;i<this->num_rows;i++){
@@ -713,7 +711,7 @@ double my_abs(double& m ){
 		}
 
 
-	matrix matrix:: Sqrt(){
+	/*matrix matrix:: Sqrt(){
 
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -725,7 +723,7 @@ double my_abs(double& m ){
 		}
 		return result;
 
-	}
+	}*/
 	matrix matrix:: Pow(int n){
 		matrix result;
 		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
@@ -746,7 +744,7 @@ double my_abs(double& m ){
 		for(int i=0; i< this->num_rows; i++){
 			for(int j=0; j<this->num_columns; j++){
 				
-				sprintf(substring, "%f", this->values[i][j]);
+				sprintf_s(substring, "%f", this->values[i][j]);
 				result+=substring;
 
 				if(j+1<this->num_columns) result+=" ";
@@ -1011,7 +1009,7 @@ double my_abs(double& m ){
 			cout<<"error opening file"<<endl;
 		}
 	}
-<<<<<<< HEAD
+
 	matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -1178,7 +1176,4 @@ double my_abs(double& m ){
         return result;
  
 }
-=======
-	
->>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
 	

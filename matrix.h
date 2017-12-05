@@ -45,14 +45,9 @@ public:
     static void remove_back_slashes(string& s);
 	
 
-
-<<<<<<< HEAD
   static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
   static matrix  Solve(string data);//AMERA
-=======
-	
-  static matrix  Solve(string data);//AMERA 
->>>>>>> 304fe70fe4c4f80dfef6e78b30e43cf1b16dbf43
+
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and return matrix */
 	                                                                                      
