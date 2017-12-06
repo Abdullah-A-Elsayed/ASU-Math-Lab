@@ -126,7 +126,9 @@ if(argc < 2){
 	}
 	else{ // passing file as a parameter
 		string fpath = argv[1];
-		matrix::run(fpath);
+		//matrix::run(fpath);
+		matrix::run_adv(fpath);
+		
 	}
 	
 //	system ("pause");

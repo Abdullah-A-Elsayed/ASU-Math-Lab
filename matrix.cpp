@@ -886,7 +886,8 @@ double my_abs(double& m ){
 		s = u;
 	}
 
-	void matrix::run(string fpath){
+	void matrix::run(string fpath)
+	{
 		ifstream file (fpath.c_str());
 		if(file){//opened safely
 			map<const string, matrix> matrices;
@@ -1010,6 +1011,237 @@ double my_abs(double& m ){
 		}
 	}
 
+
+	/* Advanced File example */
+
+	/* run advanced */
+
+	void matrix::run_adv(string fpath)
+	{
+		ifstream file(fpath.c_str());
+		if (file){//opened safely
+		map<const string, matrix> matrices;
+		string command, name0, name1, name2, sub_command = "", line;
+		int op_index; //holds position of the operation
+		while (getline(file, command))
+		{
+			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
+
+			/* if the command didn't have a name it will be named ans */
+			if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
+			{
+				name0 = command.substr(0, command.find('=') - 1); /*this means the name must have a space after it*/
+				transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
+			}
+			else
+			{
+				name0 = "ans";
+			}
+			/* if the command didn't have a name it will be named ans */
+
+			try{
+				
+				/* detect joined matrix  gasser */
+
+				int chk_mat = command.find_first_of('[');
+				if (chk_mat != -1){
+					op_index = chk_mat;
+						int opn_brac_count = 0, cls_brac_count = 0, end_comd_fg = 0;
+						for (int i = 0; i < command.length(); i++)
+						{
+							if (command[i] == '[') opn_brac_count++;
+							if (command[i] == ']') cls_brac_count++;
+						}
+						if (opn_brac_count == cls_brac_count){ end_comd_fg = 1; }//cout << command << endl; }
+						else {
+							while (end_comd_fg == 0)
+							{
+								getline(file, line);
+								remove_back_slashes(command);
+								command += line;
+								opn_brac_count = 0; cls_brac_count = 0;
+								for (int i = 0; i < command.length(); i++)
+								{
+									if (command[i] == '[') opn_brac_count++;
+									if (command[i] == ']') cls_brac_count++;
+								}
+								if (opn_brac_count == cls_brac_count){ end_comd_fg = 1; } //cout << command << endl;}
+							}
+						}
+						remove_back_slashes(command);
+						//handle_read(matrices, command, name0, op_index);
+						handle_read_adv(matrices, command, name0, op_index);
+						if (command[command.length() - 1] != ';')
+						{
+						cout << name0 << ": " << endl;
+						matrices[name0].print_matrix();
+						}
+						continue;
+				}
+
+				/* end detect joined matrix*/
+
+				/* detect solve */
+				else
+				{
+					if (command.find('='))
+					{
+						/*there is a problem with the solve function "vector out of range" 
+						I tested it with this test case "A = 5.5 + 12 * sin(0.4) + 2.2^4;" */
+
+						matrices[name0] = Solve(command);
+						if (command[command.length() - 1] != ';')
+						{
+							cout << name0 << ": " << endl;
+							matrices[name0].print_matrix(); cout << endl;
+						}
+						continue;
+					}
+					else { continue; }
+				}
+				/* end detect solve */
+
+
+
+
+
+
+
+
+				}
+			catch (string e){ cout << e << endl; }
+		}
+
+		file.close();
+
+		}
+		else{
+
+			cout << "error opening file" << endl;
+		}
+	}
+
+	/* end run advanced */
+
+	/*handle read adv-gasser*/
+	void matrix::handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int opn_index)
+	{
+		int semi_index; matrix jn_mat[20]; int jn_mat_fg = 0,jn_mat_ord = 0;
+		for (int i = opn_index + 1; i < command.length(); i++)
+		{
+			if (command[i] == ';')
+			{ 
+				semi_index = i;
+				if (command[i + 1] == '[') 
+				{
+					jn_mat_fg = 1;
+					string mat_vals = command.substr(opn_index + 1, semi_index - opn_index); 
+					matrix x;
+					x.fill_matrix_adv(mat_vals, matrices);
+					jn_mat[jn_mat_ord] =x;
+					jn_mat_ord++;
+				}
+			}
+
+			if (command[i] == '[') opn_index = i;
+
+			if (command[i] == ']' && command[i-1] != ']')
+			{
+				string mat_vals = command.substr(opn_index + 1, i - 1 - opn_index);
+				
+				matrix y;
+				y.fill_matrix_adv(mat_vals, matrices);
+				jn_mat[jn_mat_ord] = y;
+				jn_mat_ord++;
+				if (jn_mat_fg == 0 ) matrices[name0] = y;
+			}
+		}
+
+		//combine joined matrix
+		if (jn_mat_fg)
+		{
+			int mx_colms_ord = 0; int mn_colms_ord = 0;
+			for (int i = 0; i < jn_mat_ord-1; i++)
+			{
+				//cout << "this: "<< endl; jn_mat[i].print_matrix();
+
+				if (jn_mat[i].num_columns != jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //colm by colm
+				{
+					jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]); 
+					i = 0; jn_mat_ord--;
+				}
+				if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows != jn_mat[i + 1].num_rows) //row by row
+				{
+					jn_mat[i] = row_by_row(jn_mat[i], jn_mat[i + 1]);
+					i = 0; jn_mat_ord--;
+				}
+
+			}
+
+			matrices[name0] = jn_mat[0];
+		}
+	}
+
+	/* end handle read adv-gasser*/
+
+	/*fill mat adv gasser*/
+
+	void matrix::fill_matrix_adv(string data,map<const string, matrix>matrices){
+
+		for (int i = 0; i < data.length(); i++)
+		{
+			if ((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z'))
+			{
+				// replace letter with value string
+				string letter = data.substr(i, 1);
+				string new_str= matrices[letter].getString();
+				/*chck this */ data.replace(i, 1, new_str);
+			}
+		}
+		//cout << "this: "<< data << endl; // end gasser edit
+
+
+		// Aly
+		// data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
+		// these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
+		// initialize using initialize function provided above then assign values
+		if (num_rows){ // resetting
+			values.clear();
+			num_columns = 0;
+			num_rows = 0;
+		}
+		int start = 0;
+		int end;
+		if (data[data.length() - 1] != ';') { data = data + ";"; }
+
+		vector<double> row;
+		for (unsigned int i = 0; i< data.length(); i++){
+			if ((data[i] == ' '&&data[i - 1] != ';') || (data[i] == ';')){
+				end = i;
+				//ading previous num
+
+				row.push_back(atof(data.substr(start, end - start).c_str()));
+				start = i + 1;
+				if (data[i] == ';'){
+					this->values.push_back(row);
+					row.clear();
+					if (start<data.length()){
+						if (data[start] == ' ') start++;
+					}
+				}
+			}
+		}
+		this->num_rows = this->values.size();
+		this->num_columns = this->values[0].size();
+	}
+
+	/*end fill mat adv gasser*/
+
+
+	/* Advanced File example */
+
+
+
 	matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -1044,7 +1276,9 @@ double my_abs(double& m ){
 	       fix_arr1.insert(fix_arr1.begin() + index,result);
 		   arr2.erase( arr2.begin() + index );
 		   }
-	matrix  matrix ::Solve(string data){
+	
+
+	matrix  matrix::Solve(string data){
 	vector<string>arr1;
 	vector<string>arr2;
     vector<double>fix_arr1;
@@ -1097,7 +1331,7 @@ double my_abs(double& m ){
 	{    if((a[1] >= 'A' && a[1] <= 'Z') || (a[1] >= 'a' && a[1] <='z'))
 	  {//check on second char 
 		string ins=a.substr(5,a.find(')')-5);
-		double inside=stod(ins); 
+		double inside=stod(ins);
 		if(a[1]=='s')
 		{res_tri=sin(inside);
 		fix_arr1.push_back(res_tri);

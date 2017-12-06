@@ -30,7 +30,8 @@ public:
     void print_matrix();
     // tasks:
 	double determinant_2(int n); // good fast
-    void fill_matrix (string data1);
+    void fill_matrix (string data);
+	void fill_matrix_adv(string data,map<const string, matrix> matrices);
     matrix add_matrix( matrix& m);
     matrix sub_matrix( matrix& m);
     matrix mult_matrix( matrix& m);
@@ -40,16 +41,17 @@ public:
 	matrix bitwisediv_matrix(matrix &m); //solved issue
 	matrix bitwisediv2_matrix(double c);
     static void run(string fpath);
+	static void run_adv(string fpath);
     static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
+	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
     static void decode(string command,string& name1,string& name2,int op_index);
     static void remove_back_slashes(string& s);
 	
 
   static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
   static matrix  Solve(string data);//AMERA
-
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
-   	and return matrix */
+   	and store value at map as matrix 1x1 */
 	                                                                                      
 	static matrix column_by_column (matrix& a, matrix& b);//AYA
 	/* ex: if a=  3    3     b= 1                c=a b  ->c= 3  3  1  2    // 2*2 2*1->2*3
