@@ -46,7 +46,10 @@ public:
 	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
     static void decode(string command,string& name1,string& name2,int op_index);
     static void remove_back_slashes(string& s);
-	
+	static void remove_spaces(string& s);
+	static string remove_space_after_semis(string &mat_vals);
+	static string cut_mat_solve(string &mat_val);
+	static string solve_elemnt(string &mat_elemnt);
 
   static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
   static matrix  Solve(string data);//AMERA

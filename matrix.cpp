@@ -885,7 +885,7 @@ double my_abs(double& m ){
 		}
 		s = u;
 	}
-
+	 
 	void matrix::run(string fpath)
 	{
 		ifstream file (fpath.c_str());
@@ -1012,7 +1012,7 @@ double my_abs(double& m ){
 	}
 
 
-	/* Advanced File example */
+/* -----------------------------------------Advanced File example------------------------------------------*/
 
 	/* run advanced */
 
@@ -1025,6 +1025,9 @@ double my_abs(double& m ){
 		int op_index; //holds position of the operation
 		while (getline(file, command))
 		{
+			remove_spaces(command); /* makes the line doesn't start with a space*/
+			int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
+			if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
 			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 
 			/* if the command didn't have a name it will be named ans */
@@ -1037,7 +1040,7 @@ double my_abs(double& m ){
 			{
 				name0 = "ans";
 			}
-			/* if the command didn't have a name it will be named ans */
+			/* end if the command didn't have a name it will be named ans */
 
 			try{
 				
@@ -1057,8 +1060,12 @@ double my_abs(double& m ){
 							while (end_comd_fg == 0)
 							{
 								getline(file, line);
+								remove_spaces(line); /* makes the line doesn't start with a space*/
 								remove_back_slashes(command);
+								command += ' ';		/* adds a space for detiction purposes*/
 								command += line;
+								int prnt_fg = 0;/*this is to rmove the semicolon at the end cuz it breaks if it has*/
+								if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
 								opn_brac_count = 0; cls_brac_count = 0;
 								for (int i = 0; i < command.length(); i++)
 								{
@@ -1069,9 +1076,8 @@ double my_abs(double& m ){
 							}
 						}
 						remove_back_slashes(command);
-						//handle_read(matrices, command, name0, op_index);
 						handle_read_adv(matrices, command, name0, op_index);
-						if (command[command.length() - 1] != ';')
+						if (prnt_fg)
 						{
 						cout << name0 << ": " << endl;
 						matrices[name0].print_matrix();
@@ -1084,29 +1090,23 @@ double my_abs(double& m ){
 				/* detect solve */
 				else
 				{
-					if (command.find('='))
+					if (command.find('=')||command.find('+')||command.find('-')||command.find('/')||command.find('*')||command.find('^')
+				 || command.find('s') || command.find('c') || command.find('t') || command.find('('))
 					{
 						/*there is a problem with the solve function "vector out of range" 
 						I tested it with this test case "A = 5.5 + 12 * sin(0.4) + 2.2^4;" */
 
-						matrices[name0] = Solve(command);
-						if (command[command.length() - 1] != ';')
+						matrices[name0] = solve_elemnt(command);
+						if (prnt_fg)
 						{
 							cout << name0 << ": " << endl;
-							matrices[name0].print_matrix(); cout << endl;
+							matrices[name0].print_matrix();
 						}
 						continue;
 					}
 					else { continue; }
 				}
 				/* end detect solve */
-
-
-
-
-
-
-
 
 				}
 			catch (string e){ cout << e << endl; }
@@ -1126,29 +1126,87 @@ double my_abs(double& m ){
 	/*handle read adv-gasser*/
 	void matrix::handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int opn_index)
 	{
-		int semi_index; matrix jn_mat[20]; int jn_mat_fg = 0,jn_mat_ord = 0;
-		for (int i = opn_index + 1; i < command.length(); i++)
+		int semi_index; matrix jn_mat[20]; int jn_mat_fg = 0, jn_mat_ord = 0; int c_fg = 0;
+		for (int i = 0; i < command.length(); i++)
 		{
+			/*c - line*/
+
+			if  (command[i] == '['&& command[i + 1] == '[' && 
+				((command[i + 2] >= 'A' && command[i + 2] <= 'Z') || (command[i + 2] >= 'a' && command[i + 2] <= 'z')))
+			{
+				c_fg = 1; int nxt_opn_brac;
+				for (int f = i + 2; f < command.length(); f++)
+				{
+					if (command[f] == '[') nxt_opn_brac = f;
+				}
+				string mat_ltr = command.substr(i + 2, nxt_opn_brac - i - 3);
+				jn_mat[jn_mat_ord] = matrices[mat_ltr];
+				jn_mat_ord++;
+				continue;
+			}
+
+			if (command[i] == ']'&& command[i + 1] == ' ' && c_fg == 1)
+			{
+				int nxt_cls_brac; //int frst_num;
+				for (int f = i + 1; f < command.length(); f++)
+				{
+					if (command[f] == ']') nxt_cls_brac = f;
+				}
+				string mat_val = command.substr(i + 2, nxt_cls_brac - i - 2);
+				remove_space_after_semis(mat_val);
+				cut_mat_solve(mat_val);
+				/*for (int f = 0; f < new_comnd.length(); f++)
+				{
+					if (new_comnd[f] != ' ') { frst_num = f; break; }
+				}
+
+				nxt_cls_brac = new_comnd.find(']');
+				string final_comnd = new_comnd.substr(frst_num);*/
+
+				matrix z;
+				z.fill_matrix_adv(mat_val, matrices);
+				jn_mat[jn_mat_ord] = z;
+				jn_mat_ord++;
+				continue;
+			}
+
+			/*End c - line*/
+
 			if (command[i] == ';')
 			{ 
 				semi_index = i;
 				if (command[i + 1] == '[') 
 				{
 					jn_mat_fg = 1;
-					string mat_vals = command.substr(opn_index + 1, semi_index - opn_index); 
+					string mat_vals = command.substr(opn_index + 1, semi_index - opn_index);
+					remove_space_after_semis(mat_vals);
+					cut_mat_solve(mat_vals);
 					matrix x;
 					x.fill_matrix_adv(mat_vals, matrices);
 					jn_mat[jn_mat_ord] =x;
+					jn_mat_ord++;
+				}
+				else if (command[i - 1] == ']')
+				{
+					jn_mat_fg = 1; int cls_brac_indx;
+					for (int i = semi_index + 1; i < command.length(); i++) if (command[i] == ']'){ cls_brac_indx = i; break; }
+					string mat_vals = command.substr(semi_index + 1, cls_brac_indx - semi_index - 1);
+					remove_space_after_semis(mat_vals);
+					cut_mat_solve(mat_vals);
+					matrix x;
+					x.fill_matrix_adv(mat_vals, matrices);
+					jn_mat[jn_mat_ord] = x;
 					jn_mat_ord++;
 				}
 			}
 
 			if (command[i] == '[') opn_index = i;
 
-			if (command[i] == ']' && command[i-1] != ']')
+			if (command[i] == ']' && command[i - 1] != ']')
 			{
 				string mat_vals = command.substr(opn_index + 1, i - 1 - opn_index);
-				
+				remove_space_after_semis(mat_vals);
+				cut_mat_solve(mat_vals);
 				matrix y;
 				y.fill_matrix_adv(mat_vals, matrices);
 				jn_mat[jn_mat_ord] = y;
@@ -1158,7 +1216,7 @@ double my_abs(double& m ){
 		}
 
 		//combine joined matrix
-		if (jn_mat_fg)
+		if (jn_mat_fg||c_fg)
 		{
 			int mx_colms_ord = 0; int mn_colms_ord = 0;
 			for (int i = 0; i < jn_mat_ord-1; i++)
@@ -1167,12 +1225,14 @@ double my_abs(double& m ){
 
 				if (jn_mat[i].num_columns != jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //colm by colm
 				{
-					jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]); 
+					jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]);
+					jn_mat[i + 1] = jn_mat[i + 2];/*look how to delete a row from array*/
 					i = 0; jn_mat_ord--;
 				}
 				if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows != jn_mat[i + 1].num_rows) //row by row
 				{
 					jn_mat[i] = row_by_row(jn_mat[i], jn_mat[i + 1]);
+					jn_mat[i + 1] = jn_mat[i + 2]; /*look how to delete a row from array*/
 					i = 0; jn_mat_ord--;
 				}
 
@@ -1194,8 +1254,8 @@ double my_abs(double& m ){
 			{
 				// replace letter with value string
 				string letter = data.substr(i, 1);
-				string new_str= matrices[letter].getString();
-				/*chck this */ data.replace(i, 1, new_str);
+				string new_str = matrices[letter].getString();
+				data.replace(i, 1, new_str);
 			}
 		}
 		//cout << "this: "<< data << endl; // end gasser edit
@@ -1216,7 +1276,7 @@ double my_abs(double& m ){
 
 		vector<double> row;
 		for (unsigned int i = 0; i< data.length(); i++){
-			if ((data[i] == ' '&&data[i - 1] != ';') || (data[i] == ';')){
+			if ((data[i] == ' '&& data[i - 1] != ';') || (data[i] == ';')){
 				end = i;
 				//ading previous num
 
@@ -1237,8 +1297,127 @@ double my_abs(double& m ){
 
 	/*end fill mat adv gasser*/
 
+	/* to make sure line doesn't start with a space*/
 
-	/* Advanced File example */
+	void matrix::remove_spaces(string& s)
+	{
+		int frst_num;
+		for (int f = 0; f < s.length(); f++)
+		{
+			if (s[f] != ' ') { frst_num = f; break; }
+		}
+		s = s.substr(frst_num);
+	}
+
+	/* to make sure line doesn't start with a space*/
+
+
+	/* Cut matrix into elements then send it to solve*/
+	string matrix::cut_mat_solve(string &mat_val)
+	{
+		string mat_elemnt;
+		//int frst_num = mat_val.find_first_not_of(' ');
+		//mat_val = mat_val.substr(frst_num);  //cout << "this::" << mat_val <<"kok"<< endl;
+		//int spcchk = mat_val.find(' '); int semichck = mat_val.find(';');
+
+			/* first element */
+			int frstspace = mat_val.find_first_of(' ');
+			if (frstspace == -1) { frstspace = mat_val.find_first_of(';'); }
+			mat_elemnt = mat_val.substr(0, frstspace - 0); solve_elemnt(mat_elemnt);
+			mat_val.replace(0, frstspace - 0, mat_elemnt); //cout << "this1::" << mat_val << endl;
+			/* first element */
+
+			/* last element */
+			int lastspace = mat_val.find_last_of(' ');
+			if (lastspace == -1) { lastspace = mat_val.find_last_of(';'); }
+			mat_elemnt = mat_val.substr(lastspace + 1);		 solve_elemnt(mat_elemnt);
+			mat_val.replace(lastspace + 1, mat_val.length() - lastspace - 1, mat_elemnt); //cout << "this2::" << mat_val << endl;
+			/* last element */
+
+			for (int i = 0; i < mat_val.length(); i++)
+			{
+				int cut1;
+				if (mat_val[i] == ' ' || mat_val[i] == ';')
+				{
+					cut1 = i; 
+					if (mat_val[i + 1] == ' ') mat_val = mat_val.erase(i + 1, 1);
+						for (int j = cut1 + 1; j < mat_val.length(); j++)
+						{
+							int cut2;
+							if (mat_val[j] == ' ' || mat_val[j] == ';')
+							{
+								cut2 = j;
+								if (mat_val[j + 1] == ' ') mat_val = mat_val.erase(i + 1, 1);
+								mat_elemnt = mat_val.substr(cut1 + 1, cut2 - cut1 - 1);
+								solve_elemnt(mat_elemnt);
+								mat_val.replace(cut1 + 1, cut2 - cut1 - 1, mat_elemnt); //cout << "this132::" << mat_val << endl;
+								break;
+							}
+
+						}
+				}
+			}
+
+		return (mat_val);
+	}
+
+	string matrix::solve_elemnt(string &mat_elemnt)
+	{
+		/* check if it's just a matrix name don't change it*/
+		for (int i = 0; i < mat_elemnt.length(); i++)
+		{
+			if (((mat_elemnt[i] >= 'A' && mat_elemnt[i] <= 'Z') || (mat_elemnt[i] >= 'a' && mat_elemnt[i] <= 'z')))
+			{
+				int rond_brac = mat_elemnt.find('(');
+				if (rond_brac == -1)
+				{
+					return (mat_elemnt);
+				}
+			}
+		}
+
+			//matrix ans;
+			// ans = solve_adv(mat_elemnt); still to be done be aly
+			//mat_elemnt = ans.getString();
+			int x = rand();
+			char substring[100];
+			sprintf_s(substring, "%d", x);
+			mat_elemnt = substring;
+			return (mat_elemnt);
+	}
+
+	string matrix::remove_space_after_semis(string &mat_vals)
+	{
+		int frstnum=0;
+		for (int i = 0; i < mat_vals.length(); i++)
+		{
+			if (mat_vals[i] == ';'&&mat_vals[i + 1] == ' ')
+			{
+				for (int k = i+1; k < mat_vals.length(); k++)
+				{
+					if (mat_vals[k] != ' ') {frstnum = k; break;}
+				}
+
+				mat_vals = mat_vals.erase(i + 1, frstnum - i-1);
+			}
+		}
+
+		return mat_vals;
+	}
+
+	/* End - Cut matrix into elements then send it to solve*/
+
+	/* Solve advanced by alY
+	
+	matrix matrix::solve_adv(string value)
+	{
+		this a funtion to send to solve if it's a number and return value as 1x1 matrix 
+		or if it's matrix opperation it does it.
+	}
+	
+	*/
+
+	/* -----------------------------------------End Advanced File example------------------------------------------*/
 
 
 
