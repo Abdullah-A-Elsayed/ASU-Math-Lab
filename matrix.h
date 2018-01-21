@@ -166,6 +166,12 @@ Diagonal Matrix
 	  Every element in the matrix to
 	  power of (double constant)
 	  */
+
+	  matrix strassen(matrix& u);
+	  /*
+	  strassen algorithm for multiplication is used
+	  in the power function to optimize the code
+	  */
 	/* --------------------------------end of phase2 team1 work----------------------------------------------------------*/
 
 
