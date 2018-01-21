@@ -39,25 +39,33 @@ public:
     matrix transpose_matrix();
     matrix div_matrix( matrix& m);
 	matrix bitwisediv_matrix(matrix &m); //solved issue
-	matrix bitwisediv2_matrix(double c);//dividing by double
-    static void run(string fpath);//only for phase1
-	static void run_old_command(string command, map<const string, matrix>& matrices);//processes given phase1 command(save&print)
+	matrix bitwisediv2_matrix(double c);//double c diveded by each value: c/val
+
+	/*--------------------------------------phase 1 read file work----------------------------------------------*/
+    static void run(string fpath);
+	//only for phase1: reads the file and calls run_old_command
+
+	static void run_old_command(string command, map<const string, matrix>& matrices);
+	//processes given phase1 command(save&print)
 	/*ex if command is: a = [1 2 3] then a will be saved to the map and printed to the screen
 		and then called again with b = [3 5 6] same thing will happen,
 		then called with c = a + b, c will be saved in map, and will be printed (all phase 1 operations supported)
 	*/
-	static void run_adv(string fpath);
-    static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
-	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
-    static void decode(string command,string& name1,string& name2,int op_index);
-    static void remove_back_slashes(string& s);
-	static void remove_spaces(string& s);
-	static string remove_space_after_semis(string &mat_vals);
-	static string cut_mat_solve(string &mat_val);
-	static string solve_elemnt(string &mat_elemnt);
 
-  static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
-  static matrix  Solve(string data);//AMERA
+    static void handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index);
+	//for phase 1
+	/* to handle a line like this A = [2.2 7.3 4.8 2.4; 2.3 6.5 8.9 1.2;] -> only updates the map */
+   
+	static void decode(string command,string& name1,string& name2,int op_index);
+	/*ex: C = A + B -> updates name1 & name2 given position of '+' operator (op_index)*/
+   
+	static void remove_back_slashes(string& s);//takes string and removes backSlashes from it
+	/*--------------------------------------end of phase 1 read file work----------------------------------------------*/
+
+
+	/*------------------------------------phase2 team1 work ---------------------------------------------------------*/
+	static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
+	static matrix  Solve(string data);//AMERA
 	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
    	and store value at map as matrix 1x1 */
 	                                                                                      
@@ -149,14 +157,26 @@ Diagonal Matrix
 	  returns the result as a matrix
 	  */
 
+	  matrix mult_const(double a); //works for mltiplying and dividing
+		/*if you want to divide pass 1/a instead of a*/
 
 	  matrix element_wise_power(double a);
 	  /*
 	  Every element in the matrix to
 	  power of (double constant)
 	  */
+	/* --------------------------------end of phase2 team1 work----------------------------------------------------------*/
 
 
+
+	/* --------------------------------phase2 team2 work----------------------------------------------------------*/
+	static void run_adv(string fpath);
+	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
+	static void remove_spaces(string& s);
+	static string remove_space_after_semis(string &mat_vals);
+	static string cut_mat_solve(string &mat_val);
+	static string solve_elemnt(string &mat_elemnt);
+	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };
 
 #endif

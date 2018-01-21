@@ -778,6 +778,17 @@ double my_abs(double& m ){
 		return result;
 	}
 
+	matrix matrix:: mult_const(double a){
+		matrix result;
+		result.initialize(this->num_rows, this->num_columns);
+
+		for(int i=0; i<this->num_rows; i++){
+			for(int j=0; j<num_columns;j++){
+				result.values[i][j]=a*this->values[i][j];
+			}
+		}
+		return result;
+	}
 
 
 	matrix matrix::column_by_column(matrix &a , matrix &b){

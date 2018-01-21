@@ -31,8 +31,8 @@ if(argc < 2){//no file passed to the program
 	matrices["c"]=c;
 	matrix whole;
 	whole.fill_matrix_adv("abdullah;b",matrices);
-	matrix powered = matrix::Rand(5,5);
-	//whole.print_matrix();
+	matrix powered = whole.mult_const(5);
+	whole.print_matrix();
 	powered.print_matrix();
 	/*--------------------------------------end of testing area------------------------------*/
 }
