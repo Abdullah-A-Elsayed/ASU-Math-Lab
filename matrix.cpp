@@ -1442,34 +1442,6 @@ double my_abs(double& m ){
 	/* -----------------------------------------End Advanced File example------------------------------------------*/
 
 
-
-	matrix matrix ::Sin(){
-		matrix result ;
-		result.initialize(this->num_rows,this->num_columns);
-		for(int i=0;i<this->num_rows;i++){
-			for(int j=0;j<this->num_columns;j++){
-				result.values[i][j]= sin(this->values[i][j]);
-			
-			}
-		}
-
-	return result;
-	}
-
-	matrix matrix:: Sqrt(){
-
-		matrix result ;
-		result.initialize(this->num_rows,this->num_columns);
-		for(int i=0;i<this->num_rows;i++){
-			for(int j=0;j<this->num_columns;j++){
-				result.values[i][j]=sqrt(this->values[i][j]);
-			
-			}
-		}
-		return result;
-
-	}
-
     void matrix :: call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result){
 	int sec_element=index+1;
 	        fix_arr1.erase(fix_arr1.begin() + sec_element);
