@@ -654,7 +654,7 @@ double my_abs(double& m ){
 		return result;
 	}
 
-		/*matrix matrix ::Sin(){
+		matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
 		for(int i=0;i<this->num_rows;i++){
@@ -665,7 +665,7 @@ double my_abs(double& m ){
 		}
 
 	return result;
-	}*/
+	}
 
 		matrix matrix ::Cos(){
 		matrix result ;
@@ -690,7 +690,7 @@ double my_abs(double& m ){
 			string error="math error:can't calculate log of values<=0";
 			 throw(error);
 			}
-			else{result.values[i][j]= Log(this->values[i][j]);}
+			else{result.values[i][j]= log(this->values[i][j]);}
 			
 			}
 		}
@@ -736,7 +736,7 @@ double my_abs(double& m ){
 		}
 
 
-	/*matrix matrix:: Sqrt(){
+	matrix matrix:: Sqrt(){
 
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -748,7 +748,7 @@ double my_abs(double& m ){
 		}
 		return result;
 
-	}*/
+	}
 	matrix matrix:: Pow(int n){
 		matrix result;
 		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
