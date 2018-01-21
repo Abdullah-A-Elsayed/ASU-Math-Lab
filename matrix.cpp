@@ -9,8 +9,8 @@
 #include <iomanip>
 #include<vector>
 #include <wctype.h>
-#define pi 3.1416
 using namespace std;
+long double pi = atan(1)*4;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
 }
@@ -686,7 +686,7 @@ double my_abs(double& m ){
 		for(int i=0;i<this->num_rows;i++){
 			for(int j=0;j<this->num_columns;j++){
 	
-			if(is_identify(this->values[i][j])==1){
+			if(is_identify(this->values[i][j])){
 			string error="math error";
 			 throw(error);
 			}
@@ -1266,53 +1266,27 @@ double my_abs(double& m ){
 
 	/*fill mat adv gasser*/
 
-	void matrix::fill_matrix_adv(string data,map<const string, matrix>matrices){
+	void matrix::fill_matrix_adv(string data,map<const string, matrix>& matrices){
 
 		for (int i = 0; i < data.length(); i++)
 		{
 			if ((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z'))
 			{
-				// replace letter with value string
-				string letter = data.substr(i, 1);
-				string new_str = matrices[letter].getString();
-				data.replace(i, 1, new_str);
-			}
-		}
-		//cout << "this: "<< data << endl; // end gasser edit
-
-
-		// Aly
-		// data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
-		// these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
-		// initialize using initialize function provided above then assign values
-		if (num_rows){ // resetting
-			values.clear();
-			num_columns = 0;
-			num_rows = 0;
-		}
-		int start = 0;
-		int end;
-		if (data[data.length() - 1] != ';') { data = data + ";"; }
-
-		vector<double> row;
-		for (unsigned int i = 0; i< data.length(); i++){
-			if ((data[i] == ' '&& data[i - 1] != ';') || (data[i] == ';')){
-				end = i;
-				//ading previous num
-
-				row.push_back(atof(data.substr(start, end - start).c_str()));
-				start = i + 1;
-				if (data[i] == ';'){
-					this->values.push_back(row);
-					row.clear();
-					if (start<data.length()){
-						if (data[start] == ' ') start++;
+				// replace whole name with value string
+				int first_letter = i;
+				while(i<data.length()){
+					++i;
+					if (!((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z'))){/*name is scanned*/ 
+						break;
 					}
-				}
+				}//i is on first char after name
+				string name = data.substr(first_letter, i-first_letter);
+				string new_str = matrices[name].getString();
+				data.replace(first_letter,i-first_letter,new_str);
 			}
 		}
-		this->num_rows = this->values.size();
-		this->num_columns = this->values[0].size();
+		cout<<data<<endl;
+		this->fill_matrix(data);
 	}
 
 	/*end fill mat adv gasser*/

@@ -19,7 +19,7 @@ private:
 	// find transpose func
     matrix transpose(matrix& fac, double r); //bad
 	int check_zero_dete(); //bad
-	int is_identify(double n);
+	int is_identify(double n); // check if n is odd multiple of pi/2
 public:
     matrix();
     matrix(string values);
@@ -31,7 +31,7 @@ public:
     // tasks:
 	double determinant_2(int n); // good fast
     void fill_matrix (string data);
-	void fill_matrix_adv(string data,map<const string, matrix> matrices);
+	void fill_matrix_adv(string data,map<const string, matrix>& matrices);//only translates names to numbers then calls fill matrix
     matrix add_matrix( matrix& m);
     matrix sub_matrix( matrix& m);
     matrix mult_matrix( matrix& m);
