@@ -93,6 +93,7 @@ ans =
    0.963558   0.675463  -0.058374
   -0.993691   0.963558   0.998543
 */
+	matrix Log();//AYA
     matrix Cos();//AYA
     matrix Tan();//AYA
 	matrix Sqrt();//AYA
