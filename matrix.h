@@ -128,9 +128,8 @@ Diagonal Matrix
    1   1   1   1   1   1
    1   1   1   1   1   1
 	*/
-	 
 
-	
+	static matrix zeros(int r, int c); /* return a matrix of rXc of zeros */
 	
 	  string getString();
 	  /* 

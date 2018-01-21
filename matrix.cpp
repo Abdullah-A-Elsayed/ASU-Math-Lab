@@ -617,6 +617,12 @@ double my_abs(double& m ){
 		return result;
 	}
 
+	matrix matrix::zeros(int r, int c)
+	{
+		matrix x;
+		x.initialize(r, c);
+		return x;
+	}
 
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
@@ -630,6 +636,7 @@ double my_abs(double& m ){
 
 		return result;
 	    }
+
 	matrix matrix:: Eye (int a,int b){
 	 matrix result;
 		result.initialize(a,b);
@@ -646,6 +653,7 @@ double my_abs(double& m ){
 		return result;
 	
 	}
+
 		/*matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -770,11 +778,6 @@ double my_abs(double& m ){
 		return result;
 	}
 
-	
-
-
-
-
 
 
 	matrix matrix::column_by_column(matrix &a , matrix &b){
@@ -844,11 +847,6 @@ double my_abs(double& m ){
 			return r;
 }
 	//////////
-
-	
-		             
-
-
 
 	void matrix::handle_read(map<const string, matrix>& matrices,string command,string name0,int op_index){
 		int n_deleted = 1;
@@ -1064,7 +1062,7 @@ double my_abs(double& m ){
 								remove_back_slashes(command);
 								command += ' ';		/* adds a space for detiction purposes*/
 								command += line;
-								int prnt_fg = 0;/*this is to rmove the semicolon at the end cuz it breaks if it has*/
+								prnt_fg = 1;/*this is to rmove the semicolon at the end cuz it breaks if it has*/
 								if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
 								opn_brac_count = 0; cls_brac_count = 0;
 								for (int i = 0; i < command.length(); i++)
@@ -1086,8 +1084,27 @@ double my_abs(double& m ){
 				}
 
 				/* end detect joined matrix*/
+				
 
-				/* detect solve */
+		/*------------------------------------------------- Adv file Tasks -----------------------------------------------------*/
+
+				/* detect lines [ rand / eye / zeros / ones ] */
+
+				/* detect lines [ rand / eye / zeros / ones ] */
+
+
+
+
+				/* detect lines x / y & showing matrix from just name */
+
+
+				/*detect lines x / y & showing matrix from just name */
+
+
+		/*------------------------------------------------------- Adv file Tasks ----------------------------------------------------*/
+
+
+				/* detect solve  A / L */
 				else
 				{
 					if (command.find('=')||command.find('+')||command.find('-')||command.find('/')||command.find('*')||command.find('^')
@@ -1106,9 +1123,10 @@ double my_abs(double& m ){
 					}
 					else { continue; }
 				}
-				/* end detect solve */
+				/* end detect solve  A / L */
 
 				}
+
 			catch (string e){ cout << e << endl; }
 		}
 
