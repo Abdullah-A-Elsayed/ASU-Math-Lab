@@ -680,6 +680,23 @@ double my_abs(double& m ){
 		return result;
 	}
 		
+		matrix matrix ::Log(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+	
+			if(this->values[i][j]<=0){
+			string error="math error:can't calculate log of values<=0";
+			 throw(error);
+			}
+			else{result.values[i][j]= Log(this->values[i][j]);}
+			
+			}
+		}
+
+	return result;
+	}
 		matrix matrix ::Tan(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
