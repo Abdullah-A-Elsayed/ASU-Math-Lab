@@ -241,12 +241,12 @@ double my_abs(double& m ){
 		int m=0;
 		for(int i=0;i<10;i++){
 			if(n==(2*i+1)*pi/2){
-				return m=1;
+				m=1;
 				break;
 			}
-			else return m=0;
 		}
-}
+		return m;
+	}
 	
 
 	int matrix::check_zero_dete()
@@ -1285,7 +1285,7 @@ double my_abs(double& m ){
 				data.replace(first_letter,i-first_letter,new_str);
 			}
 		}
-		cout<<data<<endl;
+		//cout<<data<<endl;
 		this->fill_matrix(data);
 	}
 
