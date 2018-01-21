@@ -883,121 +883,125 @@ double my_abs(double& m ){
 		}
 		s = u;
 	}
-	 
+	void matrix::run_old_command(string command, map<const string, matrix>& matrices){//processes given phase1 command(save&print)
+		if(command == "" || command[0]=='#'|| (command[0]=='/'&&command[1]=='/')) return;
+		int op_index;
+		string name0,name1,name2;
+		matrix input;
+		short print_flag = 1;
+		if(command[command.length()-1]==';') print_flag = 0 ;
+		else print_flag = 1;
+		name0 = command.substr(0,command.find('=')-1);
+		transform(name0.begin(),name0.end(),name0.begin(),::toupper);
+
+		op_index = command.find('[');
+		if(op_index != -1){
+			matrix::handle_read(matrices,command,name0,op_index);
+			if (command[command.length()-1]!=';')
+			{
+				cout<<name0<<"= "<<endl;
+				matrices[name0].print_matrix();cout<<endl;
+			}
+			return;
+		}
+
+		op_index = command.find('+');
+		if(op_index != -1){				
+			matrix::decode(command,name1,name2,op_index);
+			cout<<name0<<"= "<<endl;
+			matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
+			matrices[name0].print_matrix();cout<<endl;
+			return;
+		}
+
+		op_index = command.find('-');
+		if(op_index != -1){	
+			matrix::decode(command,name1,name2,op_index);
+			cout<<name0<<"= "<<endl;
+			matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
+			matrices[name0].print_matrix();cout<<endl;
+			return;
+		}
+
+		op_index = command.find('*');
+		if(op_index != -1){			
+			matrix::decode(command,name1,name2,op_index);
+			cout<<name0<<"= "<<endl;
+			matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
+			matrices[name0].print_matrix();cout<<endl;
+			return;
+		}
+
+		op_index = command.find("'");
+		if(op_index != -1){		
+			command+="extra";
+			matrix::decode(command,name1,name2,op_index+1);
+			cout<<name0<<"= "<<endl;
+			matrices[name0] = matrices[name1].transpose_matrix();
+			matrices[name0].print_matrix();cout<<endl;
+			return;
+		}
+		//
+		op_index = command.find_last_of('.');
+		int bitWise =  command.find('/');
+		if(op_index != -1 && bitWise != -1 && bitWise==op_index+1){
+		//int equal_index = command.find_last_of('=');
+		//string b = command.substr(equal_index+2,op_index-equal_index-3);
+		matrix::remove_back_slashes(command);
+		matrix::decode(command,name1,name2,op_index); string b = name1;
+		for (int i =0; i<b.length(); i++) {
+			if((b[i] >= 'A' && b[i] <= 'Z') || (b[i] >= 'a' && b[i] <= 'z')) {
+				cout<<name0<<"= "<<endl;
+				matrices[name0] = matrices[name1].bitwisediv_matrix(matrices[name2]);
+				matrices[name0].print_matrix();cout<<endl;
+				break;
+			}
+			else if(i==b.length()-1){
+				double c = atof(b.c_str());
+				cout<<name0<<"= "<<endl;
+				matrices[name0] = matrices[name2].bitwisediv2_matrix(c);
+				matrices[name0].print_matrix();cout<<endl;
+			}
+		}
+		return;
+	}
+		//
+		op_index = command.find("/");
+		if(op_index != -1){
+			matrix::remove_back_slashes(command);
+			matrix::decode(command,name1,name2,op_index);
+			cout<<name0<<"= "<<endl;
+			matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
+			matrices[name0].print_matrix();cout<<endl;
+			return;
+		}
+	} 
 	void matrix::run(string fpath)
 	{
 		ifstream file (fpath.c_str());
 		if(file){//opened safely
 			map<const string, matrix> matrices;
-			string command, name0, name1, name2, sub_command="",line;
-			int op_index; //holds position of the operation
-			while(getline(file,command)){
-				if(command == "" || command[0]=='#'|| (command[0]=='/'&&command[1]=='/')) continue;
-
-				name0 = command.substr(0,command.find('=')-1);
-				transform(name0.begin(),name0.end(),name0.begin(),::toupper);
-				try{
-					op_index = command.find('[');
-					if(op_index != -1){
-						if(command.find("]")==-1){//not exist
-							while(getline(file,line)){
-								remove_back_slashes(command);
-								command+=line;
-								if(line.find(']')!=-1)break;
-							}
+			string command,sub_command="",line;
+			int op_index;
+			while(getline(file,command)){ //read line by line
+				//make sure that command is complete (may be multi lines)
+				op_index = command.find('[');
+				if(op_index != -1){
+					if(command.find("]")==-1){//not exist
+						while(getline(file,line)){
+							remove_back_slashes(command);
+							command+=line;
+							if(line.find(']')!=-1)break;
 						}
-						//cout<<command<<endl<<endl;
-						remove_back_slashes(command);
-						handle_read(matrices,command,name0,op_index);
-						if (command[command.length()-1]!=';')
-						{
-							cout<<name0<<": "<<endl;
-							matrices[name0].print_matrix();cout<<endl;
-						}
-						continue;
 					}
-
-					op_index = command.find('+');
-					if(op_index != -1){
-						remove_back_slashes(command);
-						decode(command,name1,name2,op_index);
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].add_matrix(matrices[name2]);
-						matrices[name0].print_matrix();cout<<endl;
-						continue;
-					}
-
-					op_index = command.find('-');
-					if(op_index != -1){
-						remove_back_slashes(command);
-						decode(command,name1,name2,op_index);
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].sub_matrix(matrices[name2]);
-						matrices[name0].print_matrix();cout<<endl;
-						continue;
-					}
-
-					op_index = command.find('*');
-					if(op_index != -1){
-						remove_back_slashes(command);
-						decode(command,name1,name2,op_index);
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].mult_matrix(matrices[name2]);
-						matrices[name0].print_matrix();cout<<endl;
-
-						continue;
-					}
-
-					op_index = command.find("'");
-					if(op_index != -1){
-						remove_back_slashes(command);
-						command+="extra";
-						decode(command,name1,name2,op_index+1);
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].transpose_matrix();
-						matrices[name0].print_matrix();cout<<endl;
-						continue;
-					}
-
-					//
-					op_index = command.find_last_of('.');
-					int bitWise =  command.find('/');
-					if(op_index != -1 && bitWise != -1 && bitWise==op_index+1){
-					//int equal_index = command.find_last_of('=');
-					//string b = command.substr(equal_index+2,op_index-equal_index-3);
 					remove_back_slashes(command);
-					decode(command,name1,name2,op_index); string b = name1;
-					for (int i =0; i<b.length(); i++) {
-						if((b[i] >= 'A' && b[i] <= 'Z') || (b[i] >= 'a' && b[i] <= 'z')) {
-							cout<<name0<<": "<<endl;
-							matrices[name0] = matrices[name1].bitwisediv_matrix(matrices[name2]);
-							matrices[name0].print_matrix();cout<<endl;
-							break;
-						}
-						else if(i==b.length()-1){
-						    double c = atof(b.c_str());
-							cout<<name0<<": "<<endl;
-							matrices[name0] = matrices[name2].bitwisediv2_matrix(c);
-							matrices[name0].print_matrix();cout<<endl;
-					   }
-					}
-					continue ;
 				}
-					//
-
-					op_index = command.find("/");
-					if(op_index != -1){
-						remove_back_slashes(command);
-						decode(command,name1,name2,op_index);
-						cout<<name0<<": "<<endl;
-						matrices[name0] = matrices[name1].div_matrix( matrices[name2]);
-						matrices[name0].print_matrix();cout<<endl;
-						continue;
-					}
-
+				//process the command
+				try{
+					matrix::run_old_command(command, matrices);
+				}
+				catch(string e){ cout<<e<<endl;}
 			}
-			catch(string e){ cout<<e<<endl;}
-		}
 			file.close();
 			// for(map<const string, matrix>::iterator i = matrices.begin(); i!=matrices.end();++i){
 			// 	cout<<i->second.get_num_rows()<<"*"<<i->second.get_num_columns();
@@ -1008,8 +1012,6 @@ double my_abs(double& m ){
 			cout<<"error opening file"<<endl;
 		}
 	}
-
-
 /* -----------------------------------------Advanced File example------------------------------------------*/
 
 	/* run advanced */
@@ -1090,7 +1092,7 @@ double my_abs(double& m ){
 
 				/* detect lines [ rand / eye / zeros / ones ] */
 
-				/* detect lines [ rand / eye / zeros / ones ] */
+				/* End detect lines [ rand / eye / zeros / ones ] */
 
 
 
@@ -1098,7 +1100,7 @@ double my_abs(double& m ){
 				/* detect lines x / y & showing matrix from just name */
 
 
-				/*detect lines x / y & showing matrix from just name */
+				/* End detect lines x / y & showing matrix from just name */
 
 
 		/*------------------------------------------------------- Adv file Tasks ----------------------------------------------------*/
