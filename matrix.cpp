@@ -750,7 +750,7 @@ double my_abs(double& m ){
 
 	}
 
-	//////////////////////////////////////
+/*---------------------------------- strassen algorithm ------------------------------------------------*/
 
 int leafsize=1;
 double log2( double n )  
@@ -918,16 +918,16 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	result.values=C;
 	return result;
 }
-	//////////////////////////////////////
+	/*------------------end of strassen algorithm ------------------------------------------------------*/
 
 
 
 	matrix matrix:: Pow(int n){
 		matrix result;
-		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
-		                                                                                                     //    0 1       4  6
-		for(int i=0;i<n;i++){                                                                                 //ans=   2     3
-			result = this->strassen(result);                                                              //        4      6
+		result.initialize(num_rows,num_columns);
+		result.values = this->values;
+		for(int i=0;i<n-1;i++){                                                                              
+			result = this->strassen(result);                                                             
 		}
 		return result;
 	}

@@ -30,10 +30,14 @@ if(argc < 2){//no file passed to the program
 	matrices["b"]=b;
 	matrices["c"]=c;
 	matrix whole;
-	whole.fill_matrix_adv("abdullah;b",matrices);
-	matrix powered = whole.mult_const(5);
-	whole.print_matrix();
-	powered.print_matrix();
+	try{
+		whole.fill_matrix_adv("abdullah;b",matrices);
+		matrix powered = whole.Pow(5);
+		matrix powered2 = whole.mult_matrix(whole).mult_matrix(whole).mult_matrix(whole).mult_matrix(whole);
+		powered.print_matrix();
+		powered2.print_matrix();
+	}
+	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
 }
 else{ // passing file as a command argument
