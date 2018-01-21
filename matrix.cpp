@@ -9,6 +9,7 @@
 #include <iomanip>
 #include<vector>
 #include <wctype.h>
+#include <ctime>
 using namespace std;
 long double pi = atan(1)*4;
 double my_abs(double& m ){
@@ -406,6 +407,7 @@ double my_abs(double& m ){
             }
             cout<<endl;
         }
+		cout<<endl;
     }
 
 
@@ -626,16 +628,15 @@ double my_abs(double& m ){
 
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
+	 srand(time(NULL)); //to generate real random numbers
 		result.initialize(a,b);
 		for(int i=0; i< a; i++){
 			for(int j=0; j<b; j++){
 				result.values[i][j]+=rand();
-				
 			}
 		}
-
 		return result;
-	    }
+	}
 
 	matrix matrix:: Eye (int a,int b){
 	 matrix result;
@@ -647,11 +648,10 @@ double my_abs(double& m ){
 				}
 				else {
                 result.values[i][j]=0;
-		}
-		}
+				}
+			}
 		}
 		return result;
-	
 	}
 
 		/*matrix matrix ::Sin(){

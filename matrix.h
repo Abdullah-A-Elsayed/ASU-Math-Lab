@@ -37,10 +37,10 @@ public:
     matrix mult_matrix( matrix& m);
     matrix inverse_matrix();  //you can use it as it calls the good one
     matrix transpose_matrix();
-    matrix div_matrix( matrix& m); 
+    matrix div_matrix( matrix& m);
 	matrix bitwisediv_matrix(matrix &m); //solved issue
-	matrix bitwisediv2_matrix(double c);
-    static void run(string fpath);
+	matrix bitwisediv2_matrix(double c);//dividing by double
+    static void run(string fpath);//only for phase1
 	static void run_old_command(string command, map<const string, matrix>& matrices);//processes given phase1 command(save&print)
 	/*ex if command is: a = [1 2 3] then a will be saved to the map and printed to the screen
 		and then called again with b = [3 5 6] same thing will happen,
@@ -142,7 +142,7 @@ Diagonal Matrix
 	  matrix elements
 	  */
 
-	  matrix add_const(double a);
+	  matrix add_const(double a); //works for positive and negative
 	  /*
 	  adds double constant and
 	  every element in the matrix then

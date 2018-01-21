@@ -30,8 +30,10 @@ if(argc < 2){//no file passed to the program
 	matrices["b"]=b;
 	matrices["c"]=c;
 	matrix whole;
-	whole.fill_matrix_adv("abdullah;1 2 3",matrices);
-	whole.print_matrix();
+	whole.fill_matrix_adv("abdullah;b",matrices);
+	matrix powered = matrix::Rand(5,5);
+	//whole.print_matrix();
+	powered.print_matrix();
 	/*--------------------------------------end of testing area------------------------------*/
 }
 else{ // passing file as a command argument
