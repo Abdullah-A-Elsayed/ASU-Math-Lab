@@ -1025,10 +1025,10 @@ double my_abs(double& m ){
 		int op_index; //holds position of the operation
 		while (getline(file, command))
 		{
+			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 			remove_spaces(command); /* makes the line doesn't start with a space*/
 			int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
 			if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
-			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 
 			/* if the command didn't have a name it will be named ans */
 			if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
@@ -1321,14 +1321,14 @@ double my_abs(double& m ){
 
 	void matrix::remove_spaces(string& s)
 	{
-		int frst_num;
 		for (int f = 0; f < s.length(); f++)
 		{
-			if (s[f] != ' ') { frst_num = f; break; }
+			if (s[f] != ' ') { 
+				s = s.substr(f);
+				break; 
+			}
 		}
-		s = s.substr(frst_num);
 	}
-
 	/* to make sure line doesn't start with a space*/
 
 
