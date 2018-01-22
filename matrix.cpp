@@ -1634,11 +1634,13 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	
 
 	matrix  matrix::Solve(string data){
-	vector<string>arr1;
-	vector<string>arr2;
-    vector<double>fix_arr1;
+	vector<string>arr1; //to hold numbers as (string) including sin , tan, sqrt
+	vector<string>arr2; //to hold operatins like - * / ^ +
+    vector<double>fix_arr1; //to hlod numbers as (doubles) with real valuses of sin and cos an ..
 	vector<string>::iterator it;
 	int am=0;
+
+	/*-------------------filling arr1 and arr2 -----------------------------*/
 	string first_element="";
 	for(unsigned int i=0;i<data.length();i++){
 		if (data[i]=='^'||data[i]=='*'||data[i]=='/'||data[i]=='+'||data[i]=='-'){
@@ -1651,14 +1653,12 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		 i=0;
 		}}
 	arr1.push_back(data);
-	
-	//for(unsigned int j=0;j<arr2.size();j++){
-	//cout<<arr2[j]<<endl;}
-	//cout<<nof_op;
+	/*-------------------end of filling arr1 and arr2 -----------------------------*/
 
 	/*
 		before fixing arr1, if first place is empty we must remove it
 		fixing means removing sin or cos or .. and replacing them with numbers
+		remember: arr1 hold (strings), and fix_arr1 hold (doubles)
 	*/
 	if(arr1[0]==""){
 	   arr1.erase(arr1.begin()+0);
@@ -1708,7 +1708,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
    //fix_arr1 has numbers
    //arr2 chars like + ^ * / -
    /*
-   if ops size = nums size, this means first number is negative (handling it:)
+   if arr2 size = fix_arr1 size, this means first number is negative (handling it:)
    */
    if(fix_arr1.size()==arr2.size()){
 	   string sign = arr2[0];
@@ -1717,12 +1717,21 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
    }
 /************************operations*******************/
    while(arr2.size()>0){
-	   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )
+	   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )//find ^ is 1st priority
 	   {
 		   it=find(arr2.begin(), arr2.end(), "^");
 		   int pos = distance(arr2.begin(), it);
-		   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]);
+		   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating
 		   call(arr2,fix_arr1,pos,part_result);
+		   /* call does:
+				removes the operator from arr2 (here operator is ^)
+				replaces the two processed numbers with the result
+		   */
+		   /*
+			note:
+				every time u use call the two arrays get smaller untill the arr2 goes to zero size
+				and the loop breaks, meanwhile fix_arr1 will have only 1 value (the result)
+		   */
 
 	   }
 	  
