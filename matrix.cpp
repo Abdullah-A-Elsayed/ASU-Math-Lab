@@ -1295,7 +1295,16 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 				/* End detect lines [ rand / eye / zeros / ones ] */
 
+				int check=command.find('='); 
+				
+					if (check==-1)
+					{
+						
+						cout<<name0<<":"<<endl;
+						matrices[name0].print_matrix();
 
+						continue;
+					}
 
 
 				/* detect lines x / y & showing matrix from just name */

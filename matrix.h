@@ -183,6 +183,7 @@ Diagonal Matrix
 	static string remove_space_after_semis(string &mat_vals);
 	static string cut_mat_solve(string &mat_val);
 	static string solve_elemnt(string &mat_elemnt);
+
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };
 
