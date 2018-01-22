@@ -31,7 +31,6 @@ public:
     // tasks:
 	double determinant_2(int n); // good fast
     void fill_matrix (string data);
-	void fill_matrix_adv(string data,map<const string, matrix>& matrices);//only translates names to numbers then calls fill matrix
     matrix add_matrix( matrix& m);
     matrix sub_matrix( matrix& m);
     matrix mult_matrix( matrix& m);
@@ -177,6 +176,8 @@ Diagonal Matrix
 
 
 	/* --------------------------------phase2 team2 work----------------------------------------------------------*/
+	void fill_matrix_adv(string data,map<const string, matrix>& matrices);
+	//only translates names to numbers then calls fill matrix to update this->values , num_rows and num_columns
 	static void run_adv(string fpath);
 	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
 	static void remove_spaces(string& s);
