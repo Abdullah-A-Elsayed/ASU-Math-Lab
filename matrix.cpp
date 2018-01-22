@@ -1655,6 +1655,19 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	//for(unsigned int j=0;j<arr2.size();j++){
 	//cout<<arr2[j]<<endl;}
 	//cout<<nof_op;
+
+	/*
+		before fixing arr1, if first place is empty we must remove it
+		fixing means removing sin or cos or .. and replacing them with numbers
+	*/
+	if(arr1[0]==""){
+	   arr1.erase(arr1.begin()+0);
+	   /*for(int i=0;i<arr2.size()-1;++i){
+		   arr2[i]=arr2[i+1];
+	   }
+	   arr2.pop_back();*/
+	}
+
 	/*******fix arr1 ***********************************/
 	double res_tri;
    for(unsigned int j=0;j<arr1.size();j++)
@@ -1691,9 +1704,17 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		double num=stod(a);fix_arr1.push_back(num);
 		}
 	}
-//for(unsigned int k=0;k<fix_arr1.size();k++){
-	//cout<<fix_arr1[k]<<endl;}
-//cout<<endl;
+
+   //fix_arr1 has numbers
+   //arr2 chars like + ^ * / -
+   /*
+   if ops size = nums size, this means first number is negative (handling it:)
+   */
+   if(fix_arr1.size()==arr2.size()){
+	   string sign = arr2[0];
+	   arr2.erase(arr2.begin()+0);
+	   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
+   }
 /************************operations*******************/
    while(arr2.size()>0){
 	   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )
