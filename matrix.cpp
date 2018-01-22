@@ -1659,14 +1659,19 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	double res_tri;
    for(unsigned int j=0;j<arr1.size();j++)
    {
-	string a=arr1[j];//put every data in string a 
-	if(a[0] != ' '){
+	string a=arr1[j];//put every data in string a
+	if(a[0]==' ')a = a.substr(1);
 	if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
-	  {//check on first char 
+		{//check on first char 
 		string ins=a.substr(4,a.find(')')-4);
+		if(ins[0]=='(')ins=ins.substr(1);
 		double inside=stod(ins); 
-		if(a[0]=='s')
+		if(a[0]=='s'&&a[1]=='i')
 		{res_tri=sin(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		if(a[0]=='s'&&a[1]=='q'){
+		res_tri=sqrt(inside);
 		fix_arr1.push_back(res_tri);
 		}
 		if(a[0]=='c')
@@ -1677,33 +1682,14 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		{ res_tri=tan(inside);
 		fix_arr1.push_back(res_tri);
 		}
-      }
+		if(a[0]=='l')
+		{ res_tri=log10(inside);
+		fix_arr1.push_back(res_tri);
+		}
+		}
 	else{//number
 		double num=stod(a);fix_arr1.push_back(num);
-        }
-	}
-	else
-	{    if((a[1] >= 'A' && a[1] <= 'Z') || (a[1] >= 'a' && a[1] <='z'))
-	  {//check on second char 
-		string ins=a.substr(5,a.find(')')-5);
-		double inside=stod(ins);
-		if(a[1]=='s')
-		{res_tri=sin(inside);
-		fix_arr1.push_back(res_tri);
 		}
-		if(a[1]=='c')
-		{ res_tri=cos(inside);
-		fix_arr1.push_back(res_tri);
-		}
-		if(a[1]=='t')
-		{ res_tri=tan(inside);
-		fix_arr1.push_back(res_tri);
-		}
-      }
-	else{//number
-		double num=stod(a);fix_arr1.push_back(num);
-        }
-	}
 	}
 //for(unsigned int k=0;k<fix_arr1.size();k++){
 	//cout<<fix_arr1[k]<<endl;}
@@ -1752,7 +1738,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	   
    }
    for(unsigned int z=0;z<fix_arr1.size();z++){
-	cout<<fix_arr1[z]<<endl;}
+	//cout<<fix_arr1[z]<<endl;
+   }
  double re=fix_arr1[0];
    matrix result;
      result.initialize(1,1);

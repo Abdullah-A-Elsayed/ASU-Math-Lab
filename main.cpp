@@ -31,11 +31,12 @@ if(argc < 2){//no file passed to the program
 	matrices["c"]=c;
 	matrix whole;
 	try{
-		whole.fill_matrix_adv("abdullah;b",matrices);
-		matrix powered = whole.Pow(5);
-		matrix powered2 = whole.mult_matrix(whole).mult_matrix(whole).mult_matrix(whole).mult_matrix(whole);
-		powered.print_matrix();
-		powered2.print_matrix();
+		whole.fill_matrix_adv("abdullah",matrices);
+		//matrix powered = whole.Pow(5);
+		//matrix powered2 = whole.mult_matrix(whole).mult_matrix(whole).mult_matrix(whole).mult_matrix(whole);
+		//powered.print_matrix();
+		//powered2.print_matrix();
+		matrix::Solve("5.5 + 12 * sqrt(0.4) + 2.2^4").print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
