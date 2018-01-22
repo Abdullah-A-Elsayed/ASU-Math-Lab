@@ -1309,6 +1309,32 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 				/* detect lines x / y & showing matrix from just name */
 
+size_t found = command.find('[');
+size_t found2 = command.find("(");
+
+
+string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+if (command.find('[') == string::npos)
+{
+	while (command.find("(") != string::npos) {
+
+		size_t a = command.find_last_of("(");
+		string b = command.substr(a, command.length());
+		size_t d = b.find_first_of(")");
+		string c = b.substr(1, d - 1);
+		command = command.replace(a, c.length() + 2, aa[i]);
+		run_old_command(aa[i] + "=" + c, matrices);
+		i++;
+
+
+	}
+	char uuu = command[0];
+	run_old_command(command, matrices);
+	cout << command << endl;
+	matrices[uuu].print_matrix();
+
+
+}
 
 				/* End detect lines x / y & showing matrix from just name */
 
