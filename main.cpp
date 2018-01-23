@@ -45,6 +45,6 @@ else{ // passing file as a command argument
 	//matrix::run(fpath); //phase1 function
 	matrix::run_adv(fpath);
 }
-//	system ("pause");
+	system ("pause");
 	return 0;
 }
