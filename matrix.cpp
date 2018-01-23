@@ -1293,6 +1293,43 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 				/* detect lines [ rand / eye / zeros / ones ] */
 
+    				int clkRand=command.find("rand");
+				int clkZeros=command.find("zeros");
+				int clkEye=command.find("eye");
+				int clkOnes=command.find("ones");
+
+				if(clkRand!=-1 ||clkZeros!=-1||clkEye!=-1||clkOnes!=-1)
+				{
+				int intRow,intColumn;
+				matrix out;
+				int index1=command.find('(');
+				int index2=command.find(',');
+				int index3=command.find(')');
+				int length1=index2-index1;
+				int length2=index3-index2;
+				string row=command.substr(index1+1,length1);
+				string column=command.substr(index2+1,length2);
+				stringstream geek1(row);
+				geek1>>intRow;
+				stringstream geek2(column);
+				geek2>>intColumn;
+
+				if(clkRand!=-1)
+				{out=Rand(intRow,intColumn);}
+				else if(clkZeros!=-1)
+				{out=zeros(intRow,intColumn);}
+				else if(clkOnes!=-1)
+				{out=ones(intRow,intColumn);}
+				else if(clkEye!=-1)
+				{out=Eye(intRow,intColumn);}
+
+				matrices[name0]=out;
+				cout<<name0<<":"<<endl;
+				matrices[name0].print_matrix();
+
+				continue;
+				}
+
 				/* End detect lines [ rand / eye / zeros / ones ] */
 
 			/*showing matrix with just name or with just values*/
