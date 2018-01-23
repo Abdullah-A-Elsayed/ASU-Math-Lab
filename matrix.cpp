@@ -1343,15 +1343,23 @@ double my_abs(double& m ){
 			/* first element */
 			int frstspace = mat_val.find_first_of(' ');
 			if (frstspace == -1) { frstspace = mat_val.find_first_of(';'); }
-			mat_elemnt = mat_val.substr(0, frstspace - 0); solve_elemnt(mat_elemnt);
-			mat_val.replace(0, frstspace - 0, mat_elemnt); //cout << "this1::" << mat_val << endl;
+			mat_elemnt = mat_val.substr(0, frstspace - 0);
+			if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
+			{
+				solve_elemnt(mat_elemnt);
+				mat_val.replace(0, frstspace - 0, mat_elemnt); //cout << "this1::" << mat_val << endl;
+			}
 			/* first element */
 
 			/* last element */
 			int lastspace = mat_val.find_last_of(' ');
 			if (lastspace == -1) { lastspace = mat_val.find_last_of(';'); }
-			mat_elemnt = mat_val.substr(lastspace + 1);		 solve_elemnt(mat_elemnt);
-			mat_val.replace(lastspace + 1, mat_val.length() - lastspace - 1, mat_elemnt); //cout << "this2::" << mat_val << endl;
+			mat_elemnt = mat_val.substr(lastspace + 1);		 
+			if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
+			{
+				solve_elemnt(mat_elemnt);
+				mat_val.replace(lastspace + 1, mat_val.length() - lastspace - 1, mat_elemnt); //cout << "this2::" << mat_val << endl;
+			}
 			/* last element */
 
 			for (int i = 0; i < mat_val.length(); i++)
@@ -1369,8 +1377,11 @@ double my_abs(double& m ){
 								cut2 = j;
 								if (mat_val[j + 1] == ' ') mat_val = mat_val.erase(i + 1, 1);
 								mat_elemnt = mat_val.substr(cut1 + 1, cut2 - cut1 - 1);
-								solve_elemnt(mat_elemnt);
-								mat_val.replace(cut1 + 1, cut2 - cut1 - 1, mat_elemnt); //cout << "this132::" << mat_val << endl;
+								if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
+								{
+									solve_elemnt(mat_elemnt);
+									mat_val.replace(cut1 + 1, cut2 - cut1 - 1, mat_elemnt); //cout << "this132::" << mat_val << endl;
+								}
 								break;
 							}
 
@@ -1399,7 +1410,7 @@ double my_abs(double& m ){
 			//matrix ans;
 			// ans = solve_adv(mat_elemnt); still to be done be aly
 			//mat_elemnt = ans.getString();
-			int x = rand();
+			int x = 55555;
 			char substring[100];
 			sprintf_s(substring, "%d", x);
 			mat_elemnt = substring;
@@ -1423,6 +1434,19 @@ double my_abs(double& m ){
 		}
 
 		return mat_vals;
+	}
+
+	bool  matrix:: Isnt_num(string f)
+	{
+		for (int g = 0; g < f.length(); g++)
+		{
+			if (((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z')) || f[g] == '+' || f[g] == '-' 
+				|| f[g] == '/' || f[g] == '*' || f[g] == '^')
+
+				return 1;
+		}
+
+		return 0;
 	}
 
 	/* End - Cut matrix into elements then send it to solve*/
