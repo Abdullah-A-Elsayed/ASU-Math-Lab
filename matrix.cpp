@@ -1295,17 +1295,35 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 				/* End detect lines [ rand / eye / zeros / ones ] */
 
+			/*showing matrix with just name or with just values*/
+
 				int check=command.find('='); 
-				
+				int chk=command.find('[');
 					if (check==-1)
 					{
-						
-						cout<<name0<<":"<<endl;
+			             //showing matrix with just name
+						auto search=matrices.find(name0);
+						if (search != matrices.end())
+						{
+						cout<<name0<<":"<<endl;  
 						matrices[name0].print_matrix();
+						}
+						else    //if the called matrix is undefined
+						{cout<<"error: '"<<name0<<"'is undefined"<<endl;
+						 cout<<endl;}
+
+						/*showing matrix has no name */
+
+					   if(chk!=-1 && check==-1) 
+						{
+						cout<<name0<<":"<<endl;
+					    matrices[name0].print_matrix();
+						}
 
 						continue;
 					}
 
+					/*end showing matrix with just name or with just values*/
 
 				/* detect lines x / y & showing matrix from just name */
 
