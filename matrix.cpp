@@ -10,6 +10,7 @@
 #include<vector>
 #include <wctype.h>
 #include <ctime>
+#include <sstream>
 using namespace std;
 long double pi = atan(1)*4;
 double my_abs(double& m ){
