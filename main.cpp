@@ -31,11 +31,10 @@ if(argc < 2){//no file passed to the program
 	matrices["c"]=c;
 	matrix whole;
 	try{
-		whole.fill_matrix_adv("abdullah;b",matrices);
-		matrix powered = whole.Pow(5);
-		matrix powered2 = whole.mult_matrix(whole).mult_matrix(whole).mult_matrix(whole).mult_matrix(whole);
-		powered.print_matrix();
-		powered2.print_matrix();
+		//whole = matrix::column_by_column(a,b);
+		//whole.print_matrix();
+		string data ="(1+(2+3))*log(4/2)+(2-3)";
+		matrix::Solve(data).print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
@@ -45,6 +44,6 @@ else{ // passing file as a command argument
 	//matrix::run(fpath); //phase1 function
 	matrix::run_adv(fpath);
 }
-	system ("pause");
+	//system ("pause");
 	return 0;
 }
