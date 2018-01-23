@@ -1953,3 +1953,144 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		result.values[0][0] = stod(val);
 		return result;
 	}
+	
+	matrix matrix::partial_Solve(string data){
+			vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
+			vector<string>arr2; //to hold operatins like - * / ^ +
+			vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
+			vector<string>::iterator it;
+			int am=0;
+
+			/*-------------------filling arr1 and arr2 -----------------------------*/
+			string first_element="";
+			for(unsigned int i=0;i<data.length();i++){
+				if (data[i]=='^'||data[i]=='*'||data[i]=='/'||data[i]=='+'||data[i]=='-'){
+				first_element=data.substr(0,i);	
+				arr1.push_back(first_element);
+				 am=i;
+				 string of_op=data.substr(i,1);
+					arr2.push_back(of_op);
+				 data=data.erase(0,am+1);
+				 i=0;
+				}}
+			arr1.push_back(data);
+			/*-------------------end of filling arr1 and arr2 -----------------------------*/
+
+			/*
+				before fixing arr1, if first place is empty we must remove it
+				fixing means removing sin or cos or .. and replacing them with numbers
+				remember: arr1 hold (strings), and fix_arr1 hold (doubles)
+			*/
+			if(arr1[0]==""){
+			   arr1.erase(arr1.begin()+0);
+			   /*for(int i=0;i<arr2.size()-1;++i){
+				   arr2[i]=arr2[i+1];
+			   }
+			   arr2.pop_back();*/
+			}
+
+			/*******fix arr1 ***********************************/
+			matrix res_tri;
+		   for(unsigned int j=0;j<arr1.size();j++)
+		   {
+			string a=arr1[j];//put every data in string a
+			if(a[0]==' ')a = a.substr(1);
+			if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
+				{//check on first char 
+				string ins=a.substr(4,a.find(')')-4);
+				if(ins[0]=='(')ins=ins.substr(1);
+				matrix inside=matrices[ins]; 
+				if(a[0]=='s'&&a[1]=='i')
+				{res_tri=sin(inside);//->to be edited to new sin
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='s'&&a[1]=='q'){
+				res_tri=sqrt(inside);//->to be edited to new sqrt
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='c')
+				{ res_tri=cos(inside);//->to be edited to new cos
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='t')
+				{ res_tri=tan(inside);//->to be edited to new tan
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='l')
+				{ res_tri=log10(inside);//->to be edited to new log 10
+				fix_arr1.push_back(res_tri);
+				}
+				}
+			else{//number
+				matrix num=name[a];fix_arr1.push_back(num);
+				}
+			}
+
+		   //fix_arr1 has numbers
+		   //arr2 chars like + ^ * / -
+		   /*
+		   if arr2 size = fix_arr1 size, this means first number is negative (handling it:)
+		   */
+		   if(fix_arr1.size()==arr2.size()){
+			   string sign = arr2[0];
+			   arr2.erase(arr2.begin()+0);
+			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
+		   }
+		/************************operations*******************/
+		   while(arr2.size()>0){
+			   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )//find ^ is 1st priority
+			   {
+				   it=find(arr2.begin(), arr2.end(), "^");
+				   int pos = distance(arr2.begin(), it);
+				   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating//->to be edited to new pow
+				   call(arr2,fix_arr1,pos,part_result);
+				   /* call does:
+						removes the operator from arr2 (here operator is ^)
+						replaces the two processed numbers with the result
+				   */
+				   /*
+					note:
+						every time u use call the two arrays get smaller untill the arr2 goes to zero size
+						and the loop breaks, meanwhile fix_arr1 will have only 1 value (the result)
+				   */
+
+			   }
+	  
+			else if(find(arr2.begin(), arr2.end(), "*") != arr2.end() )
+			  { it=find(arr2.begin(), arr2.end(), "*");
+			   int pos = distance(arr2.begin(), it);
+				   double part_result=fix_arr1[pos]*fix_arr1[pos+1];//->to be edited to new *
+				   //fix_arr1.push_back(part_result);
+					call(arr2,fix_arr1,pos,part_result);
+			  }
+			else if(find(arr2.begin(), arr2.end(), "/") != arr2.end() )
+			  {
+				   it=find(arr2.begin(), arr2.end(), "/");
+				   int pos = distance(arr2.begin(), it);
+				   double part_result=fix_arr1[pos]/fix_arr1[pos+1];//->to be edited to new /
+				  // fix_arr1.push_back(part_result);
+				   call(arr2,fix_arr1,pos,part_result);
+			  }
+			 else if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
+			 {
+						it=find(arr2.begin(), arr2.end(), "-");
+						int pos = distance(arr2.begin(), it);
+						double part_result=fix_arr1[pos]-fix_arr1[pos+1];   //->to be edited to new -
+						call(arr2,fix_arr1,pos,part_result);
+			 }
+			 else{ if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
+			 {
+								 it=find(arr2.begin(), arr2.end(), "+");
+						int pos = distance(arr2.begin(), it);
+						double part_result=fix_arr1[pos]+fix_arr1[pos+1];//->to be edited to new +
+						call(arr2,fix_arr1,pos,part_result);
+		          
+			 }
+			 }
+		   }
+		matrix value=fix_arr1[0];
+		
+		return value;
+	}
+	
+	
