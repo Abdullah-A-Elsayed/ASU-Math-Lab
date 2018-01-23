@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include <math.h>
+#include <sstream>
 using namespace std;
 int main(int argc, char** argv)
 { 	
