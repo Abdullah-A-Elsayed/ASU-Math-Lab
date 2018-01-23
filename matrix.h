@@ -63,11 +63,23 @@ public:
 
 
 	/*------------------------------------phase2 team1 work ---------------------------------------------------------*/
-	static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);//call in solve function
-	static matrix  Solve(string data);//AMERA
-	/*take data as A= 5.5 + 12 * sin(0.4) + 2.2^4
-   	and store value at map as matrix 1x1 */
-	                                                                                      
+	static vector<int> get_braces_data(string data);
+	/*
+		get first good () positions:
+		if string is ((7)) returns [1,3]
+		if string is ()+() returns [3,4]
+		if string is 1+2*4 returns [0] //only one element means no braces
+		--note
+		it ignores braces of log(),sin(),sqrt()...etc
+	*/
+
+	static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);
+	//call is in partial_Solve function go to impelementation to see more comments
+
+	static string partial_Solve(string data);//data is 5.5 + 12 * sin(0.4) + 2.2^4
+
+	static matrix  Solve(string data);//data is (5.5 + 12) * (sin(0.4) + 2.2^4)
+
 	static matrix column_by_column (matrix& a, matrix& b);//AYA
 	/* ex: if a=  3    3     b= 1                c=a b  ->c= 3  3  1  2    // 2*2 2*1->2*3
 	                                                           
