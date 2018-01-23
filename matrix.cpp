@@ -1870,18 +1870,18 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				  // fix_arr1.push_back(part_result);
 				   call(arr2,fix_arr1,pos,part_result);
 			  }
-			 else if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
+			 else if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
 			 {
-						it=find(arr2.begin(), arr2.end(), "+");
+						it=find(arr2.begin(), arr2.end(), "-");
 						int pos = distance(arr2.begin(), it);
-						double part_result=fix_arr1[pos]+fix_arr1[pos+1];   
+						double part_result=fix_arr1[pos]-fix_arr1[pos+1];   
 						call(arr2,fix_arr1,pos,part_result);
 			 }
-			 else{ if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
+			 else{ if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
 			 {
-								 it=find(arr2.begin(), arr2.end(), "-");
+								 it=find(arr2.begin(), arr2.end(), "+");
 						int pos = distance(arr2.begin(), it);
-						double part_result=fix_arr1[pos]-fix_arr1[pos+1];
+						double part_result=fix_arr1[pos]+fix_arr1[pos+1];
 						call(arr2,fix_arr1,pos,part_result);
 		          
 			 }
@@ -1894,7 +1894,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		return result=temp;
 	}
 	matrix matrix::Solve(string data){
-		remove_spaces(data);
+		remove_spaces(data);//to remove white spaces in beginning of data if exists
 		vector<int> braces_positions = get_braces_data(data);
 		/*
 			if braces_positions size is 1, means no braces

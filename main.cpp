@@ -33,7 +33,7 @@ if(argc < 2){//no file passed to the program
 	try{
 		//whole = matrix::column_by_column(a,b);
 		//whole.print_matrix();
-		string data ="(1+(2+3))*log(4/2)+(2-3)";
+		string data =" (1.2 + 3.4 - 5.6)/(2.1*3.2 + 4.6) - 12.1*3.1 + (1.2 + 5.2)^(4/(3.2+5.6))";
 		matrix::Solve(data).print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
