@@ -1299,7 +1299,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 				int check=command.find('='); 
 				int chk=command.find('[');
-					if (check==-1)
+				if (check == -1 && check == -1)
 					{
 			             //showing matrix with just name
 						auto search=matrices.find(name0);
@@ -1368,7 +1368,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					{
 						/*there is a problem with the solve function "vector out of range" 
 						I tested it with this test case "A = 5.5 + 12 * sin(0.4) + 2.2^4;" */
-
+						int eq_indx = command.find('=');
+						command = command.substr(eq_indx + 1);
 						matrices[name0] = Solve(command);
 						if (prnt_fg)
 						{
@@ -1893,6 +1894,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		return result=temp;
 	}
 	matrix matrix::Solve(string data){
+		remove_spaces(data);
 		vector<int> braces_positions = get_braces_data(data);
 		/*
 			if braces_positions size is 1, means no braces
