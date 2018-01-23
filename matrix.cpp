@@ -9,8 +9,9 @@
 #include <iomanip>
 #include<vector>
 #include <wctype.h>
-#define pi 3.1416
+#include <ctime>
 using namespace std;
+long double pi = atan(1)*4;
 double my_abs(double& m ){
 	return (m<0)? -m:m;
 }
@@ -241,12 +242,12 @@ double my_abs(double& m ){
 		int m=0;
 		for(int i=0;i<10;i++){
 			if(n==(2*i+1)*pi/2){
-				return m=1;
+				m=1;
 				break;
 			}
-			else return m=0;
 		}
-}
+		return m;
+	}
 	
 
 	int matrix::check_zero_dete()
@@ -406,6 +407,7 @@ double my_abs(double& m ){
             }
             cout<<endl;
         }
+		cout<<endl;
     }
 
 
@@ -626,16 +628,15 @@ double my_abs(double& m ){
 
 	matrix matrix ::Rand(int a,int b){
 	 matrix result;
+	 srand(time(NULL)); //to generate real random numbers
 		result.initialize(a,b);
 		for(int i=0; i< a; i++){
 			for(int j=0; j<b; j++){
 				result.values[i][j]+=rand();
-				
 			}
 		}
-
 		return result;
-	    }
+	}
 
 	matrix matrix:: Eye (int a,int b){
 	 matrix result;
@@ -647,14 +648,13 @@ double my_abs(double& m ){
 				}
 				else {
                 result.values[i][j]=0;
-		}
-		}
+				}
+			}
 		}
 		return result;
-	
 	}
 
-		/*matrix matrix ::Sin(){
+		matrix matrix ::Sin(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
 		for(int i=0;i<this->num_rows;i++){
@@ -665,7 +665,7 @@ double my_abs(double& m ){
 		}
 
 	return result;
-	}*/
+	}
 
 		matrix matrix ::Cos(){
 		matrix result ;
@@ -680,13 +680,30 @@ double my_abs(double& m ){
 		return result;
 	}
 		
+		matrix matrix ::Log(){
+		matrix result ;
+		result.initialize(this->num_rows,this->num_columns);
+		for(int i=0;i<this->num_rows;i++){
+			for(int j=0;j<this->num_columns;j++){
+	
+			if(this->values[i][j]<=0){
+			string error="math error:can't calculate log of values<=0";
+			 throw(error);
+			}
+			else{result.values[i][j]= log(this->values[i][j]);}
+			
+			}
+		}
+
+	return result;
+	}
 		matrix matrix ::Tan(){
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
 		for(int i=0;i<this->num_rows;i++){
 			for(int j=0;j<this->num_columns;j++){
 	
-			if(is_identify(this->values[i][j])==1){
+			if(is_identify(this->values[i][j])){
 			string error="math error";
 			 throw(error);
 			}
@@ -719,7 +736,7 @@ double my_abs(double& m ){
 		}
 
 
-	/*matrix matrix:: Sqrt(){
+	matrix matrix:: Sqrt(){
 
 		matrix result ;
 		result.initialize(this->num_rows,this->num_columns);
@@ -731,13 +748,186 @@ double my_abs(double& m ){
 		}
 		return result;
 
-	}*/
+	}
+
+/*---------------------------------- strassen algorithm ------------------------------------------------*/
+
+int leafsize=1;
+double log2( double n )  
+{  
+    // log(n)/log(2) is log2.  
+    return log( n ) / log( 2 );  
+}  
+void sum(vector< vector<double> > &A, 
+         vector< vector<double> > &B, 
+         vector< vector<double> > &C, int tam) {
+    int i, j;
+ 
+    for (i = 0; i < tam; i++) {
+        for (j = 0; j < tam; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+        }
+    }
+}
+
+void subtract(vector< vector<double> > &A, 
+              vector< vector<double> > &B, 
+              vector< vector<double> > &C, int tam) {
+    int i, j;
+ 
+    for (i = 0; i < tam; i++) {
+        for (j = 0; j < tam; j++) {
+            C[i][j] = A[i][j] - B[i][j];
+        }
+    }   
+}
+
+void ikjalgorithm(vector< vector<double> > A, 
+                                   vector< vector<double> > B,
+                                   vector< vector<double> > &C, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int k = 0; k < n; k++) {
+            for (int j = 0; j < n; j++) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+}
+
+void strassenR(vector< vector<double> > &A, 
+              vector< vector<double> > &B, 
+              vector< vector<double> > &C, int tam) {
+    if (tam <= leafsize) {
+        ikjalgorithm(A, B, C, tam);
+        return;
+    }
+ 
+    // other cases are treated here:
+    else {
+        int newTam = tam/2;
+        vector<double> inner (newTam);
+        vector< vector<double> > 
+            a11(newTam,inner), a12(newTam,inner), a21(newTam,inner), a22(newTam,inner),
+            b11(newTam,inner), b12(newTam,inner), b21(newTam,inner), b22(newTam,inner),
+              c11(newTam,inner), c12(newTam,inner), c21(newTam,inner), c22(newTam,inner),
+            p1(newTam,inner), p2(newTam,inner), p3(newTam,inner), p4(newTam,inner), 
+            p5(newTam,inner), p6(newTam,inner), p7(newTam,inner),
+            aResult(newTam,inner), bResult(newTam,inner);
+ 
+        int i, j;
+ 
+        //dividing the matrices in 4 sub-matrices:
+        for (i = 0; i < newTam; i++) {
+            for (j = 0; j < newTam; j++) {
+                a11[i][j] = A[i][j];
+                a12[i][j] = A[i][j + newTam];
+                a21[i][j] = A[i + newTam][j];
+                a22[i][j] = A[i + newTam][j + newTam];
+ 
+                b11[i][j] = B[i][j];
+                b12[i][j] = B[i][j + newTam];
+                b21[i][j] = B[i + newTam][j];
+                b22[i][j] = B[i + newTam][j + newTam];
+            }
+        }
+ 
+        // Calculating p1 to p7:
+ 
+        sum(a11, a22, aResult, newTam); // a11 + a22
+        sum(b11, b22, bResult, newTam); // b11 + b22
+        strassenR(aResult, bResult, p1, newTam); // p1 = (a11+a22) * (b11+b22)
+ 
+        sum(a21, a22, aResult, newTam); // a21 + a22
+        strassenR(aResult, b11, p2, newTam); // p2 = (a21+a22) * (b11)
+ 
+        subtract(b12, b22, bResult, newTam); // b12 - b22
+        strassenR(a11, bResult, p3, newTam); // p3 = (a11) * (b12 - b22)
+ 
+        subtract(b21, b11, bResult, newTam); // b21 - b11
+        strassenR(a22, bResult, p4, newTam); // p4 = (a22) * (b21 - b11)
+ 
+        sum(a11, a12, aResult, newTam); // a11 + a12
+        strassenR(aResult, b22, p5, newTam); // p5 = (a11+a12) * (b22)   
+ 
+        subtract(a21, a11, aResult, newTam); // a21 - a11
+        sum(b11, b12, bResult, newTam); // b11 + b12
+        strassenR(aResult, bResult, p6, newTam); // p6 = (a21-a11) * (b11+b12)
+ 
+        subtract(a12, a22, aResult, newTam); // a12 - a22
+        sum(b21, b22, bResult, newTam); // b21 + b22
+        strassenR(aResult, bResult, p7, newTam); // p7 = (a12-a22) * (b21+b22)
+ 
+        // calculating c21, c21, c11 e c22:
+ 
+        sum(p3, p5, c12, newTam); // c12 = p3 + p5
+        sum(p2, p4, c21, newTam); // c21 = p2 + p4
+ 
+        sum(p1, p4, aResult, newTam); // p1 + p4
+        sum(aResult, p7, bResult, newTam); // p1 + p4 + p7
+        subtract(bResult, p5, c11, newTam); // c11 = p1 + p4 - p5 + p7
+ 
+        sum(p1, p3, aResult, newTam); // p1 + p3
+        sum(aResult, p6, bResult, newTam); // p1 + p3 + p6
+        subtract(bResult, p2, c22, newTam); // c22 = p1 + p3 - p2 + p6
+ 
+        // Grouping the results obtained in a single matrix:
+        for (i = 0; i < newTam ; i++) {
+            for (j = 0 ; j < newTam ; j++) {
+                C[i][j] = c11[i][j];
+                C[i][j + newTam] = c12[i][j];
+                C[i + newTam][j] = c21[i][j];
+                C[i + newTam][j + newTam] = c22[i][j];
+            }
+        }
+    }
+}
+
+unsigned int nextPowerOfTwo(int n) {
+    return pow(2, int(ceil(log2(n))));
+}
+
+matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
+	if((u.num_rows!=this->num_rows)||(this->num_rows!=this->num_columns)||(u.num_rows!=u.num_columns)){
+		string e = "no power for non-square matrix";
+		throw e;
+	}
+	vector< vector<double> > A = this->values;
+	vector< vector<double> > B = u.values;
+	unsigned int n = this->num_rows;
+	matrix result;
+	result.initialize(n,n);
+	vector< vector<double> > C = result.values;
+	//
+	unsigned int m = nextPowerOfTwo(n);
+    vector<double> inner(m);
+    vector< vector<double> > APrep(m, inner), BPrep(m, inner), CPrep(m, inner);
+
+    for(unsigned int i=0; i<n; i++) {
+        for (unsigned int j=0; j<n; j++) {
+            APrep[i][j] = A[i][j];
+            BPrep[i][j] = B[i][j];
+        }
+    }
+
+    strassenR(APrep, BPrep, CPrep, m);
+    for(unsigned int i=0; i<n; i++) {
+        for (unsigned int j=0; j<n; j++) {
+            C[i][j] = CPrep[i][j];
+        }
+	}
+	result.values=C;
+	return result;
+}
+	/*------------------end of strassen algorithm ------------------------------------------------------*/
+
+
+
 	matrix matrix:: Pow(int n){
 		matrix result;
-		result=matrix::Eye(this->num_rows,this->num_columns); //as EYE is el mohayed el darbee for matrix     ex : 1 0   *   2  3
-		                                                                                                     //    0 1       4  6
-		for(int i=0;i<n;i++){                                                                                 //ans=   2     3
-			result = this->mult_matrix(result);                                                              //        4      6
+		result.initialize(num_rows,num_columns);
+		result.values = this->values;
+		for(int i=0;i<n-1;i++){                                                                              
+			result = this->strassen(result);                                                             
 		}
 		return result;
 	}
@@ -778,6 +968,17 @@ double my_abs(double& m ){
 		return result;
 	}
 
+	matrix matrix:: mult_const(double a){
+		matrix result;
+		result.initialize(this->num_rows, this->num_columns);
+
+		for(int i=0; i<this->num_rows; i++){
+			for(int j=0; j<num_columns;j++){
+				result.values[i][j]=a*this->values[i][j];
+			}
+		}
+		return result;
+	}
 
 
 	matrix matrix::column_by_column(matrix &a , matrix &b){
@@ -1025,10 +1226,10 @@ double my_abs(double& m ){
 		int op_index; //holds position of the operation
 		while (getline(file, command))
 		{
+			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 			remove_spaces(command); /* makes the line doesn't start with a space*/
 			int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
 			if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
-			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 
 			/* if the command didn't have a name it will be named ans */
 			if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
@@ -1094,11 +1295,46 @@ double my_abs(double& m ){
 
 				/* End detect lines [ rand / eye / zeros / ones ] */
 
+				int check=command.find('='); 
+				
+					if (check==-1)
+					{
+						
+						cout<<name0<<":"<<endl;
+						matrices[name0].print_matrix();
 
+						continue;
+					}
 
 
 				/* detect lines x / y & showing matrix from just name */
 
+		/*size_t found = command.find('[');
+		size_t found2 = command.find("(");
+
+
+		string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+		if (command.find('[') == string::npos)
+		{
+			while (command.find("(") != string::npos) {
+
+				size_t a = command.find_last_of("(");
+				string b = command.substr(a, command.length());
+				size_t d = b.find_first_of(")");
+				string c = b.substr(1, d - 1);
+				command = command.replace(a, c.length() + 2, aa[i]);
+				run_old_command(aa[i] + "=" + c, matrices);
+				i++;
+
+
+			}
+			char uuu = command[0];
+			run_old_command(command, matrices);
+			cout << command << endl;
+			matrices[uuu].print_matrix();
+
+
+		}*/ //errors found
 
 				/* End detect lines x / y & showing matrix from just name */
 
@@ -1115,7 +1351,7 @@ double my_abs(double& m ){
 						/*there is a problem with the solve function "vector out of range" 
 						I tested it with this test case "A = 5.5 + 12 * sin(0.4) + 2.2^4;" */
 
-						matrices[name0] = solve_elemnt(command);
+						matrices[name0] = Solve(command);
 						if (prnt_fg)
 						{
 							cout << name0 << ": " << endl;
@@ -1266,53 +1502,27 @@ double my_abs(double& m ){
 
 	/*fill mat adv gasser*/
 
-	void matrix::fill_matrix_adv(string data,map<const string, matrix>matrices){
+	void matrix::fill_matrix_adv(string data,map<const string, matrix>& matrices){
 
 		for (int i = 0; i < data.length(); i++)
 		{
 			if ((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z'))
 			{
-				// replace letter with value string
-				string letter = data.substr(i, 1);
-				string new_str = matrices[letter].getString();
-				data.replace(i, 1, new_str);
-			}
-		}
-		//cout << "this: "<< data << endl; // end gasser edit
-
-
-		// Aly
-		// data will be like this "1.1 2 3.5; 9.6 5.2 4.7"
-		// these are 2 rows and three columns ('; ' separates rows .. ' ' separates colums)
-		// initialize using initialize function provided above then assign values
-		if (num_rows){ // resetting
-			values.clear();
-			num_columns = 0;
-			num_rows = 0;
-		}
-		int start = 0;
-		int end;
-		if (data[data.length() - 1] != ';') { data = data + ";"; }
-
-		vector<double> row;
-		for (unsigned int i = 0; i< data.length(); i++){
-			if ((data[i] == ' '&& data[i - 1] != ';') || (data[i] == ';')){
-				end = i;
-				//ading previous num
-
-				row.push_back(atof(data.substr(start, end - start).c_str()));
-				start = i + 1;
-				if (data[i] == ';'){
-					this->values.push_back(row);
-					row.clear();
-					if (start<data.length()){
-						if (data[start] == ' ') start++;
+				// replace whole name with value string
+				int first_letter = i;
+				while(i<data.length()){
+					++i;
+					if (!((data[i] >= 'A' && data[i] <= 'Z') || (data[i] >= 'a' && data[i] <= 'z'))){/*name is scanned*/ 
+						break;
 					}
-				}
+				}//i is on first char after name
+				string name = data.substr(first_letter, i-first_letter);
+				string new_str = matrices[name].getString();
+				data.replace(first_letter,i-first_letter,new_str);
 			}
 		}
-		this->num_rows = this->values.size();
-		this->num_columns = this->values[0].size();
+		//cout<<data<<endl;
+		this->fill_matrix(data);
 	}
 
 	/*end fill mat adv gasser*/
@@ -1321,14 +1531,14 @@ double my_abs(double& m ){
 
 	void matrix::remove_spaces(string& s)
 	{
-		int frst_num;
 		for (int f = 0; f < s.length(); f++)
 		{
-			if (s[f] != ' ') { frst_num = f; break; }
+			if (s[f] != ' ') { 
+				s = s.substr(f);
+				break; 
+			}
 		}
-		s = s.substr(frst_num);
 	}
-
 	/* to make sure line doesn't start with a space*/
 
 
@@ -1407,13 +1617,13 @@ double my_abs(double& m ){
 			}
 		}
 
-			//matrix ans;
-			// ans = solve_adv(mat_elemnt); still to be done be aly
-			//mat_elemnt = ans.getString();
-			int x = 55555;
+			matrix ans;
+			ans = Solve(mat_elemnt);
+			mat_elemnt = ans.getString();
+			/*int x = 55555;
 			char substring[100];
 			sprintf_s(substring, "%d", x);
-			mat_elemnt = substring;
+			mat_elemnt = substring;*/
 			return (mat_elemnt);
 	}
 
@@ -1463,174 +1673,225 @@ double my_abs(double& m ){
 
 	/* -----------------------------------------End Advanced File example------------------------------------------*/
 
-
-
-	matrix matrix ::Sin(){
-		matrix result ;
-		result.initialize(this->num_rows,this->num_columns);
-		for(int i=0;i<this->num_rows;i++){
-			for(int j=0;j<this->num_columns;j++){
-				result.values[i][j]= sin(this->values[i][j]);
-			
+	    vector<int> matrix::get_braces_data(string data){
+			/*
+				get first good () positions:
+				if string is ((7)) returns [1,3]
+				if string is ()+() returns [3,4]
+				if string is 1+2*4 returns [0] //only one element means no braces
+				--note
+				it ignores braces of log(),sin(),sqrt()...etc
+			*/
+		vector<int> result;
+		//finding last good (
+		for(int i = data.length()-1; i>-1 ; --i){
+			if(data[i]=='('){
+				if(i==0){// '(' is in beginning
+					result.push_back(0);
+					break;
+				}
+				else{// '(' is in middle
+					//ignoring sin,sqrt,cos,log,tan
+					if(data[i-1]=='n'||data[i-1]=='t'||data[i-1]=='s'||data[i-1]=='g'){
+						//found log or tan or .. deleting ) of them
+						int u=i;
+						while(i<data.length()){
+							++u;
+							if(data[u]==')'){
+								data[u]='8';
+								break;
+							}
+						}
+						continue;//to ignore taking (
+					}
+					result.push_back(i);
+					break;
+				}
 			}
 		}
+		/*-------------first good ( found---------------*/
 
-	return result;
-	}
-
-	matrix matrix:: Sqrt(){
-
-		matrix result ;
-		result.initialize(this->num_rows,this->num_columns);
-		for(int i=0;i<this->num_rows;i++){
-			for(int j=0;j<this->num_columns;j++){
-				result.values[i][j]=sqrt(this->values[i][j]);
-			
+		if(result.size()==0){
+			//no braces found
+			result.push_back(0);
+			return result;
+		}
+		else{// '(' found and we should find ')'
+			for(int i = result[0]+1; i<data.length(); ++i){
+				if(data[i]==')'){
+					result.push_back(i);
+					return result;
+				}
 			}
 		}
-		return result;
-
 	}
-
-    void matrix :: call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result){
+	
+	void matrix :: call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result){
 	int sec_element=index+1;
 	        fix_arr1.erase(fix_arr1.begin() + sec_element);
 			fix_arr1.erase(fix_arr1.begin() + index);
 	       fix_arr1.insert(fix_arr1.begin() + index,result);
 		   arr2.erase( arr2.begin() + index );
+	}
+	
+	string matrix::partial_Solve(string data){
+			vector<string>arr1; //to hold numbers as (string) including sin , tan, sqrt
+			vector<string>arr2; //to hold operatins like - * / ^ +
+			vector<double>fix_arr1; //to hlod numbers as (doubles) with real valuses of sin and cos an ..
+			vector<string>::iterator it;
+			int am=0;
+
+			/*-------------------filling arr1 and arr2 -----------------------------*/
+			string first_element="";
+			for(unsigned int i=0;i<data.length();i++){
+				if (data[i]=='^'||data[i]=='*'||data[i]=='/'||data[i]=='+'||data[i]=='-'){
+				first_element=data.substr(0,i);	
+				arr1.push_back(first_element);
+				 am=i;
+				 string of_op=data.substr(i,1);
+					arr2.push_back(of_op);
+				 data=data.erase(0,am+1);
+				 i=0;
+				}}
+			arr1.push_back(data);
+			/*-------------------end of filling arr1 and arr2 -----------------------------*/
+
+			/*
+				before fixing arr1, if first place is empty we must remove it
+				fixing means removing sin or cos or .. and replacing them with numbers
+				remember: arr1 hold (strings), and fix_arr1 hold (doubles)
+			*/
+			if(arr1[0]==""){
+			   arr1.erase(arr1.begin()+0);
+			   /*for(int i=0;i<arr2.size()-1;++i){
+				   arr2[i]=arr2[i+1];
+			   }
+			   arr2.pop_back();*/
+			}
+
+			/*******fix arr1 ***********************************/
+			double res_tri;
+		   for(unsigned int j=0;j<arr1.size();j++)
+		   {
+			string a=arr1[j];//put every data in string a
+			if(a[0]==' ')a = a.substr(1);
+			if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
+				{//check on first char 
+				string ins=a.substr(4,a.find(')')-4);
+				if(ins[0]=='(')ins=ins.substr(1);
+				double inside=stod(ins); 
+				if(a[0]=='s'&&a[1]=='i')
+				{res_tri=sin(inside);
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='s'&&a[1]=='q'){
+				res_tri=sqrt(inside);
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='c')
+				{ res_tri=cos(inside);
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='t')
+				{ res_tri=tan(inside);
+				fix_arr1.push_back(res_tri);
+				}
+				if(a[0]=='l')
+				{ res_tri=log10(inside);
+				fix_arr1.push_back(res_tri);
+				}
+				}
+			else{//number
+				double num=stod(a);fix_arr1.push_back(num);
+				}
+			}
+
+		   //fix_arr1 has numbers
+		   //arr2 chars like + ^ * / -
+		   /*
+		   if arr2 size = fix_arr1 size, this means first number is negative (handling it:)
+		   */
+		   if(fix_arr1.size()==arr2.size()){
+			   string sign = arr2[0];
+			   arr2.erase(arr2.begin()+0);
+			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
 		   }
-	
+		/************************operations*******************/
+		   while(arr2.size()>0){
+			   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )//find ^ is 1st priority
+			   {
+				   it=find(arr2.begin(), arr2.end(), "^");
+				   int pos = distance(arr2.begin(), it);
+				   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating
+				   call(arr2,fix_arr1,pos,part_result);
+				   /* call does:
+						removes the operator from arr2 (here operator is ^)
+						replaces the two processed numbers with the result
+				   */
+				   /*
+					note:
+						every time u use call the two arrays get smaller untill the arr2 goes to zero size
+						and the loop breaks, meanwhile fix_arr1 will have only 1 value (the result)
+				   */
 
-	matrix  matrix::Solve(string data){
-	vector<string>arr1;
-	vector<string>arr2;
-    vector<double>fix_arr1;
-	vector<string>::iterator it;
-	int am=0;
-	string first_element="";
-	for(unsigned int i=0;i<data.length();i++){
-		if (data[i]=='^'||data[i]=='*'||data[i]=='/'||data[i]=='+'||data[i]=='-'){
-		first_element=data.substr(0,i);	
-		arr1.push_back(first_element);
-		 am=i;
-		 string of_op=data.substr(i,1);
-			arr2.push_back(of_op);
-		 data=data.erase(0,am+1);
-		 i=0;
-		}}
-	arr1.push_back(data);
-	
-	//for(unsigned int j=0;j<arr2.size();j++){
-	//cout<<arr2[j]<<endl;}
-	//cout<<nof_op;
-	/*******fix arr1 ***********************************/
-	double res_tri;
-   for(unsigned int j=0;j<arr1.size();j++)
-   {
-	string a=arr1[j];//put every data in string a 
-	if(a[0] != ' '){
-	if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
-	  {//check on first char 
-		string ins=a.substr(4,a.find(')')-4);
-		double inside=stod(ins); 
-		if(a[0]=='s')
-		{res_tri=sin(inside);
-		fix_arr1.push_back(res_tri);
-		}
-		if(a[0]=='c')
-		{ res_tri=cos(inside);
-		fix_arr1.push_back(res_tri);
-		}
-		if(a[0]=='t')
-		{ res_tri=tan(inside);
-		fix_arr1.push_back(res_tri);
-		}
-      }
-	else{//number
-		double num=stod(a);fix_arr1.push_back(num);
-        }
-	}
-	else
-	{    if((a[1] >= 'A' && a[1] <= 'Z') || (a[1] >= 'a' && a[1] <='z'))
-	  {//check on second char 
-		string ins=a.substr(5,a.find(')')-5);
-		double inside=stod(ins);
-		if(a[1]=='s')
-		{res_tri=sin(inside);
-		fix_arr1.push_back(res_tri);
-		}
-		if(a[1]=='c')
-		{ res_tri=cos(inside);
-		fix_arr1.push_back(res_tri);
-		}
-		if(a[1]=='t')
-		{ res_tri=tan(inside);
-		fix_arr1.push_back(res_tri);
-		}
-      }
-	else{//number
-		double num=stod(a);fix_arr1.push_back(num);
-        }
-	}
-	}
-//for(unsigned int k=0;k<fix_arr1.size();k++){
-	//cout<<fix_arr1[k]<<endl;}
-//cout<<endl;
-/************************operations*******************/
-   while(arr2.size()>0){
-	   if (find(arr2.begin(), arr2.end(), "^") != arr2.end() )
-	   {
-		   it=find(arr2.begin(), arr2.end(), "^");
-		   int pos = distance(arr2.begin(), it);
-		   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]);
-		   call(arr2,fix_arr1,pos,part_result);
-
-	   }
+			   }
 	  
-    else if(find(arr2.begin(), arr2.end(), "*") != arr2.end() )
-	  { it=find(arr2.begin(), arr2.end(), "*");
-	   int pos = distance(arr2.begin(), it);
-		   double part_result=fix_arr1[pos]*fix_arr1[pos+1];
-		   //fix_arr1.push_back(part_result);
-		    call(arr2,fix_arr1,pos,part_result);
-	  }
-	else if(find(arr2.begin(), arr2.end(), "/") != arr2.end() )
-	  {
-		   it=find(arr2.begin(), arr2.end(), "/");
-		   int pos = distance(arr2.begin(), it);
-		   double part_result=fix_arr1[pos]/fix_arr1[pos+1];
-		  // fix_arr1.push_back(part_result);
-		   call(arr2,fix_arr1,pos,part_result);
-	  }
-	 else if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
-	 {
-				it=find(arr2.begin(), arr2.end(), "+");
-		        int pos = distance(arr2.begin(), it);
-		        double part_result=fix_arr1[pos]+fix_arr1[pos+1];   
-				call(arr2,fix_arr1,pos,part_result);
-	 }
-	 else{ if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
-	 {
-						 it=find(arr2.begin(), arr2.end(), "-");
-		        int pos = distance(arr2.begin(), it);
-		        double part_result=fix_arr1[pos]-fix_arr1[pos+1];
-				call(arr2,fix_arr1,pos,part_result);
+			else if(find(arr2.begin(), arr2.end(), "*") != arr2.end() )
+			  { it=find(arr2.begin(), arr2.end(), "*");
+			   int pos = distance(arr2.begin(), it);
+				   double part_result=fix_arr1[pos]*fix_arr1[pos+1];
+				   //fix_arr1.push_back(part_result);
+					call(arr2,fix_arr1,pos,part_result);
+			  }
+			else if(find(arr2.begin(), arr2.end(), "/") != arr2.end() )
+			  {
+				   it=find(arr2.begin(), arr2.end(), "/");
+				   int pos = distance(arr2.begin(), it);
+				   double part_result=fix_arr1[pos]/fix_arr1[pos+1];
+				  // fix_arr1.push_back(part_result);
+				   call(arr2,fix_arr1,pos,part_result);
+			  }
+			 else if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
+			 {
+						it=find(arr2.begin(), arr2.end(), "+");
+						int pos = distance(arr2.begin(), it);
+						double part_result=fix_arr1[pos]+fix_arr1[pos+1];   
+						call(arr2,fix_arr1,pos,part_result);
+			 }
+			 else{ if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
+			 {
+								 it=find(arr2.begin(), arr2.end(), "-");
+						int pos = distance(arr2.begin(), it);
+						double part_result=fix_arr1[pos]-fix_arr1[pos+1];
+						call(arr2,fix_arr1,pos,part_result);
 		          
-	 }}
-	   
-   }
-   for(unsigned int z=0;z<fix_arr1.size();z++){
-	cout<<fix_arr1[z]<<endl;}
- double re=fix_arr1[0];
-   matrix result;
-     result.initialize(1,1);
-     for(int i=0;i<1;i++){
-      for(int j=0;j<1;j++){
-     result.values[i][j] = re;
-        }
-     }
-
-        return result;
- 
-}
-	
+			 }
+			 }
+		   }
+		double value=fix_arr1[0];
+		string result;
+		char temp[100];
+		sprintf_s(temp,"%g",value);
+		return result=temp;
+	}
+	matrix matrix::Solve(string data){
+		vector<int> braces_positions = get_braces_data(data);
+		/*
+			if braces_positions size is 1, means no braces
+			if size is 2 then first one is position of '(', and 2nd is position of ')'
+		*/
+		while(braces_positions.size()!=1){
+			data = data.substr(0, braces_positions[0])//part befor (
+					+partial_Solve(data.substr(braces_positions[0]+1,braces_positions[1]-braces_positions[0]))
+					//result of values in between ()
+					+data.substr(braces_positions[1]+1,data.length()-braces_positions[1]);//part after )
+			//cout<<data<<endl;
+			braces_positions = get_braces_data(data);
+		}
+		//no braces
+		string val = partial_Solve(data);
+		matrix result;
+		result.initialize(1,1);
+		result.values[0][0] = stod(val);
+		return result;
+	}

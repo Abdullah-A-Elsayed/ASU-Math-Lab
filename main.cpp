@@ -5,6 +5,7 @@
 #include <map>
 #include <algorithm>
 #include <ctype.h>
+#include <math.h>
 using namespace std;
 int main(int argc, char** argv)
 { 	
@@ -21,7 +22,22 @@ if(argc < 2){//no file passed to the program
 		//	catch(string e){ cout<<e<<endl;}
 		//}
 		/*************************************testing area***************************************/
-	
+	map<const string, matrix> matrices;
+	matrix a = matrix("1 5 6; 8 9 6; 2 5 1");
+	matrix b = matrix("1 5 6; 8 9 6; 2 5 2");
+	matrix c = matrix("1 5 6; 8 9 6; 2 5 3");
+	matrices["abdullah"]=a;
+	matrices["b"]=b;
+	matrices["c"]=c;
+	matrix whole;
+	try{
+		//whole = matrix::column_by_column(a,b);
+		//whole.print_matrix();
+		string data ="(1+(2+3))*log(4/2)+(2-3)";
+		matrix::Solve(data).print_matrix();
+	}
+	catch(string e){cout<<e<<endl;}
+	/*--------------------------------------end of testing area------------------------------*/
 }
 else{ // passing file as a command argument
 	string fpath = argv[1]; //file name
