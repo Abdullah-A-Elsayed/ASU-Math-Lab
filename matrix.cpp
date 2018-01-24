@@ -1217,7 +1217,52 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 /* -----------------------------------------Advanced File example------------------------------------------*/
 
 	/* run advanced */
+	bool matrix::has_rezo(string command){
+		int clkRand=command.find("rand");
+		int clkZeros=command.find("zeros");
+		int clkEye=command.find("eye");
+		int clkOnes=command.find("ones");
+		if(clkRand!=-1 ||clkZeros!=-1||clkEye!=-1||clkOnes!=-1) return true;
+		return false;
+	}
 
+	void matrix::replace_rezo(string& command){
+		if(!has_rezo(command)) return;
+		while(has_rezo(command)){
+			int clkRand=command.find("rand");
+			int clkZeros=command.find("zeros");
+			int clkEye=command.find("eye");
+			int clkOnes=command.find("ones");
+			int clkGeneric=command.length()-1;
+			int intRow,intColumn;
+			matrix out;
+			int index1=command.find('(');
+			int index2=command.find(',');
+			int index3=command.find(')');
+			int length1=index2-index1;
+			int length2=index3-index2;
+			string row=command.substr(index1+1,length1);
+			remove_spaces(row);
+			string column=command.substr(index2+1,length2);
+			remove_spaces(column);
+			stringstream geek1(row);
+			geek1>>intRow;
+			stringstream geek2(column);
+			geek2>>intColumn;
+
+			if(clkRand!=-1)
+			{out=Rand(intRow,intColumn);clkGeneric=clkRand;}
+			if(clkZeros!=-1&&clkZeros<clkGeneric)
+			{out=zeros(intRow,intColumn);clkGeneric=clkZeros;}
+			if(clkOnes!=-1&&clkOnes<clkGeneric)
+			{out=ones(intRow,intColumn);clkGeneric=clkOnes;}
+			if(clkEye!=-1&&clkEye<clkGeneric)
+			{out=Eye(intRow,intColumn);clkGeneric=clkEye;}
+			//command modidcation here
+			command=command.substr(0,clkGeneric)+'['+out.getString()+']'+command.substr(index3+1);
+		}
+		//cout<<command<<endl;
+	}
 	void matrix::run_adv(string fpath)
 	{
 		ifstream file(fpath.c_str());
@@ -1229,6 +1274,11 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		{
 			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 			remove_spaces(command); /* makes the line doesn't start with a space*/
+
+			/* detect lines [ rand / eye / zeros / ones ] */
+			replace_rezo(command);	/* makes the line doesn't have rand, eye, zeros using getString*/
+			/* End detect lines [ rand / eye / zeros / ones ] */
+
 			int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
 			if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
 
@@ -1291,52 +1341,6 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				
 
 		/*------------------------------------------------- Adv file Tasks -----------------------------------------------------*/
-
-				/* detect lines [ rand / eye / zeros / ones ] */
-
-    				int clkRand=command.find("rand");
-				int clkZeros=command.find("zeros");
-				int clkEye=command.find("eye");
-				int clkOnes=command.find("ones");
-
-				if(clkRand!=-1 ||clkZeros!=-1||clkEye!=-1||clkOnes!=-1)
-				{
-				int intRow,intColumn;
-				matrix out;
-				int index1=command.find('(');
-				int index2=command.find(',');
-				int index3=command.find(')');
-				int length1=index2-index1;
-				int length2=index3-index2;
-				string row=command.substr(index1+1,length1);
-				remove_spaces(row);
-				string column=command.substr(index2+1,length2);
-				remove_spaces(column);
-				stringstream geek1(row);
-				geek1>>intRow;
-				stringstream geek2(column);
-				geek2>>intColumn;
-
-				if(clkRand!=-1)
-				{out=Rand(intRow,intColumn);}
-				else if(clkZeros!=-1)
-				{out=zeros(intRow,intColumn);}
-				else if(clkOnes!=-1)
-				{out=ones(intRow,intColumn);}
-				else if(clkEye!=-1)
-				{out=Eye(intRow,intColumn);}
-
-				matrices[name0]=out;
-				if (prnt_fg == 1)
-				{
-					cout << name0 << ":" << endl;
-					matrices[name0].print_matrix();
-				}
-
-				continue;
-				}
-
-				/* End detect lines [ rand / eye / zeros / ones ] */
 
 			/*showing matrix with just name or with just values*/
 

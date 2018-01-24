@@ -182,7 +182,7 @@ Diagonal Matrix
 	void fill_matrix_adv(string data,map<const string, matrix>& matrices);
 	//only translates names to numbers then calls fill matrix to update this->values , num_rows and num_columns
 
-		static vector<int> get_braces_data(string data,bool ignore_functions=true);
+	static vector<int> get_braces_data(string data,bool ignore_functions=true);
 	/*
 		get first good () positions:
 		if string is ((7)) returns [1,3]
@@ -194,7 +194,11 @@ Diagonal Matrix
 		if ignore_functions = false
 			gives you the data of them too
 	*/
-
+	static bool has_rezo(string command);
+	/*
+		return true if comand has rand, eye, zeros, one
+	*/
+	static void replace_rezo(string& command);
 	static void run_adv(string fpath);
 	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
 	static void remove_spaces(string& s);
