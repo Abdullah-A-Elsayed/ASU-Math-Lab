@@ -1958,7 +1958,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 	matrix matrix::partial_Solve2(string data){
 			vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
-			vector<string>arr2; //to hold operatins like - * / ^ +
+			vector<string>arr2; //to hold operatins like - * / ^ + ./ .^ .+ .*
 			vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
 			vector<string>::iterator it;
 			map<const string, matrix> matrices ;
@@ -1980,6 +1980,15 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				}}
 			arr1.push_back(data);
 			/*-------------------end of filling arr1 and arr2 -----------------------------*/
+			/*
+			(((ALY))) NOTE:
+			first test was applied, with:
+				"C^3 * sin(1./D)"
+			results were:
+				arr1[c, 3, sin(1., D] -> expected:[c, 3, sin(1./D)]
+				arr2[^, *, /] -> expected:[^,*]
+			(((please let me know how you plan to relate fix_arr11 with fix_arr1)))
+			*/
 
 			/*
 				before fixing arr1, if first place is empty we must remove it
@@ -1988,10 +1997,6 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			*/
 			if(arr1[0]==""){
 			   arr1.erase(arr1.begin()+0);
-			   /*for(int i=0;i<arr2.size()-1;++i){
-				   arr2[i]=arr2[i+1];
-			   }
-			   arr2.pop_back();*/
 			}
 
 
@@ -2088,7 +2093,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		   if(fix_arr1.size()==arr2.size()){
 			   string sign = arr2[0];
 			   arr2.erase(arr2.begin()+0);
-//			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
+//			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0]; to be edited to mult_const(-1)
 		   }
 		/************************operations*******************/
 		   while(arr2.size()>0){
