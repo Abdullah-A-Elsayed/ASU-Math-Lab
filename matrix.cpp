@@ -1309,7 +1309,9 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				int length1=index2-index1;
 				int length2=index3-index2;
 				string row=command.substr(index1+1,length1);
+				remove_spaces(row);
 				string column=command.substr(index2+1,length2);
+				remove_spaces(column);
 				stringstream geek1(row);
 				geek1>>intRow;
 				stringstream geek2(column);
@@ -1325,8 +1327,11 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				{out=Eye(intRow,intColumn);}
 
 				matrices[name0]=out;
-				cout<<name0<<":"<<endl;
-				matrices[name0].print_matrix();
+				if (prnt_fg == 1)
+				{
+					cout << name0 << ":" << endl;
+					matrices[name0].print_matrix();
+				}
 
 				continue;
 				}
@@ -1404,8 +1409,6 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					if (command.find('=')||command.find('+')||command.find('-')||command.find('/')||command.find('*')||command.find('^')
 				 || command.find('s') || command.find('c') || command.find('t') || command.find('('))
 					{
-						/*there is a problem with the solve function "vector out of range" 
-						I tested it with this test case "A = 5.5 + 12 * sin(0.4) + 2.2^4;" */
 						int eq_indx = command.find('=');
 						command = command.substr(eq_indx + 1);
 						matrices[name0] = Solve(command);
