@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include <math.h>
+#include <sstream>
 using namespace std;
 int main(int argc, char** argv)
 { 	
@@ -33,8 +34,9 @@ if(argc < 2){//no file passed to the program
 	try{
 		//whole = matrix::column_by_column(a,b);
 		//whole.print_matrix();
-		string data ="(1+(2+3))*log(4/2)+(2-3)";
-		matrix::Solve(data).print_matrix();
+		string data ="C^3 * sin(1./D)";
+		matrix::partial_Solve2("C^3 * sin(1./D)");
+		//matrix::Solve(data).print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
