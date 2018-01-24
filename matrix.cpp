@@ -1843,7 +1843,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			if ((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <= 'z'))
 			{//check on first char
 				string ins = (a.find('(')==-1)? a.substr(3): a.substr(4, a.find(')') - 4);//num in sin or ..
-				if (ins[0] == '(')ins = ins.substr(1);//in case of sqrt
+				if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
 				double inside = stod(ins);
 				if (a[0] == 's'&&a[1] == 'i')
 				{
@@ -2082,7 +2082,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				if ((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <= 'z'))
 				{//check on first char 
 					string ins = (a.find('(')==-1)? a.substr(3): a.substr(4, a.find(')') - 4);//num in sin or ..
-					if (ins[0] == '(')ins = ins.substr(1);//in case of sqrt
+					if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
 
 					auto search = matrices.find(ins);     //check if it is matrix 
 					if (search != matrices.end())
