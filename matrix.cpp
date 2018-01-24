@@ -2068,7 +2068,9 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			}
 
 			/*******fix arr11 ***********************************/
-			double res_tri2;
+			double  res_tri2;
+			string res_tri_string;
+			matrix res_tri_mat;
 			for (unsigned int j = 0; j < arr1.size(); j++)
 			{
 
@@ -2087,33 +2089,45 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 						if (a[0] == 's'&&a[1] == 'i')
 						{
 							res_tri2 = sin(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 's'&&a[1] == 'q'){
 							res_tri2 = sqrt(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 'c')
 						{
 							res_tri2 = cos(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 't')
 						{
 							res_tri2 = tan(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 'l')
 						{
 							res_tri2 = log10(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 					}
 				}
 				else{//number
 				// here we should use solve function to turn the double into 1*1 matrix
-					matrix num = solve ()
-					double num = stod(a); fix_arr11.push_back(num);
+					sprintf_s(res_tri_string,"%g",a);
+							res_tri_mat = solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
+					//double num = stod(a); fix_arr11.push_back(num);
 				}
 			}
 
