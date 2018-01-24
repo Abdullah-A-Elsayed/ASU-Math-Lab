@@ -1877,14 +1877,15 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 						double part_result=fix_arr1[pos]+fix_arr1[pos+1];   
 						call(arr2,fix_arr1,pos,part_result);
 			 }
-			 else{ if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
-			 {
-								 it=find(arr2.begin(), arr2.end(), "-");
-						int pos = distance(arr2.begin(), it);
-						double part_result=fix_arr1[pos]-fix_arr1[pos+1];
-						call(arr2,fix_arr1,pos,part_result);
+			 else{ 
+					if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
+					 {
+								it=find(arr2.begin(), arr2.end(), "-");
+								int pos = distance(arr2.begin(), it);
+								double part_result=fix_arr1[pos]-fix_arr1[pos+1];
+								call(arr2,fix_arr1,pos,part_result);
 		          
-			 }
+					 }
 			 }
 		   }
 		double value=fix_arr1[0];
