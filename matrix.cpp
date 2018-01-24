@@ -1987,11 +1987,16 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			/*-------------------filling arr1 and arr2 -----------------------------*/
 			string first_element = "";
 			for (unsigned int i = 0; i < data.length(); i++){
-				if (data[i] == '^' || data[i] == '*' || data[i] == '/' || data[i] == '+' || data[i] == '-'){
+				if (data[i] == '^' || data[i] == '*' || data[i] == '/'|| data[i] == '.' || data[i] == '+' || data[i] == '-'){
 					first_element = data.substr(0, i);
 					arr1.push_back(first_element);
 					am = i;
-					string of_op = data.substr(i, 1);
+					if (data[i] == '.'){
+						string of_op = data.substr(i, 2);
+					}
+					else {
+						string of_op = data.substr(i, 1);
+					}
 					arr2.push_back(of_op);
 					data = data.erase(0, am + 1);
 					i = 0;
@@ -2106,6 +2111,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					}
 				}
 				else{//number
+				// here we should use solve function to turn the double into 1*1 matrix
+					matrix num = solve ()
 					double num = stod(a); fix_arr11.push_back(num);
 				}
 			}
