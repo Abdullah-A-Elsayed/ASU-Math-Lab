@@ -1793,6 +1793,13 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	       fix_arr1.insert(fix_arr1.begin() + index,result);
 		   arr2.erase( arr2.begin() + index );
 	}
+	void matrix :: call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result){
+	int sec_element=index+1;
+	        fix_arr1.erase(fix_arr1.begin() + sec_element);
+			fix_arr1.erase(fix_arr1.begin() + index);
+	       fix_arr1.insert(fix_arr1.begin() + index,result);
+		   arr2.erase( arr2.begin() + index );
+	}
 	
 	string matrix::partial_Solve(string data)
 	{
@@ -2170,7 +2177,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].element_wise_power(fix_arr11[pos + 2]);//->to be edited to new *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 
 				else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
@@ -2179,7 +2186,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
 				{
@@ -2187,7 +2194,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].mult_const(fix_arr11[pos + 2]);//-> added *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
 				{
@@ -2195,28 +2202,28 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].div_matrix(fix_arr1[pos + 1]);//->to be edited to new /
 					fix_arr1.push_back(part_result);
-					// call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "./");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(fix_arr11[pos + 2]);//->added
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "-");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].sub_matrix(fix_arr1[pos + 1]);   //->to be edited to new -
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "+") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "+");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].add_matrix(fix_arr1[pos + 1]);//->to be edited to new +
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 
 				}
 				else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
@@ -2224,7 +2231,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					it = find(arr2.begin(), arr2.end(), ".+");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].add_const(fix_arr11[pos + 2]);//->added
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 
 			}
