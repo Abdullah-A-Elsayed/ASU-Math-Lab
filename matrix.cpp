@@ -1954,11 +1954,16 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		return result;
 	}
 	
-	matrix matrix::partial_Solve(string data){
+	
+
+	matrix matrix::partial_Solve2(string data){
 			vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
 			vector<string>arr2; //to hold operatins like - * / ^ +
 			vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
 			vector<string>::iterator it;
+			map<const string, matrix> matrices ;
+
+	        vector<double>fix_arr11; //to hlod numbers as (doubles) with real valuses of sin and cos an ..
 			int am=0;
 
 			/*-------------------filling arr1 and arr2 -----------------------------*/
@@ -1989,6 +1994,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			   arr2.pop_back();*/
 			}
 
+
+
 			/*******fix arr1 ***********************************/
 			matrix res_tri;
 		   for(unsigned int j=0;j<arr1.size();j++)
@@ -2001,30 +2008,77 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				if(ins[0]=='(')ins=ins.substr(1);
 				matrix inside=matrices[ins]; 
 				if(a[0]=='s'&&a[1]=='i')
-				{res_tri=sin(inside);//->to be edited to new sin
+				{res_tri=inside.Sin();//->to be edited to new sin
 				fix_arr1.push_back(res_tri);
+				
 				}
 				if(a[0]=='s'&&a[1]=='q'){
-				res_tri=sqrt(inside);//->to be edited to new sqrt
+					res_tri=inside.Sqrt();//->to be edited to new sqrt
 				fix_arr1.push_back(res_tri);
 				}
 				if(a[0]=='c')
-				{ res_tri=cos(inside);//->to be edited to new cos
+				{ res_tri=inside.Cos();//->to be edited to new cos
 				fix_arr1.push_back(res_tri);
 				}
 				if(a[0]=='t')
-				{ res_tri=tan(inside);//->to be edited to new tan
+				{ res_tri=inside.Tan();//->to be edited to new tan
 				fix_arr1.push_back(res_tri);
 				}
 				if(a[0]=='l')
-				{ res_tri=log10(inside);//->to be edited to new log 10
+				{ res_tri=inside.Log();//->to be edited to new log 10
 				fix_arr1.push_back(res_tri);
 				}
 				}
-			else{//number
-				matrix num=name[a];fix_arr1.push_back(num);
+			//else{//number
+			//	matrix name=num[a];fix_arr1.push_back(num);         //->there is an error
+				//}
+			}
+
+		   /*******fix arr11 ***********************************/
+		   double res_tri2;
+		   for(unsigned int j=0;j<arr1.size();j++)
+		   {
+
+			string a=arr1[j];//put every data in string a
+			if(a[0]==' ')a = a.substr(1);
+			if((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <='z'))
+				{//check on first char 
+				string ins=a.substr(4,a.find(')')-4);
+				if(ins[0]=='(')ins=ins.substr(1);
+
+				auto search=matrices.find(ins);     //check if it is matrix 
+				 if (search != matrices.end())
+				 {
+
+				double inside=stod(ins); 
+				if(a[0]=='s'&&a[1]=='i')
+				{res_tri2=sin(inside);
+				fix_arr11.push_back(res_tri2);
+				}
+				if(a[0]=='s'&&a[1]=='q'){
+				res_tri2=sqrt(inside);
+				fix_arr11.push_back(res_tri2);
+				}
+				if(a[0]=='c')
+				{ res_tri2=cos(inside);
+				fix_arr11.push_back(res_tri2);
+				}
+				if(a[0]=='t')
+				{ res_tri2=tan(inside);
+				fix_arr11.push_back(res_tri2);
+				}
+				if(a[0]=='l')
+				{ res_tri2=log10(inside);
+				fix_arr11.push_back(res_tri2);
+				}
 				}
 			}
+			else{//number
+				double num=stod(a);fix_arr11.push_back(num);
+				}
+			}
+
+
 
 		   //fix_arr1 has numbers
 		   //arr2 chars like + ^ * / -
@@ -2034,7 +2088,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 		   if(fix_arr1.size()==arr2.size()){
 			   string sign = arr2[0];
 			   arr2.erase(arr2.begin()+0);
-			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
+//			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0];
 		   }
 		/************************operations*******************/
 		   while(arr2.size()>0){
@@ -2042,8 +2096,10 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			   {
 				   it=find(arr2.begin(), arr2.end(), "^");
 				   int pos = distance(arr2.begin(), it);
-				   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating//->to be edited to new pow
-				   call(arr2,fix_arr1,pos,part_result);
+				//   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating//->to be edited to new pow
+				   matrix part_result=fix_arr1[pos];
+				   part_result=part_result.element_wise_power(fix_arr11[pos+1]);
+				   //call(arr2,fix_arr1,pos,part_result);
 				   /* call does:
 						removes the operator from arr2 (here operator is ^)
 						replaces the two processed numbers with the result
@@ -2055,38 +2111,66 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				   */
 
 			   }
+			   else if(find(arr2.begin(), arr2.end(), ".^") != arr2.end() )
+			  { it=find(arr2.begin(), arr2.end(), ".^");
+			   int pos = distance(arr2.begin(), it);
+			   matrix part_result=fix_arr1[pos].element_wise_power(fix_arr11[pos+2]);//->to be edited to new *
+				   fix_arr1.push_back(part_result);
+					//call(arr2,fix_arr1,pos,part_result);
+			  }
 	  
 			else if(find(arr2.begin(), arr2.end(), "*") != arr2.end() )
 			  { it=find(arr2.begin(), arr2.end(), "*");
 			   int pos = distance(arr2.begin(), it);
-				   double part_result=fix_arr1[pos]*fix_arr1[pos+1];//->to be edited to new *
-				   //fix_arr1.push_back(part_result);
-					call(arr2,fix_arr1,pos,part_result);
+			   matrix part_result=fix_arr1[pos].mult_matrix(fix_arr1[pos+1]);//->to be edited to new *
+				   fix_arr1.push_back(part_result);
+					//call(arr2,fix_arr1,pos,part_result);
+			  }
+			   else if(find(arr2.begin(), arr2.end(), ".*") != arr2.end() )
+			  { it=find(arr2.begin(), arr2.end(), ".*");
+			   int pos = distance(arr2.begin(), it);
+			   matrix part_result=fix_arr1[pos].mult_const(fix_arr11[pos+2]);//-> added *
+				   fix_arr1.push_back(part_result);
+					//call(arr2,fix_arr1,pos,part_result);
 			  }
 			else if(find(arr2.begin(), arr2.end(), "/") != arr2.end() )
 			  {
 				   it=find(arr2.begin(), arr2.end(), "/");
 				   int pos = distance(arr2.begin(), it);
-				   double part_result=fix_arr1[pos]/fix_arr1[pos+1];//->to be edited to new /
-				  // fix_arr1.push_back(part_result);
-				   call(arr2,fix_arr1,pos,part_result);
+				   matrix part_result=fix_arr1[pos].div_matrix(fix_arr1[pos+1]);//->to be edited to new /
+				  fix_arr1.push_back(part_result);
+				  // call(arr2,fix_arr1,pos,part_result);
 			  }
+			else if(find(arr2.begin(), arr2.end(), "./") != arr2.end() )
+			 {
+								 it=find(arr2.begin(), arr2.end(), "./");
+						         int pos = distance(arr2.begin(), it);
+								 matrix part_result=fix_arr1[pos].bitwisediv2_matrix(fix_arr11[pos+2]);//->added
+						       //call(arr2,fix_arr1,pos,part_result);
+			 }
 			 else if(find(arr2.begin(), arr2.end(), "-") != arr2.end() )
 			 {
 						it=find(arr2.begin(), arr2.end(), "-");
 						int pos = distance(arr2.begin(), it);
-						double part_result=fix_arr1[pos]-fix_arr1[pos+1];   //->to be edited to new -
-						call(arr2,fix_arr1,pos,part_result);
+						matrix part_result=fix_arr1[pos].sub_matrix(fix_arr1[pos+1]);   //->to be edited to new -
+						//call(arr2,fix_arr1,pos,part_result);
 			 }
-			 else{ if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
+			 else if(find(arr2.begin(), arr2.end(), "+") != arr2.end() )
 			 {
 								 it=find(arr2.begin(), arr2.end(), "+");
 						int pos = distance(arr2.begin(), it);
-						double part_result=fix_arr1[pos]+fix_arr1[pos+1];//->to be edited to new +
-						call(arr2,fix_arr1,pos,part_result);
+						matrix part_result=fix_arr1[pos].add_matrix(fix_arr1[pos+1]);//->to be edited to new +
+						//call(arr2,fix_arr1,pos,part_result);
 		          
 			 }
+			  else if(find(arr2.begin(), arr2.end(), ".+") != arr2.end() )
+			 {
+								 it=find(arr2.begin(), arr2.end(), ".+");
+						         int pos = distance(arr2.begin(), it);
+								 matrix part_result=fix_arr1[pos].add_const(fix_arr11[pos+2]);//->added
+						       //call(arr2,fix_arr1,pos,part_result);
 			 }
+			  
 		   }
 		matrix value=fix_arr1[0];
 		
