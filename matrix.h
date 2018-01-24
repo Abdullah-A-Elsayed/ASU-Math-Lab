@@ -63,15 +63,6 @@ public:
 
 
 	/*------------------------------------phase2 team1 work ---------------------------------------------------------*/
-	static vector<int> get_braces_data(string data);
-	/*
-		get first good () positions:
-		if string is ((7)) returns [1,3]
-		if string is ()+() returns [3,4]
-		if string is 1+2*4 returns [0] //only one element means no braces
-		--note
-		it ignores braces of log(),sin(),sqrt()...etc
-	*/
 
 	static void call(vector<string>&arr2,vector<double>&fix_arr1,int index,double result);
 	//call is in partial_Solve function go to impelementation to see more comments
@@ -190,6 +181,20 @@ Diagonal Matrix
 	/* --------------------------------phase2 team2 work----------------------------------------------------------*/
 	void fill_matrix_adv(string data,map<const string, matrix>& matrices);
 	//only translates names to numbers then calls fill matrix to update this->values , num_rows and num_columns
+
+		static vector<int> get_braces_data(string data,bool ignore_functions=true);
+	/*
+		get first good () positions:
+		if string is ((7)) returns [1,3]
+		if string is ()+() returns [3,4]
+		if string is 1+2*4 returns [0] //only one element means no braces
+		((--note)):
+		if ignore_functions = true
+			it ignores braces of log(),sin(),sqrt()...etc
+		if ignore_functions = false
+			gives you the data of them too
+	*/
+
 	static void run_adv(string fpath);
 	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
 	static void remove_spaces(string& s);
@@ -198,7 +203,7 @@ Diagonal Matrix
 	static string solve_elemnt(string &mat_elemnt);
 	static bool Isnt_num(string f);
 	static matrix partial_Solve2 (string data);
-	 //void call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,double result)
+	static void call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result);
 
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };

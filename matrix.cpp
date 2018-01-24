@@ -1733,14 +1733,17 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 	/* -----------------------------------------End Advanced File example------------------------------------------*/
 
-	    vector<int> matrix::get_braces_data(string data){
+	vector<int> matrix::get_braces_data(string data, bool ignore_functions){
 			/*
 				get first good () positions:
 				if string is ((7)) returns [1,3]
 				if string is ()+() returns [3,4]
 				if string is 1+2*4 returns [0] //only one element means no braces
-				--note
-				it ignores braces of log(),sin(),sqrt()...etc
+				((--note)):
+				if ignore_functions = true
+					it ignores braces of log(),sin(),sqrt()...etc
+				if ignore_functions = false
+					gives you the data of them too
 			*/
 		vector<int> result;
 		//finding last good (
@@ -1751,8 +1754,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					break;
 				}
 				else{// '(' is in middle
-					//ignoring sin,sqrt,cos,log,tan
-					if(data[i-1]=='n'||data[i-1]=='t'||data[i-1]=='s'||data[i-1]=='g'){
+					//ignoring sin,sqrt,cos,log,tan if ignore_functions = true
+					if(ignore_functions && (data[i-1]=='n'||data[i-1]=='t'||data[i-1]=='s'||data[i-1]=='g')){
 						//found log or tan or .. deleting ) of them
 						int u=i;
 						while(i<data.length()){
@@ -1793,7 +1796,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	       fix_arr1.insert(fix_arr1.begin() + index,result);
 		   arr2.erase( arr2.begin() + index );
 	}
-	
+
 	string matrix::partial_Solve(string data)
 	{
 		vector<string>arr1; //to hold numbers as (string) including sin , tan, sqrt
@@ -1838,9 +1841,9 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			string a = arr1[j];//put every data in string a
 			if (a[0] == ' ')a = a.substr(1);
 			if ((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <= 'z'))
-			{//check on first char 
-				string ins = a.substr(4, a.find(')') - 4);
-				if (ins[0] == '(')ins = ins.substr(1);
+			{//check on first char
+				string ins = (a.find('(')==-1)? a.substr(3): a.substr(4, a.find(')') - 4);//num in sin or ..
+				if (ins[0] == '(')ins = ins.substr(1);//in case of sqrt
 				double inside = stod(ins);
 				if (a[0] == 's'&&a[1] == 'i')
 				{
@@ -1944,18 +1947,18 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 
 		matrix matrix::Solve(string data){
 			remove_spaces(data);//to remove white spaces in beginning of data if exists
-			vector<int> braces_positions = get_braces_data(data);
+			vector<int> braces_positions = get_braces_data(data,false);
 			/*
 				if braces_positions size is 1, means no braces
 				if size is 2 then first one is position of '(', and 2nd is position of ')'
 				*/
 			while (braces_positions.size() != 1){
 				data = data.substr(0, braces_positions[0])//part befor (
-					+ partial_Solve(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0]))
+					+ partial_Solve(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0] -1))
 					//result of values in between ()
 					+ data.substr(braces_positions[1] + 1, data.length() - braces_positions[1]);//part after )
 				//cout<<data<<endl;
-				braces_positions = get_braces_data(data);
+				braces_positions = get_braces_data(data,false);
 			}
 			//no braces
 			string val = partial_Solve(data);
@@ -1964,6 +1967,14 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			result.values[0][0] = stod(val);
 			return result;
 		}
+
+	void matrix :: call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result){
+	int sec_element=index+1;
+	        fix_arr1.erase(fix_arr1.begin() + sec_element);
+			fix_arr1.erase(fix_arr1.begin() + index);
+	       fix_arr1.insert(fix_arr1.begin() + index,result);
+		   arr2.erase( arr2.begin() + index );
+	}
 
 		matrix matrix::partial_Solve2(string data){
 			vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
@@ -1978,11 +1989,17 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			/*-------------------filling arr1 and arr2 -----------------------------*/
 			string first_element = "";
 			for (unsigned int i = 0; i < data.length(); i++){
-				if (data[i] == '^' || data[i] == '*' || data[i] == '/' || data[i] == '+' || data[i] == '-'){
+				if (data[i] == '^' || data[i] == '*' || data[i] == '/'|| data[i] == '.' || data[i] == '+' || data[i] == '-'){
 					first_element = data.substr(0, i);
 					arr1.push_back(first_element);
 					am = i;
-					string of_op = data.substr(i, 1);
+					string of_op;
+					if (data[i] == '.'){
+						data.substr(i, 2);
+					}
+					else {
+						data.substr(i, 1);
+					}
 					arr2.push_back(of_op);
 					data = data.erase(0, am + 1);
 					i = 0;
@@ -2054,7 +2071,9 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 			}
 
 			/*******fix arr11 ***********************************/
-			double res_tri2;
+			double  res_tri2;
+			char res_tri_string[100];
+			matrix res_tri_mat;
 			for (unsigned int j = 0; j < arr1.size(); j++)
 			{
 
@@ -2062,8 +2081,8 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 				if (a[0] == ' ')a = a.substr(1);
 				if ((a[0] >= 'A' && a[0] <= 'Z') || (a[0] >= 'a' && a[0] <= 'z'))
 				{//check on first char 
-					string ins = a.substr(4, a.find(')') - 4);
-					if (ins[0] == '(')ins = ins.substr(1);
+					string ins = (a.find('(')==-1)? a.substr(3): a.substr(4, a.find(')') - 4);//num in sin or ..
+					if (ins[0] == '(')ins = ins.substr(1);//in case of sqrt
 
 					auto search = matrices.find(ins);     //check if it is matrix 
 					if (search != matrices.end())
@@ -2073,31 +2092,45 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 						if (a[0] == 's'&&a[1] == 'i')
 						{
 							res_tri2 = sin(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 's'&&a[1] == 'q'){
 							res_tri2 = sqrt(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 'c')
 						{
 							res_tri2 = cos(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 't')
 						{
 							res_tri2 = tan(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 						if (a[0] == 'l')
 						{
 							res_tri2 = log10(inside);
-							fix_arr11.push_back(res_tri2);
+							sprintf_s(res_tri_string,"%g",res_tri2);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
 						}
 					}
 				}
 				else{//number
-					double num = stod(a); fix_arr11.push_back(num);
+				// here we should use solve function to turn the double into 1*1 matrix
+					sprintf_s(res_tri_string,"%g",a);
+							res_tri_mat = Solve(res_tri_string);
+							fix_arr1.push_back(res_tri_mat);
+					//double num = stod(a); fix_arr11.push_back(num);
 				}
 			}
 
@@ -2140,7 +2173,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].element_wise_power(fix_arr11[pos + 2]);//->to be edited to new *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 
 				else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
@@ -2149,7 +2182,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
 				{
@@ -2157,7 +2190,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].mult_const(fix_arr11[pos + 2]);//-> added *
 					fix_arr1.push_back(part_result);
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
 				{
@@ -2165,28 +2198,28 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].div_matrix(fix_arr1[pos + 1]);//->to be edited to new /
 					fix_arr1.push_back(part_result);
-					// call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "./");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(fix_arr11[pos + 2]);//->added
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "-");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].sub_matrix(fix_arr1[pos + 1]);   //->to be edited to new -
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 				else if (find(arr2.begin(), arr2.end(), "+") != arr2.end())
 				{
 					it = find(arr2.begin(), arr2.end(), "+");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].add_matrix(fix_arr1[pos + 1]);//->to be edited to new +
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 
 				}
 				else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
@@ -2194,7 +2227,7 @@ matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 					it = find(arr2.begin(), arr2.end(), ".+");
 					int pos = distance(arr2.begin(), it);
 					matrix part_result = fix_arr1[pos].add_const(fix_arr11[pos + 2]);//->added
-					//call(arr2,fix_arr1,pos,part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 				}
 
 			}
