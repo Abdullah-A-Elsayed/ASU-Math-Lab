@@ -36,7 +36,7 @@ if(argc < 2){//no file passed to the program
 		//whole.print_matrix();
 		//string data ="C^3 * sin(1./D)";
 		string data ="log(1+1)";
-		//matrix::partial_Solve2("c.^sqrt(9) * sinb./logabdullah",matrices);
+		matrix::partial_Solve2("abdullah./3",matrices).print_matrix();
 		//matrix::Solve("5.5 + 12 * sin(0.4) + 2.2^4").print_matrix();
 		//cout<<matrix::mat_nums("C^3 * sin(1./D)");
 	}

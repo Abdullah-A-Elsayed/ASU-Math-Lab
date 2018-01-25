@@ -2250,15 +2250,15 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		{
 			        it = find(arr2.begin(), arr2.end(), "./");
 					int pos = distance(arr2.begin(), it);
-					matrix rhs =fix_arr1[pos];
-					matrix lhs =fix_arr1[pos+1];
+					matrix lhs =fix_arr1[pos];
+					matrix rhs =fix_arr1[pos+1];
 					matrix part_result;
 					if((rhs.num_rows==1&&rhs.num_columns==1)||(lhs.num_rows==1&&lhs.num_columns==1)){
-						if((rhs.num_rows==1&&rhs.num_columns==1)){
-							part_result = lhs.bitwisediv2_matrix(rhs.values[0][0]);
+						if((rhs.num_rows==1&&rhs.num_columns==1)){ //rhs is double
+							part_result = lhs.mult_const(1/rhs.values[0][0]);
 						}
 						else{//lhs is double
-							part_result = rhs.bitwisediv2_matrix(lhs.values[0][0]);
+							part_result = rhs.bitwisediv2_matrix(lhs.values[0][0]);//inverse rhs
 						}
 					}
 					else{ //both large matrices
