@@ -2129,10 +2129,11 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		string a = arr1[j];//put every data in string a
 		if (a[0] == ' ')a = a.substr(1);//remove white space in beginning
 		//remove white space in end
-		for(int i=a.length(); i>-1; --i){
+		for(int i=a.length()-1; i>-1; --i){
 			if(a[i]==' '){a=a.substr(0,a.length()-1);}
 			else break;
 		}
+		//cout<<a<<"***"<<endl;
 		//check ...
 		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') ||
 			(a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o') )
