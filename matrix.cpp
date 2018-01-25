@@ -1930,6 +1930,11 @@ string matrix::partial_Solve(string data)
 		arr2.pop_back();*/
 	}
 
+	if ((arr1[arr1.size()-1] == "")||(arr1[arr1.size()-1] == " ")) {
+		string e = "Syntax error";
+		throw(e);
+	}
+
 	/*******fix arr1 ***********************************/
 	double res_tri;
 	for (unsigned int j = 0; j < arr1.size(); j++)
@@ -1979,7 +1984,8 @@ string matrix::partial_Solve(string data)
 	if (fix_arr1.size() == arr2.size()) {
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
-		fix_arr1[0] = (sign == "-") ? -fix_arr1[0] : fix_arr1[0];
+		string e = "Syntax error";
+		fix_arr1[0] = (sign == "-") ? -fix_arr1[0] : (sign == "+")?fix_arr1[0]:throw(e);
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
@@ -2013,8 +2019,11 @@ string matrix::partial_Solve(string data)
 		{
 			it = find(arr2.begin(), arr2.end(), "/");
 			int pos = distance(arr2.begin(), it);
+			if(fix_arr1[pos+1] == 0 ){
+				string e = "warning: division by zero";
+				throw e;
+			}
 			double part_result = fix_arr1[pos] / fix_arr1[pos + 1];
-			// fix_arr1.push_back(part_result);
 			call(arr2, fix_arr1, pos, part_result);
 		}
 		else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
@@ -2130,7 +2139,10 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		arr1.erase(arr1.begin() + 0);
 	}
 
-
+	if ((arr1[arr1.size()-1] == "")||(arr1[arr1.size()-1] == " ")) {
+		string e = "Syntax error";
+		throw(e);
+	}
 
 	/*******fix arr1 ***********************************/
 	matrix res_tri;
@@ -2230,7 +2242,8 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	if (fix_arr1.size() == arr2.size()) {
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
-		fix_arr1[0] = (sign=="-")?fix_arr1[0].mult_const(-1):fix_arr1[0];
+		string e = "Syntax error";
+		fix_arr1[0] = (sign=="-")?fix_arr1[0].mult_const(-1):(sign=="+")?fix_arr1[0]:throw(e);
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
@@ -2370,6 +2383,17 @@ matrix matrix::Solve2(string data,map<const string, matrix>& matrices) {
 }
 
 matrix matrix::Solve_any(string data,map<const string, matrix>& matrices) {
+	/* check if braces are equal
+	*/
+	int open =0, close=0;
+	for(int i=0; i<data.length();++i){
+		if(data[i]=='(') open++;
+		if(data[i]==')') close++;
+	}
+	if(open!=close){
+		string e = "mismatch number of brackets";
+		throw (e);
+	}
 	int eq_ind = data.find('=');
 	if(eq_ind !=-1) data = data.substr(eq_ind+1);
 	matrix result;
