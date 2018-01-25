@@ -2064,9 +2064,9 @@ matrix matrix::partial_Solve2(string data) {
 		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') || (a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o'))
 		{//check on first char 
 
-			string ins = a.substr(4, a.find(')') - 4);
+			string ins = a.substr(3);
 
-			if (ins[0] == '(')ins = ins.substr(1);
+			if (ins[0] == 't')ins = ins.substr(1);
 			matrix inside = matrices[ins];
 			if (a[0] == 's'&&a[1] == 'i')
 			{
@@ -2099,7 +2099,7 @@ matrix matrix::partial_Solve2(string data) {
 		//}
 	}
 
-	/*******fix arr11 ***********************************/
+	/*******fix arr1 wuth double matrix  ***********************************/
 	double  res_tri2;
 	char res_tri_string[100];
 	matrix res_tri_mat;
