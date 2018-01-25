@@ -33,7 +33,8 @@ if(argc < 2){//no file passed to the program
 	matrix whole;
 	try{
 		
-		matrix::Solve2("(sqrt(a)+b).*2",matrices).print_matrix();
+		matrix::Solve_any("(sqrt(a)+b).*2",matrices).print_matrix();
+		matrix::Solve_any("5*6",matrices).print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/

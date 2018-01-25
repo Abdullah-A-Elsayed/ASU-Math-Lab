@@ -1292,7 +1292,7 @@ void matrix::run_adv(string fpath)
 		{
 			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
 			remove_spaces(command); /* makes the line doesn't start with a space*/
-
+			string command_with_rezo = command;
 									/* detect lines [ rand / eye / zeros / ones ] */
 			replace_rezo(command);	/* makes the line doesn't have rand, eye, zeros using getString*/
 									/* End detect lines [ rand / eye / zeros / ones ] */
@@ -1313,6 +1313,44 @@ void matrix::run_adv(string fpath)
 			/* end if the command didn't have a name it will be named ans */
 
 			try {
+
+
+				/*-------------------------------------- detect a, x, y, l ------------------------------------*/
+
+				if(command_with_rezo.find('[')==-1){
+					/*
+					size_t found = command.find('[');
+					size_t found2 = command.find("(");
+
+					int i = 0;
+					string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+					if (command.find('[') == string::npos && mat_nums(command))
+					{
+						while (command.find("(") != string::npos) {
+
+							size_t a = command.find_last_of("(");
+							string b = command.substr(a, command.length());
+							size_t d = b.find_first_of(")");
+							string c = b.substr(1, d - 1);
+							command = command.replace(a, c.length() + 2, aa[i]);
+							partial_Solve2(aa[i] + "=" + c,matrices);
+							i++;
+
+
+						}
+						string uuu = "" + command[0];
+						partial_Solve2(command,matrices); 
+					} */
+					matrices[name0] = Solve_any(command,matrices);
+					if (prnt_fg)
+					{
+						cout << name0 << "= " << endl;
+						matrices[name0].print_matrix();
+					}
+					continue;
+				}
+
+				/*-------------------------------------- end of a, x, y, l ------------------------------------*/
 
 				/* detect joined matrix  gasser */
 
@@ -1349,7 +1387,7 @@ void matrix::run_adv(string fpath)
 					handle_read_adv(matrices, command, name0, op_index);
 					if (prnt_fg)
 					{
-						cout << name0 << ": " << endl;
+						cout << name0 << "= " << endl;
 						matrices[name0].print_matrix();
 					}
 					continue;
@@ -1357,8 +1395,6 @@ void matrix::run_adv(string fpath)
 
 				/* end detect joined matrix*/
 
-
-				/*------------------------------------------------- Adv file Tasks -----------------------------------------------------*/
 
 				/*showing matrix with just name or with just values*/
 
@@ -1370,20 +1406,22 @@ void matrix::run_adv(string fpath)
 					auto search = matrices.find(name0);
 					if (search != matrices.end())
 					{
-						cout << name0 << ":" << endl;
+						cout << name0 << "=" << endl;
 						matrices[name0].print_matrix();
+						continue;
 					}
 					else    //if the called matrix is undefined
 					{
 						cout << "error: '" << name0 << "'is undefined" << endl;
 						cout << endl;
+						continue;
 					}
 
 					/*showing matrix has no name */
 
 					if (chk != -1 && check == -1)
 					{
-						cout << name0 << ":" << endl;
+						cout << name0 << "=" << endl;
 						matrices[name0].print_matrix();
 					}
 
@@ -1391,62 +1429,6 @@ void matrix::run_adv(string fpath)
 				}
 
 				/*end showing matrix with just name or with just values*/
-
-				/* detect lines x / y & showing matrix from just name */
-
-
-				size_t found = command.find('[');
-				size_t found2 = command.find("(");
-
-				int i = 0;
-				string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
-				if (command.find('[') == string::npos && mat_nums(command)/*this is to make sure it is a mat operation*/)
-				{
-					while (command.find("(") != string::npos) {
-
-						size_t a = command.find_last_of("(");
-						string b = command.substr(a, command.length());
-						size_t d = b.find_first_of(")");
-						string c = b.substr(1, d - 1);
-						command = command.replace(a, c.length() + 2, aa[i]);
-						partial_Solve2(aa[i] + "=" + c,matrices);
-						i++;
-
-
-					}
-					string uuu = "" + command[0];
-					partial_Solve2(command,matrices);
-					//cout << command << endl;
-					//matrices[uuu].print_matrix();
-
-
-				} //errors found
-
-				  /* End detect lines x / y & showing matrix from just name */
-
-
-				  /*------------------------------------------------------- Adv file Tasks ----------------------------------------------------*/
-
-
-				  /* detect solve  A / L */
-				else
-				{
-					if (command.find('=') || command.find('+') || command.find('-') || command.find('/') || command.find('*') || command.find('^')
-						|| command.find('sin') || command.find('cos') || command.find('tan') || command.find('('))
-					{
-						int eq_indx = command.find('=');
-						command = command.substr(eq_indx + 1);
-						matrices[name0] = Solve(command);
-						if (prnt_fg)
-						{
-							cout << name0 << ": " << endl;
-							matrices[name0].print_matrix();
-						}
-						continue;
-					}
-					else { continue; }
-				}
-				/* end detect solve  A / L */
 
 			}
 
@@ -1829,7 +1811,7 @@ bool matrix::mat_nums(string f){
 	{
 		for (int g = 0; g < f.length(); g++)
 		{
-			if ((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z')) return 1;
+			if ((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z') || f[g]=='[' || f[g] == ']') return 1;
 		}
 
 		return 0;
@@ -2145,10 +2127,16 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	for (unsigned int j = 0; j < arr1.size(); j++)
 	{
 		string a = arr1[j];//put every data in string a
-		if (a[0] == ' ')a = a.substr(1);
+		if (a[0] == ' ')a = a.substr(1);//remove white space in beginning
+		//remove white space in end
+		for(int i=a.length(); i>-1; --i){
+			if(a[i]==' '){a=a.substr(0,a.length()-1);}
+			else break;
+		}
+		//check ...
 		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') ||
 			(a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o') )
-		{//check on first char 
+		{
 
 			string ins = (a.find('(') == -1) ? a.substr(3) : a.substr(4, a.find(')') - 4);//symbol inside sin or ..
 			if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
@@ -2367,5 +2355,13 @@ matrix matrix::Solve2(string data,map<const string, matrix>& matrices) {
 	string val = partial_Solve2(data,matrices);
 	matrix result;
 	result = matrix(val);
+	return result;
+}
+
+matrix matrix::Solve_any(string data,map<const string, matrix>& matrices) {
+	int eq_ind = data.find('=');
+	if(eq_ind !=-1) data = data.substr(eq_ind+1);
+	matrix result;
+	result = (mat_nums(data))? Solve2(data,matrices):Solve(data) ;
 	return result;
 }
