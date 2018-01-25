@@ -1750,11 +1750,12 @@ bool matrix::mat_nums(string f){
 
 	f = f.substr(f.find('=') + 1);
 	int s = f.find("sin");
+	int s2 = f.find("sqrt");
 	int c = f.find("cos");
 	int t = f.find("tan");
 	int l = f.find("log");
 
-	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1)
+	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1||s2!=-1)
 	{
 
 		if (s != -1){
@@ -1766,43 +1767,59 @@ bool matrix::mat_nums(string f){
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			return 0;
+			string new_f = f.substr(0,s)+f.substr(gg.find_first_of(')')+4+s);
+			return mat_nums(new_f);
+		}
+
+		if (s2 != -1){
+			string gg = f.substr(s2 + 4);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
+			remove_spaces(element);
+			for (int g = 0; g < element.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+			string new_f = f.substr(0,s2)+f.substr(gg.find_first_of(')')+5+s2);
+			return mat_nums(new_f);
 		}
 
 		if (c != -1){
-			string gg = f.substr(s + 3);
+			string gg = f.substr(c + 3);
 			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
 			remove_spaces(element);
-			for (int g = 0; g < f.length(); g++)
+			for (int g = 0; g < element.length(); g++)
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			return 0;
+			string new_f = f.substr(0,c)+f.substr(gg.find_first_of(')')+4+c);
+			return mat_nums(new_f);
 		}
 
 		if (t != -1){
-			string gg = f.substr(s + 3);
+			string gg = f.substr(t + 3);
 			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
 			remove_spaces(element);
-			for (int g = 0; g < f.length(); g++)
+			for (int g = 0; g < element.length(); g++)
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			return 0;
+			string new_f = f.substr(0,t)+f.substr(gg.find_first_of(')')+4+t);
+			return mat_nums(new_f);
 		}
 
 		if (l != -1){
-			string gg = f.substr(s + 3);
+			string gg = f.substr(l + 3);
 			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
 			remove_spaces(element);
-			for (int g = 0; g < f.length(); g++)
+			for (int g = 0; g < element.length(); g++)
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			return 0;
+			string new_f = f.substr(0,l)+f.substr(gg.find_first_of(')')+4+l);
+			return mat_nums(new_f);
 		}
 
 
