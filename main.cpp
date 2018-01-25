@@ -36,10 +36,7 @@ if(argc < 2){//no file passed to the program
 		//whole.print_matrix();
 		//string data ="C^3 * sin(1./D)";
 		string data ="log(1+1)";
-		//matrix::partial_Solve2("C^3 * sin(1./D)");
-		//matrix::Solve(data).print_matrix();
-		string cmd = "ones(1,1)+zeros(2,2)";
-		matrix::replace_rezo(cmd);
+		matrix::partial_Solve2("C.^3 * sin(D)./log(3)*[1 1; 2 2]");
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/

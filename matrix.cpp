@@ -2017,15 +2017,14 @@ matrix matrix::partial_Solve2(string data) {
 			am = i;
 			string of_op;
 			if (data[i] == '.') {
-				data.substr(i, 2);
+				of_op = data.substr(i, 2);
 				arr2.push_back(of_op);
 
 				data = data.erase(0, am + 2);
 			}
 			else {
-				data.substr(i, 1);
+				of_op = data.substr(i, 1);
 				arr2.push_back(of_op);
-
 				data = data.erase(0, am + 1);
 			}
 
