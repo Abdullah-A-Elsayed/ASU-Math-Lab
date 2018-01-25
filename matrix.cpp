@@ -1222,7 +1222,7 @@ void matrix::run(string fpath)
 }
 /* -----------------------------------------Advanced File example------------------------------------------*/
 
-/* run advanced */
+/* REZO dedction and handeling*/
 bool matrix::has_rezo(string command) {
 	int clkRand = command.find("rand");
 	int clkZeros = command.find("zeros");
@@ -1277,6 +1277,10 @@ void matrix::replace_rezo(string& command) {
 	}
 	//cout<<command<<endl;
 }
+
+/* END - REZO dedction and handeling*/
+
+/* run advanced */
 void matrix::run_adv(string fpath)
 {
 	ifstream file(fpath.c_str());
