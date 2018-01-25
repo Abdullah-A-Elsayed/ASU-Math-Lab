@@ -1364,7 +1364,7 @@ void matrix::run_adv(string fpath)
 
 				int check = command.find('=');
 				int chk = command.find('[');
-				if (check == -1 && check == -1)
+				if (chk == -1 && check == -1)
 				{
 					//showing matrix with just name
 					auto search = matrices.find(name0);
