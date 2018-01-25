@@ -2218,7 +2218,7 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	//fix_arr1 has matrices
 	//arr2 chars like .+ ^ * / -
 	/*
-	if arr2 size = fix_arr1 size, this means first number is negative (handling it:)
+	if arr2 size = fix_arr1 size, this means first matrix is negative (handling it:)
 	*/
 	if (fix_arr1.size() == arr2.size()) {
 		string sign = arr2[0];
@@ -2227,7 +2227,64 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
-		if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
+
+		if (find(arr2.begin(), arr2.end(), ".^") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), ".^");
+					int pos = distance(arr2.begin(), it);
+				//	matrix part_result = fix_arr1[pos];
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].element_wise_power(num_value);//->to be edited to new *
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
+		{
+			        it = find(arr2.begin(), arr2.end(), ".*");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
+		}
+
+				else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
+		{
+			        it = find(arr2.begin(), arr2.end(), "./");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(num_value);//->added
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), ".-") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), ".-");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].add_const(-num_value);//->added
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), ".+");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].add_const(num_value);//->added
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
 		{
 			it = find(arr2.begin(), arr2.end(), "^");
 					int pos = distance(arr2.begin(), it);
@@ -2250,17 +2307,6 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 			*/
 
 		}
-		else if (find(arr2.begin(), arr2.end(), ".^") != arr2.end())
-		{
-			it = find(arr2.begin(), arr2.end(), ".^");
-					int pos = distance(arr2.begin(), it);
-				//	matrix part_result = fix_arr1[pos];
-					matrix number=fix_arr1[pos+2];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].element_wise_power(num_value);//->to be edited to new *
-					fix_arr1.push_back(part_result);
-					call2(arr2,fix_arr1,pos,part_result);
-		}
 
 		else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
 		{
@@ -2270,16 +2316,7 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 					fix_arr1.push_back(part_result);
 					call2(arr2,fix_arr1,pos,part_result);
 		}
-		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
-		{
-			        it = find(arr2.begin(), arr2.end(), ".*");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+2];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
-					fix_arr1.push_back(part_result);
-					call2(arr2,fix_arr1,pos,part_result);
-		}
+		
 		else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), "/");
@@ -2288,16 +2325,7 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 			fix_arr1.push_back(part_result);
 			call2(arr2, fix_arr1, pos, part_result);
 		}
-		else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
-		{
-			        it = find(arr2.begin(), arr2.end(), "./");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+2];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(num_value);//->added
-					fix_arr1.push_back(part_result);
-					call2(arr2,fix_arr1,pos,part_result);
-		}
+
 		else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), "-");
@@ -2314,16 +2342,6 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 			fix_arr1.push_back(part_result);
 			call2(arr2, fix_arr1, pos, part_result);
 
-		}
-		else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
-		{
-			it = find(arr2.begin(), arr2.end(), ".+");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+2];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].add_const(num_value);//->added
-					fix_arr1.push_back(part_result);
-					call2(arr2,fix_arr1,pos,part_result);
 		}
 
 	}

@@ -38,7 +38,7 @@ if(argc < 2){//no file passed to the program
 		string data ="log(1+1)";
 		//matrix::partial_Solve2("c.^sqrt(9) * sinb./logabdullah",matrices);
 		//matrix::Solve("5.5 + 12 * sin(0.4) + 2.2^4").print_matrix();
-		cout<<matrix::mat_nums("3+2+cos(sqrt(0+63))+4+sin(2*3)");
+		cout<<matrix::mat_nums("C^3 * sin(1./D)");
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
