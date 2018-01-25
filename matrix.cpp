@@ -1400,7 +1400,7 @@ void matrix::run_adv(string fpath)
 
 				int i = 0;
 				string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
-				if (command.find('[') == string::npos)
+				if (command.find('[') == string::npos && mat_nums(command)/*this is to make sure it is a mat operation*/)
 				{
 					while (command.find("(") != string::npos) {
 
@@ -1432,7 +1432,7 @@ void matrix::run_adv(string fpath)
 				else
 				{
 					if (command.find('=') || command.find('+') || command.find('-') || command.find('/') || command.find('*') || command.find('^')
-						|| command.find('s') || command.find('c') || command.find('t') || command.find('('))
+						|| command.find('sin') || command.find('cos') || command.find('tan') || command.find('('))
 					{
 						int eq_indx = command.find('=');
 						command = command.substr(eq_indx + 1);
@@ -1746,15 +1746,78 @@ bool  matrix::Isnt_num(string f)
 
 /* End - Cut matrix into elements then send it to solve*/
 
-/* Solve advanced by alY
+bool matrix::mat_nums(string f){
 
-matrix matrix::solve_adv(string value)
-{
-this a funtion to send to solve if it's a number and return value as 1x1 matrix
-or if it's matrix opperation it does it.
+	f = f.substr(f.find('=') + 1);
+	int s = f.find("sin");
+	int c = f.find("cos");
+	int t = f.find("tan");
+	int l = f.find("log");
+
+	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1)
+	{
+
+		if (s != -1){
+			string gg = f.substr(s + 3);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(')-1);
+			remove_spaces(element);
+			for (int g = 0; g < element.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+
+			return 0;
+		}
+
+		if (c != -1){
+			string gg = f.substr(s + 3);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
+			remove_spaces(element);
+			for (int g = 0; g < f.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+
+			return 0;
+		}
+
+		if (t != -1){
+			string gg = f.substr(s + 3);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
+			remove_spaces(element);
+			for (int g = 0; g < f.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+
+			return 0;
+		}
+
+		if (l != -1){
+			string gg = f.substr(s + 3);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
+			remove_spaces(element);
+			for (int g = 0; g < f.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+
+			return 0;
+		}
+
+
+	}
+
+	else
+	{
+		for (int g = 0; g < f.length(); g++)
+		{
+			if ((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z')) return 1;
+		}
+
+		return 0;
+	}
 }
-
-*/
 
 /* -----------------------------------------End Advanced File example------------------------------------------*/
 
