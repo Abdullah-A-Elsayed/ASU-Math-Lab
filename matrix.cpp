@@ -1412,8 +1412,8 @@ void matrix::run_adv(string fpath)
 					}
 					string uuu = "" + command[0];
 					partial_Solve2(command);
-					cout << command << endl;
-					matrices[uuu].print_matrix();
+					//cout << command << endl;
+					//matrices[uuu].print_matrix();
 
 
 				} //errors found
@@ -2180,10 +2180,14 @@ matrix matrix::partial_Solve2(string data) {
 		if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
 		{
 			it = find(arr2.begin(), arr2.end(), "^");
-			int pos = distance(arr2.begin(), it);
-			//   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating//->to be edited to new pow
-			matrix part_result = fix_arr1[pos];
-			part_result = part_result.element_wise_power(fix_arr11[pos + 1]);
+					int pos = distance(arr2.begin(), it);
+					//   double part_result=pow(fix_arr1[pos],fix_arr1[pos+1]); //calculating//->to be edited to new pow
+					matrix part_result = fix_arr1[pos];
+					matrix number=fix_arr1[pos+1];
+					double num_value=number.values[0][0];
+					part_result = part_result.element_wise_power(num_value);
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 			//call(arr2,fix_arr1,pos,part_result);
 			/* call does:
 			removes the operator from arr2 (here operator is ^)
@@ -2199,27 +2203,32 @@ matrix matrix::partial_Solve2(string data) {
 		else if (find(arr2.begin(), arr2.end(), ".^") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), ".^");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].element_wise_power(fix_arr11[pos + 2]);//->to be edited to new *
-			fix_arr1.push_back(part_result);
-			call2(arr2, fix_arr1, pos, part_result);
+					int pos = distance(arr2.begin(), it);
+				//	matrix part_result = fix_arr1[pos];
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].element_wise_power(num_value);//->to be edited to new *
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
 		{
-			it = find(arr2.begin(), arr2.end(), "*");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
-			fix_arr1.push_back(part_result);
-			call2(arr2, fix_arr1, pos, part_result);
+			        it = find(arr2.begin(), arr2.end(), "*");
+					int pos = distance(arr2.begin(), it);
+					matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 		}
 		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
 		{
-			it = find(arr2.begin(), arr2.end(), ".*");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].mult_const(fix_arr11[pos + 2]);//-> added *
-			fix_arr1.push_back(part_result);
-			call2(arr2, fix_arr1, pos, part_result);
+			        it = find(arr2.begin(), arr2.end(), ".*");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 		}
 		else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
 		{
@@ -2231,16 +2240,20 @@ matrix matrix::partial_Solve2(string data) {
 		}
 		else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
 		{
-			it = find(arr2.begin(), arr2.end(), "./");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].bitwisediv2_matrix(fix_arr11[pos + 2]);//->added
-			call2(arr2, fix_arr1, pos, part_result);
+			        it = find(arr2.begin(), arr2.end(), "./");
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(num_value);//->added
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 		}
 		else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), "-");
 			int pos = distance(arr2.begin(), it);
 			matrix part_result = fix_arr1[pos].sub_matrix(fix_arr1[pos + 1]);   //->to be edited to new -
+			fix_arr1.push_back(part_result);
 			call2(arr2, fix_arr1, pos, part_result);
 		}
 		else if (find(arr2.begin(), arr2.end(), "+") != arr2.end())
@@ -2248,15 +2261,19 @@ matrix matrix::partial_Solve2(string data) {
 			it = find(arr2.begin(), arr2.end(), "+");
 			int pos = distance(arr2.begin(), it);
 			matrix part_result = fix_arr1[pos].add_matrix(fix_arr1[pos + 1]);//->to be edited to new +
+			fix_arr1.push_back(part_result);
 			call2(arr2, fix_arr1, pos, part_result);
 
 		}
 		else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), ".+");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].add_const(fix_arr11[pos + 2]);//->added
-			call2(arr2, fix_arr1, pos, part_result);
+					int pos = distance(arr2.begin(), it);
+					matrix number=fix_arr1[pos+2];
+					double num_value=number.values[0][0];
+					matrix part_result = fix_arr1[pos].add_const(num_value);//->added
+					fix_arr1.push_back(part_result);
+					call2(arr2,fix_arr1,pos,part_result);
 		}
 
 	}
