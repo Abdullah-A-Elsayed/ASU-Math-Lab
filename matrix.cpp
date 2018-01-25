@@ -1074,12 +1074,12 @@ transform(name2.begin(),name2.end(),name2.begin(),::toupper);
 void matrix::decode(string command, string& name1, string& name2, int op_index) {
 	int equal_index = command.find_last_of('=');
 	name1 = command.substr(equal_index + 2, op_index - equal_index - 3);
-	transform(name1.begin(), name1.end(), name1.begin(), ::toupper);
+	//transform(name1.begin(), name1.end(), name1.begin(), ::toupper);
 
 	int name2_begin = op_index + 2;
 	if (command[op_index] == '.') name2_begin++;
 	name2 = command.substr(name2_begin, command.length() - name2_begin);
-	transform(name2.begin(), name2.end(), name2.begin(), ::toupper);
+	//transform(name2.begin(), name2.end(), name2.begin(), ::toupper);
 
 }
 
@@ -1100,7 +1100,7 @@ void matrix::run_old_command(string command, map<const string, matrix>& matrices
 	if (command[command.length() - 1] == ';') print_flag = 0;
 	else print_flag = 1;
 	name0 = command.substr(0, command.find('=') - 1);
-	transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
+	//transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
 
 	op_index = command.find('[');
 	if (op_index != -1) {
@@ -1300,7 +1300,7 @@ void matrix::run_adv(string fpath)
 			if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
 			{
 				name0 = command.substr(0, command.find('=') - 1); /*this means the name must have a space after it*/
-				transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
+				//transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
 			}
 			else
 			{
@@ -1405,13 +1405,13 @@ void matrix::run_adv(string fpath)
 						size_t d = b.find_first_of(")");
 						string c = b.substr(1, d - 1);
 						command = command.replace(a, c.length() + 2, aa[i]);
-						partial_Solve2(aa[i] + "=" + c);
+						partial_Solve2(aa[i] + "=" + c,matrices);
 						i++;
 
 
 					}
 					string uuu = "" + command[0];
-					partial_Solve2(command);
+					partial_Solve2(command,matrices);
 					//cout << command << endl;
 					//matrices[uuu].print_matrix();
 
@@ -1998,12 +1998,11 @@ void matrix::call2(vector<string>&arr2, vector<matrix>&fix_arr1, int index, matr
 }
 
 
-matrix matrix::partial_Solve2(string data) {
+matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
 	vector<string>arr2; //to hold operatins like - * / ^ + ./ .^ .+ .*
 	vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
 	vector<string>::iterator it;
-	map<const string, matrix> matrices;
 
 	vector<double>fix_arr11; //to hlod numbers as (doubles) with real valuses of sin and cos an ..
 	int am = 0;
@@ -2041,6 +2040,7 @@ matrix matrix::partial_Solve2(string data) {
 	arr1[c, 3, sin(1., D] -> expected:[c, 3, sin(1./D)]
 	arr2[^, *, /] -> expected:[^,*]
 	(((please let me know how you plan to relate fix_arr11 with fix_arr1)))
+	(((solved)))
 	*/
 
 	/*

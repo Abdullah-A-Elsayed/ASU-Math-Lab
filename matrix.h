@@ -206,7 +206,7 @@ Diagonal Matrix
 	static string cut_mat_solve(string &mat_val);
 	static string solve_elemnt(string &mat_elemnt);
 	static bool Isnt_num(string f);
-	static matrix partial_Solve2 (string data);
+	static matrix partial_Solve2 (string data,map<const string, matrix>& matrices);
 	static void call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result);
 
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
