@@ -211,9 +211,9 @@ Diagonal Matrix
 	static bool mat_nums(string f);
 	/* 1:: means matrix operation // 0:: means numbers operation*/
 
-	static matrix partial_Solve2 (string data,map<const string, matrix>& matrices);
+	static string partial_Solve2 (string data,map<const string, matrix>& matrices);
 	static void call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result);
-
+	static matrix Solve2 (string data,map<const string, matrix>& matrices);
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };
 

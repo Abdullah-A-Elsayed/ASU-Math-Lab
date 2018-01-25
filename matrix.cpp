@@ -2080,7 +2080,7 @@ void matrix::call2(vector<string>&arr2, vector<matrix>&fix_arr1, int index, matr
 }
 
 
-matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
+string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
 	vector<string>arr2; //to hold operatins like - * / ^ + ./ .^ .+ .*
 	vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
@@ -2089,8 +2089,14 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 
 	/*-------------------filling arr1 and arr2 -----------------------------*/
 	string first_element = "";
-	for (unsigned int i = 0; i < data.length(); i++) {
-		if (data[i] == '^' || data[i] == '*' || data[i] == '/' || data[i] == '.' || data[i] == '+' || data[i] == '-') {
+	for (unsigned int i = 0; i < data.length()-1; i++) {
+		if (data[i] == '^' || data[i] == '*' || data[i] == '/' || data[i] == '+' || data[i] == '-'
+			|| (data[i]=='.' && data[i+1] == '^')
+			|| (data[i]=='.' && data[i+1] == '+')
+			|| (data[i]=='.' && data[i+1] == '-')
+			|| (data[i]=='.' && data[i+1] == '*')
+			|| (data[i]=='.' && data[i+1] == '/')
+			) {
 			first_element = data.substr(0, i);
 			arr1.push_back(first_element);
 			am = i;
@@ -2148,8 +2154,12 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 			if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
 
 			matrix inside;
-			auto search = matrices.find(ins);     //check if ins is name in matrix 
-			if (search != matrices.end()) //found in map
+			auto search = matrices.find(ins);     //check if ins is name in matrix
+			if(ins[0]=='['){
+				ins = ins.substr(1,ins.length()-2);
+				inside = matrix(ins);
+			}
+			else if (search != matrices.end()) //found in map
 			{
 				 inside = matrices[ins];
 			}
@@ -2330,9 +2340,32 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		}
 
 	}
-
-
 	matrix value = fix_arr1[0];
+	return value.getString();
+}
 
-	return value;
+matrix matrix::Solve2(string data,map<const string, matrix>& matrices) {
+	remove_spaces(data);//to remove white spaces in beginning of data if exists
+	vector<int> braces_positions = get_braces_data(data, false);
+	/*
+	if braces_positions size is 1, means no braces
+	if size is 2 then first one is position of '(', and 2nd is position of ')'
+	*/
+	while (braces_positions.size() != 1) {
+		data = data.substr(0, braces_positions[0])//part befor (
+			+
+			'['
+			+ partial_Solve2(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0] - 1),matrices)
+			//result of values in between ()
+			+
+			']'
+			+ data.substr(braces_positions[1] + 1, data.length() - braces_positions[1]);//part after )
+		
+		braces_positions = get_braces_data(data, false);
+	}
+	//no braces
+	string val = partial_Solve2(data,matrices);
+	matrix result;
+	result = matrix(val);
+	return result;
 }
