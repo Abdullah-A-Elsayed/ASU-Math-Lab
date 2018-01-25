@@ -2250,10 +2250,20 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		{
 			        it = find(arr2.begin(), arr2.end(), "./");
 					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+2];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].bitwisediv2_matrix(num_value);//->added
-					fix_arr1.push_back(part_result);
+					matrix rhs =fix_arr1[pos];
+					matrix lhs =fix_arr1[pos+1];
+					matrix part_result;
+					if((rhs.num_rows==1&&rhs.num_columns==1)||(lhs.num_rows==1&&lhs.num_columns==1)){
+						if((rhs.num_rows==1&&rhs.num_columns==1)){
+							part_result = lhs.bitwisediv2_matrix(rhs.values[0][0]);
+						}
+						else{//lhs is double
+							part_result = rhs.bitwisediv2_matrix(lhs.values[0][0]);
+						}
+					}
+					else{ //both large matrices
+						part_result = rhs.bitwisediv_matrix(lhs);
+					}
 					call2(arr2,fix_arr1,pos,part_result);
 		}
 
