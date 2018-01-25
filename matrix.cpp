@@ -427,21 +427,31 @@ void matrix::fill_matrix(string data) {
 		num_columns = 0;
 		num_rows = 0;
 	}
+	int local_columns=0;
 	int start = 0;
 	int end;
 	if (data[data.length() - 1] != ';') { data = data + ";"; }
-
 	vector<double> row;
 	for (unsigned int i = 0; i< data.length(); i++) {
 		if ((data[i] == ' '&&data[i - 1] != ';') || (data[i] == ';')) {
 			end = i;
 			//ading previous num
-
+			
+			local_columns++;
 			row.push_back(atof(data.substr(start, end - start).c_str()));
 			start = i + 1;
 			if (data[i] == ';') {
+				/*check for inequal rows
+				*/
+				if(values.size()>0){
+					if(values[values.size()-1].size()!=local_columns){
+						string e = "error: vertical dimensions mismatch";
+						throw(e);
+					}
+				}
 				this->values.push_back(row);
 				row.clear();
+				local_columns = 0;
 				if (start<data.length()) {
 					if (data[start] == ' ') start++;
 				}
