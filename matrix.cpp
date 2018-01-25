@@ -2003,8 +2003,6 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	vector<string>arr2; //to hold operatins like - * / ^ + ./ .^ .+ .*
 	vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
 	vector<string>::iterator it;
-
-	vector<double>fix_arr11; //to hlod numbers as (doubles) with real valuses of sin and cos an ..
 	int am = 0;
 
 	/*-------------------filling arr1 and arr2 -----------------------------*/
@@ -2060,119 +2058,88 @@ matrix matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	{
 		string a = arr1[j];//put every data in string a
 		if (a[0] == ' ')a = a.substr(1);
-		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') || (a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o'))
+		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') ||
+			(a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o') )
 		{//check on first char 
 
-			string ins = a.substr(3);
+			string ins = (a.find('(') == -1) ? a.substr(3) : a.substr(4, a.find(')') - 4);//symbol inside sin or ..
+			if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
 
-			if (ins[0] == 't')ins = ins.substr(1);
-			matrix inside = matrices[ins];
+			matrix inside;
+			auto search = matrices.find(ins);     //check if ins is name in matrix 
+			if (search != matrices.end()) //found in map
+			{
+				 inside = matrices[ins];
+			}
+			else if(!Isnt_num(ins)){//ins is num not name in the map
+				res_tri = Solve(a);
+				fix_arr1.push_back(res_tri);
+				continue;
+			}
+			else{//not found in map and not num error
+				string e = "matrix name not found";
+				throw(e);
+			}
+			//apply sin or .. on the matrix
 			if (a[0] == 's'&&a[1] == 'i')
 			{
 				res_tri = inside.Sin();//->to be edited to new sin
 				fix_arr1.push_back(res_tri);
 
 			}
-			if (a[0] == 's'&&a[1] == 'q') {
+			else if (a[0] == 's'&&a[1] == 'q') {
 				res_tri = inside.Sqrt();//->to be edited to new sqrt
 				fix_arr1.push_back(res_tri);
 			}
-			if (a[0] == 'c')
+			else if (a[0] == 'c')
 			{
 				res_tri = inside.Cos();//->to be edited to new cos
 				fix_arr1.push_back(res_tri);
 			}
-			if (a[0] == 't')
+			else if (a[0] == 't')
 			{
 				res_tri = inside.Tan();//->to be edited to new tan
 				fix_arr1.push_back(res_tri);
 			}
-			if (a[0] == 'l')
+			else if (a[0] == 'l')
 			{
 				res_tri = inside.Log();//->to be edited to new log 10
 				fix_arr1.push_back(res_tri);
 			}
 		}
-		//else{//number
-		//	matrix name=num[a];fix_arr1.push_back(num);         //->there is an error
-		//}
-	}
-
-	/*******fix arr1 wuth double matrix  ***********************************/
-	double  res_tri2;
-	char res_tri_string[100];
-	matrix res_tri_mat;
-	for (unsigned int j = 0; j < arr1.size(); j++)
-	{
-
-		string a = arr1[j];//put every data in string a
-		if (a[0] == ' ')a = a.substr(1);
-		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') || (a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o'))
-		{//check on first char 
-			string ins =a.substr(3) ;//num in sin or ..
-			if (ins[0] == 't')ins = ins.substr(1);//in case of sqrt
-
-			auto search = matrices.find(ins);     //check if it is matrix 
-			if (search != matrices.end())
+		else if(a[0] == '['){// ex: [1 2; 3 4]
+			string ins = a.substr(1,a.length()-2);
+			res_tri = matrix(ins);
+			fix_arr1.push_back(res_tri);
+		}
+		else if(!Isnt_num(a)){//num
+			res_tri = Solve(a);// 1*1 array
+			fix_arr1.push_back(res_tri);
+		}
+		else{//ex: a, b
+			auto search = matrices.find(a);     //check if a is name in matrix 
+			if (search != matrices.end()) //found in map
 			{
-
-				double inside = stod(ins);
-				if (a[0] == 's'&&a[1] == 'i')
-				{
-					res_tri2 = sin(inside);
-					sprintf_s(res_tri_string, "%g", res_tri2);
-					res_tri_mat = Solve(res_tri_string);
-					fix_arr1.push_back(res_tri_mat);
-				}
-				if (a[0] == 's'&&a[1] == 'q') {
-					res_tri2 = sqrt(inside);
-					sprintf_s(res_tri_string, "%g", res_tri2);
-					res_tri_mat = Solve(res_tri_string);
-					fix_arr1.push_back(res_tri_mat);
-				}
-				if (a[0] == 'c')
-				{
-					res_tri2 = cos(inside);
-					sprintf_s(res_tri_string, "%g", res_tri2);
-					res_tri_mat = Solve(res_tri_string);
-					fix_arr1.push_back(res_tri_mat);
-				}
-				if (a[0] == 't')
-				{
-					res_tri2 = tan(inside);
-					sprintf_s(res_tri_string, "%g", res_tri2);
-					res_tri_mat = Solve(res_tri_string);
-					fix_arr1.push_back(res_tri_mat);
-				}
-				if (a[0] == 'l')
-				{
-					res_tri2 = log10(inside);
-					sprintf_s(res_tri_string, "%g", res_tri2);
-					res_tri_mat = Solve(res_tri_string);
-					fix_arr1.push_back(res_tri_mat);
-				}
+				 res_tri = matrices[a];
+				 fix_arr1.push_back(res_tri);
+			}
+			else{
+				string e = "matrix name not found";
+				throw(e);
 			}
 		}
-		else {//number
-			  // here we should use solve function to turn the double into 1*1 matrix
-			sprintf_s(res_tri_string, "%g", a);
-			res_tri_mat = Solve(res_tri_string);
-			fix_arr1.push_back(res_tri_mat);
-			//double num = stod(a); fix_arr11.push_back(num);
-		}
 	}
 
 
-
-	//fix_arr1 has numbers
-	//arr2 chars like + ^ * / -
+	//fix_arr1 has matrices
+	//arr2 chars like .+ ^ * / -
 	/*
 	if arr2 size = fix_arr1 size, this means first number is negative (handling it:)
 	*/
 	if (fix_arr1.size() == arr2.size()) {
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
-		//			   fix_arr1[0] = (sign=="-")?-fix_arr1[0]:fix_arr1[0]; to be edited to mult_const(-1)
+		fix_arr1[0] = (sign=="-")?fix_arr1[0].mult_const(-1):fix_arr1[0];
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
