@@ -1653,10 +1653,6 @@ string matrix::solve_elemnt(string &mat_elemnt)
 	matrix ans;
 	ans = Solve(mat_elemnt);
 	mat_elemnt = ans.getString();
-	/*int x = 55555;
-	char substring[100];
-	sprintf_s(substring, "%d", x);
-	mat_elemnt = substring;*/
 	return (mat_elemnt);
 }
 
@@ -1807,7 +1803,7 @@ vector<int> matrix::get_braces_data(string data, bool ignore_functions) {
 				break;
 			}
 			else {// '(' is in middle
-				  //ignoring sin,sqrt,cos,log,tan if ignore_functions = true
+				//ignoring sin,sqrt,cos,log,tan if ignore_functions = true
 				if (ignore_functions && (data[i - 1] == 'n' || data[i - 1] == 't' || data[i - 1] == 's' || data[i - 1] == 'g')) {
 					//found log or tan or .. deleting ) of them
 					int u = i;
@@ -1886,7 +1882,7 @@ string matrix::partial_Solve(string data)
 		arr2.pop_back();*/
 	}
 
-	if ((arr1[arr1.size()-1] == "")||(arr1[arr1.size()-1] == " ")) {
+	if ((arr1[arr1.size() - 1] == "") || (arr1[arr1.size() - 1] == " ")) {
 		string e = "Syntax error";
 		throw(e);
 	}
@@ -1941,7 +1937,7 @@ string matrix::partial_Solve(string data)
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
 		string e = "Syntax error";
-		fix_arr1[0] = (sign == "-") ? -fix_arr1[0] : (sign == "+")?fix_arr1[0]:throw(e);
+		fix_arr1[0] = (sign == "-") ? -fix_arr1[0] : (sign == "+") ? fix_arr1[0] : throw(e);
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
@@ -1975,7 +1971,7 @@ string matrix::partial_Solve(string data)
 		{
 			it = find(arr2.begin(), arr2.end(), "/");
 			int pos = distance(arr2.begin(), it);
-			if(fix_arr1[pos+1] == 0 ){
+			if (fix_arr1[pos + 1] == 0){
 				string e = "warning: division by zero";
 				throw e;
 			}
@@ -2018,7 +2014,7 @@ matrix matrix::Solve(string data) {
 			+ partial_Solve(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0] - 1))
 			//result of values in between ()
 			+ data.substr(braces_positions[1] + 1, data.length() - braces_positions[1]);//part after )
-																						//cout<<data<<endl;
+		//cout<<data<<endl;
 		braces_positions = get_braces_data(data, false);
 	}
 	//no braces
@@ -2037,7 +2033,7 @@ void matrix::call2(vector<string>&arr2, vector<matrix>&fix_arr1, int index, matr
 }
 
 
-string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
+string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) {
 	vector<string>arr1; //to hold matrix name as (string) including sin , tan, sqrt
 	vector<string>arr2; //to hold operatins like - * / ^ + ./ .^ .+ .*
 	vector<matrix>fix_arr1; //to hlod names as (matrices) with real valuses of sin and cos an ..
@@ -2046,13 +2042,13 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 
 	/*-------------------filling arr1 and arr2 -----------------------------*/
 	string first_element = "";
-	for (unsigned int i = 0; i < data.length()-1; i++) {
+	for (unsigned int i = 0; i < data.length() - 1; i++) {
 		if (data[i] == '^' || data[i] == '*' || data[i] == '/' || data[i] == '+' || data[i] == '-'
-			|| (data[i]=='.' && data[i+1] == '^')
-			|| (data[i]=='.' && data[i+1] == '+')
-			|| (data[i]=='.' && data[i+1] == '-')
-			|| (data[i]=='.' && data[i+1] == '*')
-			|| (data[i]=='.' && data[i+1] == '/')
+			|| (data[i] == '.' && data[i + 1] == '^')
+			|| (data[i] == '.' && data[i + 1] == '+')
+			|| (data[i] == '.' && data[i + 1] == '-')
+			|| (data[i] == '.' && data[i + 1] == '*')
+			|| (data[i] == '.' && data[i + 1] == '/')
 			) {
 			first_element = data.substr(0, i);
 			arr1.push_back(first_element);
@@ -2095,7 +2091,7 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		arr1.erase(arr1.begin() + 0);
 	}
 
-	if ((arr1[arr1.size()-1] == "")||(arr1[arr1.size()-1] == " ")) {
+	if ((arr1[arr1.size() - 1] == "") || (arr1[arr1.size() - 1] == " ")) {
 		string e = "Syntax error";
 		throw(e);
 	}
@@ -2107,14 +2103,14 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		string a = arr1[j];//put every data in string a
 		if (a[0] == ' ')a = a.substr(1);//remove white space in beginning
 		//remove white space in end
-		for(int i=a.length()-1; i>-1; --i){
-			if(a[i]==' '){a=a.substr(0,a.length()-1);}
+		for (int i = a.length() - 1; i>-1; --i){
+			if (a[i] == ' '){ a = a.substr(0, a.length() - 1); }
 			else break;
 		}
 		//cout<<a<<"***"<<endl;
 		//check ...
 		if ((a[0] == 's'&&a[1] == 'i') || (a[0] == 's'&&a[1] == 'q') || (a[0] == 'c'&&a[1] == 'o') ||
-			(a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o') )
+			(a[0] == 't'&&a[1] == 'a') || (a[0] == 'l'&&a[1] == 'o'))
 		{
 
 			string ins = (a.find('(') == -1) ? a.substr(3) : a.substr(4, a.find(')') - 4);//symbol inside sin or ..
@@ -2122,15 +2118,15 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 
 			matrix inside;
 			auto search = matrices.find(ins);     //check if ins is name in matrix
-			if(ins[0]=='['){
-				ins = ins.substr(1,ins.length()-2);
+			if (ins[0] == '['){
+				ins = ins.substr(1, ins.length() - 2);
 				inside = matrix(ins);
 			}
 			else if (search != matrices.end()) //found in map
 			{
-				 inside = matrices[ins];
+				inside = matrices[ins];
 			}
-			else if(!Isnt_num(ins)){//ins is num not name in the map
+			else if (!Isnt_num(ins)){//ins is num not name in the map
 				res_tri = Solve(a);
 				fix_arr1.push_back(res_tri);
 				continue;
@@ -2166,12 +2162,12 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 				fix_arr1.push_back(res_tri);
 			}
 		}
-		else if(a[0] == '['){// ex: [1 2; 3 4]
-			string ins = a.substr(1,a.length()-2);
+		else if (a[0] == '['){// ex: [1 2; 3 4]
+			string ins = a.substr(1, a.length() - 2);
 			res_tri = matrix(ins);
 			fix_arr1.push_back(res_tri);
 		}
-		else if(!Isnt_num(a)){//num
+		else if (!Isnt_num(a)){//num
 			res_tri = Solve(a);// 1*1 array
 			fix_arr1.push_back(res_tri);
 		}
@@ -2179,8 +2175,8 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 			auto search = matrices.find(a);     //check if a is name in matrix 
 			if (search != matrices.end()) //found in map
 			{
-				 res_tri = matrices[a];
-				 fix_arr1.push_back(res_tri);
+				res_tri = matrices[a];
+				fix_arr1.push_back(res_tri);
 			}
 			else{
 				string e = "matrix name not found";
@@ -2199,7 +2195,7 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
 		string e = "Syntax error";
-		fix_arr1[0] = (sign=="-")?fix_arr1[0].mult_const(-1):(sign=="+")?fix_arr1[0]:throw(e);
+		fix_arr1[0] = (sign == "-") ? fix_arr1[0].mult_const(-1) : (sign == "+") ? fix_arr1[0] : throw(e);
 	}
 	/************************operations*******************/
 	while (arr2.size() > 0) {
@@ -2207,83 +2203,83 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 		if (find(arr2.begin(), arr2.end(), ".^") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), ".^");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+1];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].element_wise_power(num_value);//->to be edited to new *
-					call2(arr2,fix_arr1,pos,part_result);
+			int pos = distance(arr2.begin(), it);
+			matrix number = fix_arr1[pos + 1];
+			double num_value = number.values[0][0];
+			matrix part_result = fix_arr1[pos].element_wise_power(num_value);//->to be edited to new *
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
 		{
-			        it = find(arr2.begin(), arr2.end(), ".*");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+1];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
-					call2(arr2,fix_arr1,pos,part_result);
+			it = find(arr2.begin(), arr2.end(), ".*");
+			int pos = distance(arr2.begin(), it);
+			matrix number = fix_arr1[pos + 1];
+			double num_value = number.values[0][0];
+			matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
-				else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
+		else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
 		{
-			        it = find(arr2.begin(), arr2.end(), "./");
-					int pos = distance(arr2.begin(), it);
-					matrix lhs =fix_arr1[pos];
-					matrix rhs =fix_arr1[pos+1];
-					matrix part_result;
-					if((rhs.num_rows==1&&rhs.num_columns==1)||(lhs.num_rows==1&&lhs.num_columns==1)){
-						if((rhs.num_rows==1&&rhs.num_columns==1)){ //rhs is double
-							part_result = lhs.mult_const(1/rhs.values[0][0]);
-						}
-						else{//lhs is double
-							part_result = rhs.bitwisediv2_matrix(lhs.values[0][0]);//inverse rhs
-						}
-					}
-					else{ //both large matrices
-						part_result = rhs.bitwisediv_matrix(lhs);
-					}
-					call2(arr2,fix_arr1,pos,part_result);
+			it = find(arr2.begin(), arr2.end(), "./");
+			int pos = distance(arr2.begin(), it);
+			matrix lhs = fix_arr1[pos];
+			matrix rhs = fix_arr1[pos + 1];
+			matrix part_result;
+			if ((rhs.num_rows == 1 && rhs.num_columns == 1) || (lhs.num_rows == 1 && lhs.num_columns == 1)){
+				if ((rhs.num_rows == 1 && rhs.num_columns == 1)){ //rhs is double
+					part_result = lhs.mult_const(1 / rhs.values[0][0]);
+				}
+				else{//lhs is double
+					part_result = rhs.bitwisediv2_matrix(lhs.values[0][0]);//inverse rhs
+				}
+			}
+			else{ //both large matrices
+				part_result = rhs.bitwisediv_matrix(lhs);
+			}
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), ".-") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), ".-");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+1];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].add_const(-num_value);//->added
-					call2(arr2,fix_arr1,pos,part_result);
+			int pos = distance(arr2.begin(), it);
+			matrix number = fix_arr1[pos + 1];
+			double num_value = number.values[0][0];
+			matrix part_result = fix_arr1[pos].add_const(-num_value);//->added
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), ".+") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), ".+");
-					int pos = distance(arr2.begin(), it);
-					matrix number=fix_arr1[pos+1];
-					double num_value=number.values[0][0];
-					matrix part_result = fix_arr1[pos].add_const(num_value);//->added
-					call2(arr2,fix_arr1,pos,part_result);
+			int pos = distance(arr2.begin(), it);
+			matrix number = fix_arr1[pos + 1];
+			double num_value = number.values[0][0];
+			matrix part_result = fix_arr1[pos].add_const(num_value);//->added
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
 		{
-					it = find(arr2.begin(), arr2.end(), "^");
-					int pos = distance(arr2.begin(), it);
-					matrix part_result = fix_arr1[pos];
-					matrix number=fix_arr1[pos+1];
-					int num_value=number.values[0][0];
-					part_result = part_result.Pow(num_value);
-					call2(arr2,fix_arr1,pos,part_result);
+			it = find(arr2.begin(), arr2.end(), "^");
+			int pos = distance(arr2.begin(), it);
+			matrix part_result = fix_arr1[pos];
+			matrix number = fix_arr1[pos + 1];
+			int num_value = number.values[0][0];
+			part_result = part_result.Pow(num_value);
+			call2(arr2, fix_arr1, pos, part_result);
 		}
 
 		else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
 		{
-			        it = find(arr2.begin(), arr2.end(), "*");
-					int pos = distance(arr2.begin(), it);
-					matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
-					call2(arr2,fix_arr1,pos,part_result);
+			it = find(arr2.begin(), arr2.end(), "*");
+			int pos = distance(arr2.begin(), it);
+			matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
+			call2(arr2, fix_arr1, pos, part_result);
 		}
-		
+
 		else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), "/");
@@ -2312,7 +2308,7 @@ string matrix::partial_Solve2(string data,map<const string, matrix>& matrices) {
 	return value.getString();
 }
 
-matrix matrix::Solve2(string data,map<const string, matrix>& matrices) {
+matrix matrix::Solve2(string data, map<const string, matrix>& matrices) {
 	remove_spaces(data);//to remove white spaces in beginning of data if exists
 	vector<int> braces_positions = get_braces_data(data, false);
 	/*
@@ -2323,36 +2319,36 @@ matrix matrix::Solve2(string data,map<const string, matrix>& matrices) {
 		data = data.substr(0, braces_positions[0])//part befor (
 			+
 			'['
-			+ partial_Solve2(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0] - 1),matrices)
+			+ partial_Solve2(data.substr(braces_positions[0] + 1, braces_positions[1] - braces_positions[0] - 1), matrices)
 			//result of values in between ()
 			+
 			']'
 			+ data.substr(braces_positions[1] + 1, data.length() - braces_positions[1]);//part after )
-		
+
 		braces_positions = get_braces_data(data, false);
 	}
 	//no braces
-	string val = partial_Solve2(data,matrices);
+	string val = partial_Solve2(data, matrices);
 	matrix result;
 	result = matrix(val);
 	return result;
 }
 
-matrix matrix::Solve_any(string data,map<const string, matrix>& matrices) {
+matrix matrix::Solve_any(string data, map<const string, matrix>& matrices) {
 	/* check if braces are equal
 	*/
-	int open =0, close=0;
-	for(int i=0; i<data.length();++i){
-		if(data[i]=='(') open++;
-		if(data[i]==')') close++;
+	int open = 0, close = 0;
+	for (int i = 0; i<data.length(); ++i){
+		if (data[i] == '(') open++;
+		if (data[i] == ')') close++;
 	}
-	if(open!=close){
-		string e = "mismatch number of brackets";
+	if (open != close){
+		string e = "mismatch number of braces";
 		throw (e);
 	}
 	int eq_ind = data.find('=');
-	if(eq_ind !=-1) data = data.substr(eq_ind+1);
+	if (eq_ind != -1) data = data.substr(eq_ind + 1);
 	matrix result;
-	result = (mat_nums(data))? Solve2(data,matrices):Solve(data) ;
+	result = (mat_nums(data)) ? Solve2(data, matrices) : Solve(data);
 	return result;
 }
