@@ -1326,10 +1326,13 @@ void matrix::run_adv(string fpath)
 						if (command[i] == ']') cls_brac_count++;
 					}
 					if (opn_brac_count == cls_brac_count) { end_comd_fg = 1; }//cout << command << endl; }
+					else if (opn_brac_count != cls_brac_count && file.eof()){ string e = "syntax error with sqr brack"; throw(e); }
 					else {
 						while (end_comd_fg == 0)
 						{
 							getline(file, line);
+							int xx = line.find('=');
+							if (xx!=-1){ string e = "syntax error with sqr brack"; throw(e); }
 							remove_spaces(line); /* makes the line doesn't start with a space*/
 							remove_back_slashes(command);
 							command += ' ';		/* adds a space for detiction purposes*/
@@ -1431,8 +1434,9 @@ void matrix::run_adv(string fpath)
 				  /* detect solve  A / L */
 				else
 				{
-					if (command.find('=') || command.find('+') || command.find('-') || command.find('/') || command.find('*') || command.find('^')
-						|| command.find('sin') || command.find('cos') || command.find('tan') || command.find('('))
+					if (command.find('=') || command.find('+') || command.find('-') || command.find('/') || command.find('*') 
+						|| command.find('^')|| command.find('sin') || command.find('cos') || command.find('tan')
+						|| command.find('(') || command.find('sqrt'))
 					{
 						int eq_indx = command.find('=');
 						command = command.substr(eq_indx + 1);
@@ -1467,120 +1471,72 @@ void matrix::run_adv(string fpath)
 /*handle read adv-gasser*/
 void matrix::handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int opn_index)
 {
-	int semi_index; matrix jn_mat[20]; int jn_mat_fg = 0, jn_mat_ord = 0; int c_fg = 0;
+	matrix jn_mat[20]; int jn_mat_ord = 0;
+
+	/* detect and cut the matrix and store in array */
 	for (int i = 0; i < command.length(); i++)
 	{
-		/*c - line*/
-
-		if (command[i] == '['&& command[i + 1] == '[' &&
-			((command[i + 2] >= 'A' && command[i + 2] <= 'Z') || (command[i + 2] >= 'a' && command[i + 2] <= 'z')))
+		if ((command[i] == '['&& command[i + 1] != '[') || (command[i] == ';'&&command[i - 1] == ']'&& command[i + 1] != '[')
+			|| (command[i] == ']'&&command[i + 1] == ' ')) // i = start the cut
 		{
-			c_fg = 1; int nxt_opn_brac;
-			for (int f = i + 2; f < command.length(); f++)
+			for (int j = i+1; j < command.length(); j++) // j = end the cut
 			{
-				if (command[f] == '[') nxt_opn_brac = f;
+				if (command[j] == ']' || (command[j] == ';' && command[j+1] == '[')|| (command[j]=='[' && j!=i+1) )
+				{
+					string mat_val = command.substr(i + 1, j - i - 1);
+					remove_spaces(mat_val);
+					remove_space_after_semis(mat_val);
+					cut_mat_solve(mat_val);
+					matrix y;
+					y.fill_matrix_adv(mat_val, matrices);
+					jn_mat[jn_mat_ord] = y;
+					jn_mat_ord++;
+					break;
+				}
 			}
-			string mat_ltr = command.substr(i + 2, nxt_opn_brac - i - 3);
-			jn_mat[jn_mat_ord] = matrices[mat_ltr];
-			jn_mat_ord++;
-			continue;
-		}
-
-		if (command[i] == ']'&& command[i + 1] == ' ' && c_fg == 1)
-		{
-			int nxt_cls_brac; //int frst_num;
-			for (int f = i + 1; f < command.length(); f++)
-			{
-				if (command[f] == ']') nxt_cls_brac = f;
-			}
-			string mat_val = command.substr(i + 2, nxt_cls_brac - i - 2);
-			remove_space_after_semis(mat_val);
-			cut_mat_solve(mat_val);
-			/*for (int f = 0; f < new_comnd.length(); f++)
-			{
-			if (new_comnd[f] != ' ') { frst_num = f; break; }
-			}
-
-			nxt_cls_brac = new_comnd.find(']');
-			string final_comnd = new_comnd.substr(frst_num);*/
-
-			matrix z;
-			z.fill_matrix_adv(mat_val, matrices);
-			jn_mat[jn_mat_ord] = z;
-			jn_mat_ord++;
-			continue;
-		}
-
-		/*End c - line*/
-
-		if (command[i] == ';')
-		{
-			semi_index = i;
-			if (command[i + 1] == '[')
-			{
-				jn_mat_fg = 1;
-				string mat_vals = command.substr(opn_index + 1, semi_index - opn_index);
-				remove_space_after_semis(mat_vals);
-				cut_mat_solve(mat_vals);
-				matrix x;
-				x.fill_matrix_adv(mat_vals, matrices);
-				jn_mat[jn_mat_ord] = x;
-				jn_mat_ord++;
-			}
-			else if (command[i - 1] == ']')
-			{
-				jn_mat_fg = 1; int cls_brac_indx;
-				for (int i = semi_index + 1; i < command.length(); i++) if (command[i] == ']') { cls_brac_indx = i; break; }
-				string mat_vals = command.substr(semi_index + 1, cls_brac_indx - semi_index - 1);
-				remove_space_after_semis(mat_vals);
-				cut_mat_solve(mat_vals);
-				matrix x;
-				x.fill_matrix_adv(mat_vals, matrices);
-				jn_mat[jn_mat_ord] = x;
-				jn_mat_ord++;
-			}
-		}
-
-		if (command[i] == '[') opn_index = i;
-
-		if (command[i] == ']' && command[i - 1] != ']')
-		{
-			string mat_vals = command.substr(opn_index + 1, i - 1 - opn_index);
-			remove_space_after_semis(mat_vals);
-			cut_mat_solve(mat_vals);
-			matrix y;
-			y.fill_matrix_adv(mat_vals, matrices);
-			jn_mat[jn_mat_ord] = y;
-			jn_mat_ord++;
-			if (jn_mat_fg == 0) matrices[name0] = y;
 		}
 	}
 
 	//combine joined matrix
-	if (jn_mat_fg || c_fg)
-	{
-		int mx_colms_ord = 0; int mn_colms_ord = 0;
-		for (int i = 0; i < jn_mat_ord - 1; i++)
+		for (int i = 0; i < jn_mat_ord-1 ; i++)
 		{
 			//cout << "this: "<< endl; jn_mat[i].print_matrix();
 
 			if (jn_mat[i].num_columns != jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //colm by colm
 			{
 				jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]);
-				jn_mat[i + 1] = jn_mat[i + 2];/*look how to delete a row from array*/
-				i = 0; jn_mat_ord--;
+				for (int k = i + 1; k < jn_mat_ord-1; k++)
+				{
+					jn_mat[k] = jn_mat[k+1]; /*look how to delete a row from array*/
+				}
+				//jn_mat[jn_mat_ord - 1] delete
+				i = -1; jn_mat_ord--;
+				//continue;
 			}
 			if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows != jn_mat[i + 1].num_rows) //row by row
 			{
 				jn_mat[i] = row_by_row(jn_mat[i], jn_mat[i + 1]);
-				jn_mat[i + 1] = jn_mat[i + 2]; /*look how to delete a row from array*/
-				i = 0; jn_mat_ord--;
+				for (int k = i + 1; k < jn_mat_ord-1; k++)
+				{
+					jn_mat[k] = jn_mat[k + 1]; /*look how to delete a row from array*/
+				}
+				i = -1; jn_mat_ord--;
+				//continue;
+			}
+			if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //row by row
+			{
+				jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]);
+				for (int k = i + 1; k < jn_mat_ord-1; k++)
+				{
+					jn_mat[k] = jn_mat[k + 1]; /*look how to delete a row from array*/
+				}
+				i = -1; jn_mat_ord--;
+				//continue;
 			}
 
 		}
 
 		matrices[name0] = jn_mat[0];
-	}
 }
 
 /* end handle read adv-gasser*/
@@ -1624,6 +1580,7 @@ void matrix::remove_spaces(string& s)
 		}
 	}
 }
+
 /* to make sure line doesn't start with a space*/
 
 
@@ -1753,8 +1710,8 @@ bool matrix::mat_nums(string f){
 	int c = f.find("cos");
 	int t = f.find("tan");
 	int l = f.find("log");
-
-	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1)
+	int q = f.find("sqrt");
+	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1 || q!=-1 )
 	{
 
 		if (s != -1){
@@ -1798,6 +1755,18 @@ bool matrix::mat_nums(string f){
 			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
 			remove_spaces(element);
 			for (int g = 0; g < f.length(); g++)
+			{
+				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
+			}
+
+			return 0;
+		}
+
+		if (q != -1){
+			string gg = f.substr(s + 3);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
+			remove_spaces(element);
+			for (int g = 0; g < element.length(); g++)
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
