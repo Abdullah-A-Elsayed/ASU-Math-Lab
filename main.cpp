@@ -27,16 +27,14 @@ if(argc < 2){//no file passed to the program
 	matrix a = matrix("1 5 6; 8 9 6; 2 5 1");
 	matrix b = matrix("1 5 6; 8 9 6; 2 5 2");
 	matrix c = matrix("1 5 6; 8 9 6; 2 5 3");
-	matrices["abdullah"]=a;
+	matrices["a"]=a;
 	matrices["b"]=b;
 	matrices["c"]=c;
 	matrix whole;
 	try{
-		//whole = matrix::column_by_column(a,b);
-		//whole.print_matrix();
-		//string data ="C^3 * sin(1./D)";
-		string data ="log(1+1)";
-		matrix::partial_Solve2("c.^sqrt(9) * sinb./logabdullah",matrices);
+		
+		matrix::Solve_any("(sqrt(a)+b).*2",matrices).print_matrix();
+		matrix::Solve_any("5*6",matrices).print_matrix();
 	}
 	catch(string e){cout<<e<<endl;}
 	/*--------------------------------------end of testing area------------------------------*/
