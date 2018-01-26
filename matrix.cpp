@@ -433,7 +433,7 @@ void matrix::fill_matrix(string data) {
 	if (data[data.length() - 1] != ';') { data = data + ";"; }
 	vector<double> row;
 	for (unsigned int i = 0; i< data.length(); i++) {
-		if ((data[i] == ' '&&data[i - 1] != ';') || (data[i] == ';')) {
+		if ((data[i] == ' '&& data[i - 1] != ';') || (data[i] == ';')) {
 			end = i;
 			//ading previous num
 			
@@ -444,10 +444,10 @@ void matrix::fill_matrix(string data) {
 				/*check for inequal rows
 				*/
 				if(values.size()>0){
-					if(values[values.size()-1].size()!=local_columns){
+					/*if(values[values.size()-1].size()!=local_columns){
 						string e = "error: vertical dimensions mismatch";
 						throw(e);
-					}
+					}*/
 				}
 				this->values.push_back(row);
 				row.clear();
@@ -1443,64 +1443,6 @@ void matrix::run_adv(string fpath)
 
 				/*end showing matrix with just name or with just values*/
 
-
-				/* detect lines x / y & showing matrix from just name */
-
-
-				size_t found = command.find('[');
-				size_t found2 = command.find("(");
-
-				int i = 0;
-				string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
-				if (command.find('[') == string::npos && mat_nums(command)/*this is to make sure it is a mat operation*/)
-				{
-					while (command.find("(") != string::npos) {
-
-						size_t a = command.find_last_of("(");
-						string b = command.substr(a, command.length());
-						size_t d = b.find_first_of(")");
-						string c = b.substr(1, d - 1);
-						command = command.replace(a, c.length() + 2, aa[i]);
-						partial_Solve2(aa[i] + "=" + c,matrices);
-						i++;
-
-
-					}
-					string uuu = "" + command[0];
-					partial_Solve2(command,matrices);
-					//cout << command << endl;
-					//matrices[uuu].print_matrix();
-
-
-				} //errors found
-
-				  /* End detect lines x / y & showing matrix from just name */
-
-
-				  /*------------------------------------------------------- Adv file Tasks ----------------------------------------------------*/
-
-
-				  /* detect solve  A / L */
-				else
-				{
-					if (command.find('=') || command.find('+') || command.find('-') || command.find('/') || command.find('*') 
-						|| command.find('^')|| command.find('sin') || command.find('cos') || command.find('tan')
-						|| command.find('(') || command.find('sqrt'))
-					{
-						int eq_indx = command.find('=');
-						command = command.substr(eq_indx + 1);
-						matrices[name0] = Solve(command);
-						if (prnt_fg)
-						{
-							cout << name0 << ": " << endl;
-							matrices[name0].print_matrix();
-						}
-						continue;
-					}
-					else { continue; }
-				}
-				/* end detect solve  A / L */
-
 			}
 
 			catch (string e) { cout << e << endl; }
@@ -1760,22 +1702,20 @@ bool matrix::mat_nums(string f){
 	int c = f.find("cos");
 	int t = f.find("tan");
 	int l = f.find("log");
-	int q = f.find("sqrt");
-	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1 || q!=-1 )
 
-	if (s!=-1 ||c!=-1 || t!=-1 || l!=-1||s2!=-1)
+	if (s != -1 || c != -1 || t != -1 || l != -1 || s2 != -1)
 	{
 
 		if (s != -1){
 			string gg = f.substr(s + 3);
-			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(')-1);
+			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
 			remove_spaces(element);
 			for (int g = 0; g < element.length(); g++)
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			string new_f = f.substr(0,s)+f.substr(gg.find_first_of(')')+4+s);
+			string new_f = f.substr(0, s) + f.substr(gg.find_first_of(')') + 4 + s);
 			return mat_nums(new_f);
 		}
 
@@ -1787,7 +1727,7 @@ bool matrix::mat_nums(string f){
 			{
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
-			string new_f = f.substr(0,s2)+f.substr(gg.find_first_of(')')+5+s2);
+			string new_f = f.substr(0, s2) + f.substr(gg.find_first_of(')') + 5 + s2);
 			return mat_nums(new_f);
 		}
 
@@ -1800,7 +1740,7 @@ bool matrix::mat_nums(string f){
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			string new_f = f.substr(0,c)+f.substr(gg.find_first_of(')')+4+c);
+			string new_f = f.substr(0, c) + f.substr(gg.find_first_of(')') + 4 + c);
 			return mat_nums(new_f);
 		}
 
@@ -1813,7 +1753,7 @@ bool matrix::mat_nums(string f){
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			string new_f = f.substr(0,t)+f.substr(gg.find_first_of(')')+4+t);
+			string new_f = f.substr(0, t) + f.substr(gg.find_first_of(')') + 4 + t);
 			return mat_nums(new_f);
 		}
 
@@ -1826,20 +1766,8 @@ bool matrix::mat_nums(string f){
 				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
 			}
 
-			string new_f = f.substr(0,l)+f.substr(gg.find_first_of(')')+4+l);
+			string new_f = f.substr(0, l) + f.substr(gg.find_first_of(')') + 4 + l);
 			return mat_nums(new_f);
-		}
-
-		if (q != -1){
-			string gg = f.substr(s + 3);
-			string element = gg.substr(gg.find_first_of('(') + 1, gg.find_first_of(')') - gg.find_first_of('(') - 1);
-			remove_spaces(element);
-			for (int g = 0; g < element.length(); g++)
-			{
-				if ((element[g] >= 'A' && element[g] <= 'Z') || (element[g] >= 'a' && element[g] <= 'z')) return 1;
-			}
-
-			return 0;
 		}
 
 
@@ -1849,7 +1777,7 @@ bool matrix::mat_nums(string f){
 	{
 		for (int g = 0; g < f.length(); g++)
 		{
-			if ((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z') || f[g]=='[' || f[g] == ']') return 1;
+			if ((f[g] >= 'A' && f[g] <= 'Z') || (f[g] >= 'a' && f[g] <= 'z') || f[g] == '[' || f[g] == ']') return 1;
 		}
 
 		return 0;
