@@ -967,7 +967,7 @@ string matrix::getString() {
 			result += substring;
 
 			if (j + 1<this->num_columns) result += " ";
-			else if (i + 1<this->num_rows) result += "; ";
+			else if (i + 1<this->num_rows) result += ";";
 			else continue;
 		}
 	}
@@ -1559,7 +1559,43 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 			data.replace(first_letter, i - first_letter, new_str);
 		}
 	}
-	//cout<<data<<endl;
+	//cout<<"this::"<<data<<endl;
+
+	/* check error of not eq rows */
+	if (data.find(';') != -1)
+	{
+		int num_semis = 0;
+		for (int f = 0; f < data.length(); f++)
+		{
+			if (data[f] == ';') num_semis++;
+		}
+
+		int semi = data.find_first_of(';');
+		if (semi + 1 != ' ') semi++;
+		int sp_cont = 0;
+		for (int i = 0; data[i] != ';'; i++)
+		{
+			if (data[i] == ' ') sp_cont++;
+		}
+
+		for (int k = 0; k < num_semis; k++)
+		{
+			int sp_cont_comp = 0; int j;
+			for (j = semi + 1; data[j] != ';' && j<data.length() - 1; j++)
+			{
+				if (data[j] == ' ') sp_cont_comp++;
+			}
+			semi = j;
+			if (semi + 1 != ' ') j++;
+			if (sp_cont != sp_cont_comp) {
+				string e = "vertical deminsions not equal";
+				throw e;
+			}
+		}
+	}
+	/* check error of not eq rows */
+
+
 	this->fill_matrix(data);
 }
 
