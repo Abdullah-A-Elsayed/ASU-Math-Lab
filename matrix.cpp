@@ -11,6 +11,7 @@
 #include <wctype.h>
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 using namespace std;
 
 long double pi = atan(1) * 4;
@@ -112,7 +113,7 @@ matrix matrix::inverse_2() {
 							break;
 						}
 					}
-					if (good_row == i) { string e = "non invertable matrix"; throw(e); };
+					if (good_row == i) { string e = "non invertable matrix\n"; throw(e); };
 					//swapping  what is pay for swapping ?? row in good pos is * -1
 					double st;
 					for (int s = 1; s <= 2 * n; ++s) {
@@ -408,9 +409,9 @@ void matrix::initialize(int rows, int cols) { // taking dimensions
 void matrix::print_matrix() { // print matrix for testing
 	for (int i = 0; i< this->num_rows; ++i) {
 		for (int j = 0; j< this->num_columns; ++j) {
-			printf("%g \t", this->values[i][j]);
+			cout<<this->values[i][j]<<"    \t";
 		}
-		cout << endl;
+		cout << endl << endl;
 	}
 	cout << endl;
 }
@@ -430,24 +431,29 @@ void matrix::fill_matrix(string data) {
 	int local_columns=0;
 	int start = 0;
 	int end;
+	if(data[data.length()-1]==';') data = data.substr(0,data.length()-1);//if last char is ';' remove it
+	remove_spaces(data);
 	if (data[data.length() - 1] != ';') { data = data + ";"; }
 	vector<double> row;
+	string element;
 	for (unsigned int i = 0; i< data.length(); i++) {
 		if ((data[i] == ' '&& data[i - 1] != ';') || (data[i] == ';')) {
 			end = i;
 			//ading previous num
-			
-			local_columns++;
-			row.push_back(atof(data.substr(start, end - start).c_str()));
+			element = data.substr(start, end - start);
+			if(element!= ""&&element!=" "){
+				local_columns++;
+				row.push_back(atof(element.c_str()));
+			}
 			start = i + 1;
 			if (data[i] == ';') {
 				/*check for inequal rows
 				*/
 				if(values.size()>0){
-					/*if(values[values.size()-1].size()!=local_columns){
-						string e = "error: vertical dimensions mismatch";
+					if(values[values.size()-1].size()!=local_columns){
+						string e = "error: vertical dimensions mismatch\n";
 						throw(e);
-					}*/
+					}
 				}
 				this->values.push_back(row);
 				row.clear();
@@ -470,7 +476,7 @@ matrix matrix::add_matrix(matrix& m) {
 
 	//error handling:
 	if (this->num_columns != m.num_columns || this->num_rows != m.num_rows) {
-		string error = "can't sum 2 matrices with different dimensions, Aborting ...";
+		string error = "can't sum 2 matrices with different dimensions, Aborting ...\n";
 		throw(error);
 	}
 
@@ -504,7 +510,7 @@ matrix matrix::bitwisediv2_matrix(double c) {
 
 matrix matrix::bitwisediv_matrix(matrix &m) {
 	if (this->num_columns != m.num_columns || this->num_rows != m.num_rows) {
-		string error = "can't div 2 matrices with different dimensions, Aborting ...";
+		string error = "can't div 2 matrices with different dimensions, Aborting ...\n";
 		throw(error);
 	}
 
@@ -532,7 +538,7 @@ matrix matrix::sub_matrix(matrix& m) {
 
 	//error handling:
 	if (this->num_columns != m.num_columns || this->num_rows != m.num_rows) {
-		string error = "can't subtract 2 matrices with different dimensions, Aborting ...";
+		string error = "can't subtract 2 matrices with different dimensions, Aborting ...\n";
 		throw(error);
 	}
 	matrix r;
@@ -557,7 +563,7 @@ matrix matrix::mult_matrix(matrix& m) {
 	int b = m.get_num_columns();
 	int c = m.get_num_rows();
 	int d = this->num_columns;
-	if (d != c) { error = "can't multiply 2 matrices while 1st cols not equal to 2nd rows"; throw(error); }
+	if (d != c) { error = "can't multiply 2 matrices while 1st cols not equal to 2nd rows\n"; throw(error); }
 
 	matrix result;
 	result.initialize(a, b);
@@ -579,7 +585,7 @@ matrix matrix::inverse_matrix()
 	string error;
 	double det_val;
 	if (this->num_rows != this->num_columns) {
-		error = "No inverse for non-square matrix, calculating inverse is aborted"; throw(error);
+		error = "No inverse for non-square matrix, calculating inverse is aborted\n"; throw(error);
 	}
 	det_val = this->determinant_2(this->num_rows);
 	if (det_val == 0) {
@@ -702,7 +708,7 @@ matrix matrix::Log() {
 		for (int j = 0; j<this->num_columns; j++) {
 
 			if (this->values[i][j] <= 0) {
-				string error = "math error:can't calculate log of values<=0";
+				string error = "math error:can't calculate log of values<=0\n";
 				throw(error);
 			}
 			else { result.values[i][j] = log(this->values[i][j]); }
@@ -719,7 +725,7 @@ matrix matrix::Tan() {
 		for (int j = 0; j<this->num_columns; j++) {
 
 			if (is_identify(this->values[i][j])) {
-				string error = "math error";
+				string error = "math error\n";
 				throw(error);
 			}
 			else { result.values[i][j] = tan(this->values[i][j]); }
@@ -903,7 +909,7 @@ unsigned int nextPowerOfTwo(int n) {
 
 matrix matrix::strassen(matrix& u) { // multiplies two squre matrices
 	if ((u.num_rows != this->num_rows) || (this->num_rows != this->num_columns) || (u.num_rows != u.num_columns)) {
-		string e = "no power for non-square matrix";
+		string e = "no power for non-square matrix\n";
 		throw e;
 	}
 	vector< vector<double> > A = this->values;
@@ -1001,7 +1007,7 @@ matrix matrix::column_by_column(matrix &a, matrix &b) {
 	int n;
 	int c;
 	if (a.get_num_rows() != b.get_num_rows()) {
-		string e = "mismach number of rows";
+		string e = "mismach number of rows\n";
 		throw(e);
 
 	}
@@ -1036,7 +1042,7 @@ matrix matrix::row_by_row(matrix &a, matrix &b) {
 	int n;
 	int c;
 	if (a.get_num_columns() != b.get_num_columns()) {
-		string e = "mismach number of columns";
+		string e = "mismach number of columns\n";
 		throw(e);
 
 	}
@@ -1374,13 +1380,13 @@ void matrix::run_adv(string fpath)
 						if (command[i] == ']') cls_brac_count++;
 					}
 					if (opn_brac_count == cls_brac_count) { end_comd_fg = 1; }//cout << command << endl; }
-					else if (opn_brac_count != cls_brac_count && file.eof()){ string e = "syntax error with sqr brack"; throw(e); }
+					else if (opn_brac_count != cls_brac_count && file.eof()){ string e = "syntax error with sqr brack\n"; throw(e); }
 					else {
 						while (end_comd_fg == 0)
 						{
 							getline(file, line);
 							int xx = line.find('=');
-							if (xx!=-1){ string e = "syntax error with sqr brack"; throw(e); }
+							if (xx!=-1){ string e = "syntax error with sqr brack\n"; throw(e); }
 							remove_spaces(line); /* makes the line doesn't start with a space*/
 							remove_back_slashes(command);
 							command += ' ';		/* adds a space for detiction purposes*/
@@ -1562,11 +1568,19 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 /* to make sure line doesn't start with a space*/
 
 void matrix::remove_spaces(string& s)
-{
+{//begin
 	for (int f = 0; f < s.length(); f++)
 	{
 		if (s[f] != ' ') {
 			s = s.substr(f);
+			break;
+		}
+	}
+	//end
+	for (int f = s.length()-1; f > -1; f--)
+	{
+		if (s[f] != ' ') {
+			s = s.substr(0,f+1);
 			break;
 		}
 	}
@@ -1883,7 +1897,7 @@ string matrix::partial_Solve(string data)
 	}
 
 	if ((arr1[arr1.size() - 1] == "") || (arr1[arr1.size() - 1] == " ")) {
-		string e = "Syntax error";
+		string e = "Syntax error\n";
 		throw(e);
 	}
 
@@ -1972,7 +1986,7 @@ string matrix::partial_Solve(string data)
 			it = find(arr2.begin(), arr2.end(), "/");
 			int pos = distance(arr2.begin(), it);
 			if (fix_arr1[pos + 1] == 0){
-				string e = "warning: division by zero";
+				string e = "warning: division by zero\n";
 				throw e;
 			}
 			double part_result = fix_arr1[pos] / fix_arr1[pos + 1];
@@ -2092,7 +2106,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 	}
 
 	if ((arr1[arr1.size() - 1] == "") || (arr1[arr1.size() - 1] == " ")) {
-		string e = "Syntax error";
+		string e = "Syntax error\n";
 		throw(e);
 	}
 
@@ -2132,7 +2146,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 				continue;
 			}
 			else{//not found in map and not num error
-				string e = "matrix name not found";
+				string e = "matrix name not found\n";
 				throw(e);
 			}
 			//apply sin or .. on the matrix
@@ -2179,7 +2193,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 				fix_arr1.push_back(res_tri);
 			}
 			else{
-				string e = "matrix name not found";
+				string e = "matrix name not found\n";
 				throw(e);
 			}
 		}
@@ -2194,7 +2208,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 	if (fix_arr1.size() == arr2.size()) {
 		string sign = arr2[0];
 		arr2.erase(arr2.begin() + 0);
-		string e = "Syntax error";
+		string e = "Syntax error\n";
 		fix_arr1[0] = (sign == "-") ? fix_arr1[0].mult_const(-1) : (sign == "+") ? fix_arr1[0] : throw(e);
 	}
 	/************************operations*******************/
@@ -2343,7 +2357,7 @@ matrix matrix::Solve_any(string data, map<const string, matrix>& matrices) {
 		if (data[i] == ')') close++;
 	}
 	if (open != close){
-		string e = "mismatch number of braces";
+		string e = "mismatch number of braces\n";
 		throw (e);
 	}
 	int eq_ind = data.find('=');
