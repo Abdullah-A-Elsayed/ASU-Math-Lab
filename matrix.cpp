@@ -13,11 +13,16 @@
 #include <sstream>
 #include <iomanip>
 using namespace std;
-
+/*------ linux fns ---------*/
 long double pi = atan(1) * 4;
 double my_abs(double& m) {
 	return (m<0) ? -m : m;
 }
+
+double my_stod(string& m) {
+	return atof(m.c_str());
+}
+/*------ end linux fns ---------*/
 //private
 matrix matrix::inverse_2() {
 
@@ -963,7 +968,7 @@ string matrix::getString() {
 	for (int i = 0; i< this->num_rows; i++) {
 		for (int j = 0; j<this->num_columns; j++) {
 
-			sprintf_s(substring, "%f", this->values[i][j]);
+			sprintf(substring, "%f", this->values[i][j]);
 			result += substring;
 
 			if (j + 1<this->num_columns) result += " ";
@@ -1407,7 +1412,7 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 		if (chk == -1 && check == -1)
 		{
 			//showing matrix with just name
-			auto search = matrices.find(name0);
+			map<const string, matrix>::iterator search = matrices.find(name0);
 			if (search != matrices.end())
 			{
 				cout << name0 << "=" << endl;
@@ -2037,7 +2042,7 @@ string matrix::partial_Solve(string data)
 		{//check on first char
 			string ins = (a.find('(') == -1) ? a.substr(3) : a.substr(4, a.find(')') - 4);//num in sin or ..
 			if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
-			double inside = stod(ins);
+			double inside = my_stod(ins);
 			if (a[0] == 's'&&a[1] == 'i')
 			{
 				res_tri = sin(inside);
@@ -2064,7 +2069,7 @@ string matrix::partial_Solve(string data)
 			}
 		}
 		else {//number
-			double num = stod(a); fix_arr1.push_back(num);
+			double num = my_stod(a); fix_arr1.push_back(num);
 		}
 	}
 
@@ -2138,7 +2143,7 @@ string matrix::partial_Solve(string data)
 	double value = fix_arr1[0];
 	string result;
 	char temp[100];
-	sprintf_s(temp, "%g", value);
+	sprintf(temp, "%g", value);
 	return result = temp;
 }
 
@@ -2161,7 +2166,7 @@ matrix matrix::Solve(string data) {
 	string val = partial_Solve(data);
 	matrix result;
 	result.initialize(1, 1);
-	result.values[0][0] = stod(val);
+	result.values[0][0] = my_stod(val);
 	return result;
 }
 
@@ -2257,7 +2262,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 			if (a[0] == 's'&&a[1] == 'q')ins = ins.substr(1);//in case of sqrt
 
 			matrix inside;
-			auto search = matrices.find(ins);     //check if ins is name in matrix
+			map<const string, matrix>::iterator search = matrices.find(ins);     //check if ins is name in matrix
 			if (ins[0] == '['){
 				ins = ins.substr(1, ins.length() - 2);
 				inside = matrix(ins);
@@ -2312,7 +2317,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 			fix_arr1.push_back(res_tri);
 		}
 		else{//ex: a, b
-			auto search = matrices.find(a);     //check if a is name in matrix 
+			map<const string, matrix>::iterator search = matrices.find(a);     //check if a is name in matrix 
 			if (search != matrices.end()) //found in map
 			{
 				res_tri = matrices[a];
