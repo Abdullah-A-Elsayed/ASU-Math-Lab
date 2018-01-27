@@ -218,8 +218,7 @@ Diagonal Matrix
 	static matrix Solve_any (string data,map<const string, matrix>& matrices);
 	static void run_adv_command(string data,map<const string, matrix>& matrices);
 
-	static bool is_complete_squre_brack(string s);
-	//return num lines read to complete command
+	static bool is_complete_brack(string s);
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };
 

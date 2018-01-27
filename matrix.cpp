@@ -1502,10 +1502,41 @@ void matrix::run_adv(string fpath)
 					remove_back_slashes(command);
 					run_adv_command(command, matrices); 
 					prev_command="";
+					continue;
 				}
+
 				else{//no square beackets
-					run_adv_command(command, matrices);
-					prev_command="";
+					if(is_complete_brack(command)){
+						run_adv_command(command, matrices);
+						prev_command="";
+						continue;
+					}
+					else{//need to be completed with closing ((round)) brackets
+						while (!is_complete_brack(command))
+						{
+							if(!file.eof()){
+								getline(file, line);
+							}
+							else{
+								string e = "syntax error with round brack\n"; throw(e);
+								//file ended with no round completion or new commands
+							}
+		
+							int xx = line.find('=');
+							if (xx!=-1){ //next command is detected, and old one is incomplete
+								//to regain last read command
+								prev_command = line;
+								string e = "syntax error with round brack\n"; throw(e);
+							}//no new commands detected
+							remove_spaces(line); /* makes the line doesn't start with a space*/
+							remove_back_slashes(line);
+							command += line;
+						}
+						//command has been completed
+						run_adv_command(command,matrices);
+						prev_command="";
+						continue;
+					}
 				}
 
 				/* end detect joined matrix*/
@@ -2462,12 +2493,15 @@ matrix matrix::Solve_any(string data, map<const string, matrix>& matrices) {
 	return result;
 }
 
-bool matrix::is_complete_squre_brack(string s){
-	int open=0,close=0;
+bool matrix::is_complete_brack(string s){
+	int open=0,close=0,open2=0,close2=0;
 	for(int i=0; i<s.length();++i){
 		if(s[i]=='[') open++;
 		if(s[i]==']') close++;
+		if(s[i]=='(') open2++;
+		if(s[i]==')') close2++;
 	}
-	if(open==close) return true;
+
+	if(open==close&&open2==close2) return true;
 	return false;
 }

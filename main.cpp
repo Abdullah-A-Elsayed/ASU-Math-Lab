@@ -23,8 +23,14 @@ if(argc < 2){//no file passed to the program
 			getline(cin,command);
 			matrix::remove_back_slashes(command);
 			try{
-				command = (prev_command=="")? command : prev_command+command;
-				if(matrix::is_complete_squre_brack(command)){//whole command is complete
+				if(prev_command!=""){ //waiting for closing brackets
+					if(command.find('=')==-1) command = prev_command+command;//no new variables
+					else{//new variable
+						//mismatch number of brackets
+						cout<<"mismatch number of brackets\n\n"<<endl;
+					}
+				}
+				if(matrix::is_complete_brack(command)){//whole command is complete
 					prev_command="";
 					matrix::run_adv_command(command,matrices);
 				}
