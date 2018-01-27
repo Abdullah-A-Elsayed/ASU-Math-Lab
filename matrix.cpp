@@ -1297,81 +1297,149 @@ void matrix::replace_rezo(string& command) {
 /* END - REZO dedction and handeling*/
 
 /* run advanced */
+void matrix::run_adv_command(string command,map<const string, matrix>& matrices){
+	string name0, name1, name2;
+	int op_index; //holds position of the operation
+	if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) return;
+	remove_spaces(command); /* makes the line doesn't start with a space*/
+	string command_with_rezo = command;
+							/* detect lines [ rand / eye / zeros / ones ] */
+	replace_rezo(command);	/* makes the line doesn't have rand, eye, zeros using getString*/
+							/* End detect lines [ rand / eye / zeros / ones ] */
+
+	int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
+	if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
+
+	/* if the command didn't have a name it will be named ans */
+	if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
+	{
+		name0 = command.substr(0, command.find('=') - 1); /*this means the name must have a space after it*/
+		//transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
+	}
+	else
+	{
+		name0 = "ans";
+	}
+
+	//check if after equal is empty
+	int my_eq_ind = command.find('=');
+	if(my_eq_ind!=-1){
+		string temp = command.substr(my_eq_ind+1);
+		remove_spaces(temp);
+		if(temp==""){
+			string e="Syntax error\n";
+			throw(e);
+		}
+	}
+	/* end if the command didn't have a name it will be named ans */
+		/*-------------------------------------- detect a, x, y, l ------------------------------------*/
+		if(command_with_rezo.find('[')==-1){
+			/*
+			size_t found = command.find('[');
+			size_t found2 = command.find("(");
+
+			int i = 0;
+			string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+			if (command.find('[') == string::npos && mat_nums(command))
+			{
+				while (command.find("(") != string::npos) {
+
+					size_t a = command.find_last_of("(");
+					string b = command.substr(a, command.length());
+					size_t d = b.find_first_of(")");
+					string c = b.substr(1, d - 1);
+					command = command.replace(a, c.length() + 2, aa[i]);
+					partial_Solve2(aa[i] + "=" + c,matrices);
+					i++;
+
+
+				}
+				string uuu = "" + command[0];
+				partial_Solve2(command,matrices); 
+			} */
+			matrices[name0] = Solve_any(command,matrices);
+			if (prnt_fg)
+			{
+				cout << name0 << "= " << endl;
+				matrices[name0].print_matrix();
+			}
+			return;
+		}
+		/*-------------------------------------- end of a, x, y, l ------------------------------------*/
+		int chk_mat = command.find_first_of('[');
+		if (chk_mat != -1) {
+			int mat_end = command.find(']');
+			if(mat_end==chk_mat+1){//empty array
+				matrices[name0]=matrix();
+				if(prnt_fg){
+					cout << name0 << "= " << endl;
+					matrices[name0].print_matrix();
+				}
+				return;
+			}
+			op_index = chk_mat;
+			remove_back_slashes(command);
+			handle_read_adv(matrices, command, name0, op_index);
+			if (prnt_fg)
+			{
+				cout << name0 << "= " << endl;
+				matrices[name0].print_matrix();
+			}
+			return;
+		}
+
+		/*showing matrix with just name or with just values*/
+
+		int check = command.find('=');
+		int chk = command.find('[');
+		if (chk == -1 && check == -1)
+		{
+			//showing matrix with just name
+			auto search = matrices.find(name0);
+			if (search != matrices.end())
+			{
+				cout << name0 << "=" << endl;
+				matrices[name0].print_matrix();
+				return;
+			}
+			else    //if the called matrix is undefined
+			{
+				cout << "error: '" << name0 << "'is undefined" << endl;
+				cout << endl;
+				return;
+			}
+			/* end detect joined matrix*/
+
+			/*showing matrix has no name */
+
+			if (chk != -1 && check == -1)
+			{
+				cout << name0 << "=" << endl;
+				matrices[name0].print_matrix();
+			}
+
+			return;
+		}
+
+				/*end showing matrix with just name or with just values*/
+
+}
 void matrix::run_adv(string fpath)
 {
 	ifstream file(fpath.c_str());
 	if (file) {//opened safely
 		map<const string, matrix> matrices;
-		string command, name0, name1, name2, sub_command = "", line;
+		string command, sub_command = "", line;
 		int op_index; //holds position of the operation
-		while (getline(file, command))
+		string prev_command = "";
+		while (!file.eof())
 		{
-			if (command == "" || command[0] == '#' || (command[0] == '/'&&command[1] == '/')) continue;
-			remove_spaces(command); /* makes the line doesn't start with a space*/
-			string command_with_rezo = command;
-									/* detect lines [ rand / eye / zeros / ones ] */
-			replace_rezo(command);	/* makes the line doesn't have rand, eye, zeros using getString*/
-									/* End detect lines [ rand / eye / zeros / ones ] */
-
-			int prnt_fg = 1; /*this is to rmove the semicolon at the end cuz it breaks if it has*/
-			if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
-
-			/* if the command didn't have a name it will be named ans */
-			if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
-			{
-				name0 = command.substr(0, command.find('=') - 1); /*this means the name must have a space after it*/
-				//transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
-			}
-			else
-			{
-				name0 = "ans";
-			}
-			/* end if the command didn't have a name it will be named ans */
-
-			try {
-
-
-				/*-------------------------------------- detect a, x, y, l ------------------------------------*/
-
-				if(command_with_rezo.find('[')==-1){
-					/*
-					size_t found = command.find('[');
-					size_t found2 = command.find("(");
-
-					int i = 0;
-					string aa[10] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
-					if (command.find('[') == string::npos && mat_nums(command))
-					{
-						while (command.find("(") != string::npos) {
-
-							size_t a = command.find_last_of("(");
-							string b = command.substr(a, command.length());
-							size_t d = b.find_first_of(")");
-							string c = b.substr(1, d - 1);
-							command = command.replace(a, c.length() + 2, aa[i]);
-							partial_Solve2(aa[i] + "=" + c,matrices);
-							i++;
-
-
-						}
-						string uuu = "" + command[0];
-						partial_Solve2(command,matrices); 
-					} */
-					matrices[name0] = Solve_any(command,matrices);
-					if (prnt_fg)
-					{
-						cout << name0 << "= " << endl;
-						matrices[name0].print_matrix();
-					}
-					continue;
-				}
-
-				/*-------------------------------------- end of a, x, y, l ------------------------------------*/
-
+			try{
 				/* detect joined matrix  gasser */
-
+				if(prev_command=="") getline(file, command);//last command has no errors
+				else command=prev_command; //last command has errors
 				int chk_mat = command.find_first_of('[');
-				if (chk_mat != -1) {
+				if (chk_mat != -1) {//has square brackets
 					op_index = chk_mat;
 					int opn_brac_count = 0, cls_brac_count = 0, end_comd_fg = 0;
 					for (int i = 0; i < command.length(); i++)
@@ -1381,19 +1449,29 @@ void matrix::run_adv(string fpath)
 					}
 					if (opn_brac_count == cls_brac_count) { end_comd_fg = 1; }//cout << command << endl; }
 					else if (opn_brac_count != cls_brac_count && file.eof()){ string e = "syntax error with sqr brack\n"; throw(e); }
-					else {
+					else {//need to complete command
+						//handle_incomplete_command:
 						while (end_comd_fg == 0)
 						{
-							getline(file, line);
+							if(!file.eof()){
+								getline(file, line);
+							}
+							else{
+								string e = "syntax error with sqr brack\n"; throw(e);
+								//file ended with no square completion or new commands
+							}
+		
 							int xx = line.find('=');
-							if (xx!=-1){ string e = "syntax error with sqr brack\n"; throw(e); }
+							if (xx!=-1){ //next command is detected, and old one is incomplete
+								//to regain last read command
+								prev_command = line;
+								string e = "syntax error with sqr brack\n"; throw(e);
+							}//no new commands detected
 							remove_spaces(line); /* makes the line doesn't start with a space*/
-							remove_back_slashes(command);
+							remove_back_slashes(line);
 							command += ' ';		/* adds a space for detiction purposes*/
 							command += line;
-							prnt_fg = 1;/*this is to rmove the semicolon at the end cuz it breaks if it has*/
-							if (command[command.length() - 1] == ';') { command = command.substr(0, command.length() - 1); prnt_fg = 0; }
-							opn_brac_count = 0; cls_brac_count = 0;
+							int opn_brac_count = 0,cls_brac_count = 0;
 							for (int i = 0; i < command.length(); i++)
 							{
 								if (command[i] == '[') opn_brac_count++;
@@ -1401,69 +1479,35 @@ void matrix::run_adv(string fpath)
 							}
 							if (opn_brac_count == cls_brac_count) { end_comd_fg = 1; } //cout << command << endl;}
 						}
+						//command has been completed
+						run_adv_command(command,matrices);
+						prev_command="";
+						continue;
 					}
+					//command is complete from beginning
 					remove_back_slashes(command);
-					handle_read_adv(matrices, command, name0, op_index);
-					if (prnt_fg)
-					{
-						cout << name0 << "= " << endl;
-						matrices[name0].print_matrix();
-					}
-					continue;
+					run_adv_command(command, matrices); 
+					prev_command="";
+				}
+				else{//no square beackets
+					run_adv_command(command, matrices);
+					prev_command="";
 				}
 
 				/* end detect joined matrix*/
-
-
-				/*showing matrix with just name or with just values*/
-
-				int check = command.find('=');
-				int chk = command.find('[');
-				if (chk == -1 && check == -1)
-				{
-					//showing matrix with just name
-					auto search = matrices.find(name0);
-					if (search != matrices.end())
-					{
-						cout << name0 << "=" << endl;
-						matrices[name0].print_matrix();
-						continue;
-					}
-					else    //if the called matrix is undefined
-					{
-						cout << "error: '" << name0 << "'is undefined" << endl;
-						cout << endl;
-						continue;
-					}
-
-					/*showing matrix has no name */
-
-					if (chk != -1 && check == -1)
-					{
-						cout << name0 << "=" << endl;
-						matrices[name0].print_matrix();
-					}
-
-					continue;
-				}
-
-				/*end showing matrix with just name or with just values*/
-
 			}
-
 			catch (string e) { cout << e << endl; }
 		}
-
 		file.close();
 
 	}
 	else {
-
 		cout << "error opening file" << endl;
 	}
 }
 
 /* end run advanced */
+
 
 /*handle read adv-gasser*/
 void matrix::handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int opn_index)
@@ -1562,37 +1606,37 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 	//cout<<"this::"<<data<<endl;
 
 	/* check error of not eq rows */
-	if (data.find(';') != -1)
-	{
-		int num_semis = 0;
-		for (int f = 0; f < data.length(); f++)
-		{
-			if (data[f] == ';') num_semis++;
-		}
+	//if (data.find(';') != -1)
+	//{
+	//	int num_semis = 0;
+	//	for (int f = 0; f < data.length(); f++)
+	//	{
+	//		if (data[f] == ';') num_semis++;
+	//	}
 
-		int semi = data.find_first_of(';');
-		if (semi + 1 != ' ') semi++;
-		int sp_cont = 0;
-		for (int i = 0; data[i] != ';'; i++)
-		{
-			if (data[i] == ' ') sp_cont++;
-		}
+	//	int semi = data.find_first_of(';');
+	//	if (semi + 1 != ' ') semi++;
+	//	int sp_cont = 0;
+	//	for (int i = 0; data[i] != ';'; i++)
+	//	{
+	//		if (data[i] == ' ') sp_cont++;
+	//	}
 
-		for (int k = 0; k < num_semis; k++)
-		{
-			int sp_cont_comp = 0; int j;
-			for (j = semi + 1; data[j] != ';' && j<data.length() - 1; j++)
-			{
-				if (data[j] == ' ') sp_cont_comp++;
-			}
-			semi = j;
-			if (semi + 1 != ' ') j++;
-			if (sp_cont != sp_cont_comp) {
-				string e = "vertical deminsions not equal";
-				throw e;
-			}
-		}
-	}
+	//	for (int k = 0; k < num_semis; k++)
+	//	{
+	//		int sp_cont_comp = 0; int j;
+	//		for (j = semi + 1; data[j] != ';' && j<data.length() - 1; j++)
+	//		{
+	//			if (data[j] == ' ') sp_cont_comp++;
+	//		}
+	//		semi = j;
+	//		if (semi + 1 != ' ') j++;
+	//		if (sp_cont != sp_cont_comp) {
+	//			string e = "vertical deminsions not equal\n";
+	//			//throw e;
+	//		}
+	//	}
+	//} some test case failed -> a = [9 ; 1]
 	/* check error of not eq rows */
 
 
@@ -2401,4 +2445,14 @@ matrix matrix::Solve_any(string data, map<const string, matrix>& matrices) {
 	matrix result;
 	result = (mat_nums(data)) ? Solve2(data, matrices) : Solve(data);
 	return result;
+}
+
+bool matrix::is_complete_squre_brack(string s){
+	int open=0,close=0;
+	for(int i=0; i<s.length();++i){
+		if(s[i]=='[') open++;
+		if(s[i]==']') close++;
+	}
+	if(open==close) return true;
+	return false;
 }
