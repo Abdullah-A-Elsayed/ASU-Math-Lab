@@ -1363,9 +1363,14 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 				cout << name0 << "= " << endl;
 				matrices[name0].print_matrix();
 			}
+			else{
+				cout<<endl<<endl;
+			}
 			return;
 		}
 		/*-------------------------------------- end of a, x, y, l ------------------------------------*/
+
+		/*-------------- joint matrix ---------------------------------------*/
 		int chk_mat = command.find_first_of('[');
 		if (chk_mat != -1) {
 			int mat_end = command.find(']');
@@ -1374,6 +1379,9 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 				if(prnt_fg){
 					cout << name0 << "= " << endl;
 					matrices[name0].print_matrix();
+				}
+				else{
+					cout<<endl<<endl;
 				}
 				return;
 			}
@@ -1385,8 +1393,12 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 				cout << name0 << "= " << endl;
 				matrices[name0].print_matrix();
 			}
+			else{
+				cout<<endl<<endl;
+			}
 			return;
 		}
+		/*---------------------- joint matrix done ----------------------------*/
 
 		/*showing matrix with just name or with just values*/
 
@@ -1405,10 +1417,9 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 			else    //if the called matrix is undefined
 			{
 				cout << "error: '" << name0 << "'is undefined" << endl;
-				cout << endl;
+				cout<<endl<<endl;
 				return;
 			}
-			/* end detect joined matrix*/
 
 			/*showing matrix has no name */
 
@@ -1416,6 +1427,9 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 			{
 				cout << name0 << "=" << endl;
 				matrices[name0].print_matrix();
+			}
+			else{
+				cout<<endl<<endl;
 			}
 
 			return;
@@ -1606,6 +1620,7 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 	//cout<<"this::"<<data<<endl;
 
 	/* check error of not eq rows */
+	//remove_spaces(data);
 	//if (data.find(';') != -1)
 	//{
 	//	int num_semis = 0;
@@ -1636,7 +1651,7 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 	//			//throw e;
 	//		}
 	//	}
-	//} some test case failed -> a = [9 ; 1]
+	//} //some test case failed -> a = [9 ; 1]
 	/* check error of not eq rows */
 
 

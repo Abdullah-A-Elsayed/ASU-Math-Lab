@@ -30,7 +30,7 @@ public:
     void print_matrix();
     // tasks:
 	double determinant_2(int n); // good fast
-    void fill_matrix (string data);
+    void fill_matrix (string data);//1 2; 9 6
     matrix add_matrix( matrix& m);
     matrix sub_matrix( matrix& m);
     matrix mult_matrix( matrix& m);
@@ -179,7 +179,7 @@ Diagonal Matrix
 
 
 	/* --------------------------------phase2 team2 work----------------------------------------------------------*/
-	void fill_matrix_adv(string data,map<const string, matrix>& matrices);
+	void fill_matrix_adv(string data,map<const string, matrix>& matrices);//1 2; a 3
 	//only translates names to numbers then calls fill matrix to update this->values , num_rows and num_columns
 
 	static vector<int> get_braces_data(string data,bool ignore_functions=true);
@@ -211,9 +211,9 @@ Diagonal Matrix
 	static bool mat_nums(string f);
 	/* 1:: means matrix operation // 0:: means numbers operation*/
 
-	static string partial_Solve2 (string data,map<const string, matrix>& matrices);
+	static string partial_Solve2 (string data,map<const string, matrix>& matrices); //A+b
 	static void call2(vector<string>&arr2,vector<matrix>&fix_arr1,int index,matrix result);
-	static matrix Solve2 (string data,map<const string, matrix>& matrices);
+	static matrix Solve2 (string data,map<const string, matrix>& matrices);//(a*2/3)+log()
 
 	static matrix Solve_any (string data,map<const string, matrix>& matrices);
 	static void run_adv_command(string data,map<const string, matrix>& matrices);
