@@ -219,6 +219,8 @@ Diagonal Matrix
 	static void run_adv_command(string data,map<const string, matrix>& matrices);
 
 	static bool is_complete_brack(string s);
+
+	static void trim_before_fill(string& s);
 	/* --------------------------------end of phase2 team2 work----------------------------------------------------------*/
 };
 

@@ -42,6 +42,9 @@ if(argc < 2){//no file passed to the program
 			catch(string e){ cout<<e<<endl;}
 		}
 		/*************************************testing area***************************************/
+	//string u = "C =    [    [B [3.4   ; 2.1    ; 3.5+9.1]] 1.2^3 3+1.2 15/(2.1+10*sin(0.12)) ,  1.2]";
+	//matrix::trim_before_fill(u);
+	//cout<<"*"<<u<<"*"<<endl;
 	//try{
 	//	matrix a = matrix(" 9 ; 1 ");
 	//	a.print_matrix();

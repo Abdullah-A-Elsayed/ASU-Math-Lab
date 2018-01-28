@@ -1563,7 +1563,8 @@ void matrix::run_adv(string fpath)
 void matrix::handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int opn_index)
 {
 	matrix jn_mat[20]; int jn_mat_ord = 0;
-
+	vector<char> symbols;//holds symbols between matrices
+	trim_before_fill(command); //removes spaces before and after semis and commas
 	/* detect and cut the matrix and store in array */
 	for (int i = 0; i < command.length(); i++)
 	{
@@ -1576,12 +1577,20 @@ void matrix::handle_read_adv(map<const string, matrix>& matrices, string command
 				{
 					string mat_val = command.substr(i + 1, j - i - 1);
 					remove_spaces(mat_val);
-					remove_space_after_semis(mat_val);
+					//remove_space_after_semis(mat_val); --> upper trim is more generic
 					cut_mat_solve(mat_val);
 					matrix y;
 					y.fill_matrix_adv(mat_val, matrices);
 					jn_mat[jn_mat_ord] = y;
 					jn_mat_ord++;
+					//adding symbol
+					if(jn_mat_ord>1){
+						if(command[i] == '['&& command[i + 1] != '[') symbols.push_back(command[i-1]);
+						else if(command[i] == ';'&&command[i - 1] == ']'&& command[i + 1] != '[') symbols.push_back(';');
+						else symbols.push_back(';');
+						char symbol = symbols[symbols.size()-1];
+						if(symbol!=','&&symbol!=';') symbols[symbols.size()-1] = ',';//change it if unexpected char came
+					}
 					break;
 				}
 			}
@@ -1593,40 +1602,45 @@ void matrix::handle_read_adv(map<const string, matrix>& matrices, string command
 		{
 			//cout << "this: "<< endl; jn_mat[i].print_matrix();
 
-			if (jn_mat[i].num_columns != jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //colm by colm
+			if (symbols[i]==','&&/*jn_mat[i].num_columns != jn_mat[i + 1].num_columns &&*/ jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //colm by colm
 			{
 				jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]);
+				symbols.erase(symbols.begin()+i);
 				for (int k = i + 1; k < jn_mat_ord-1; k++)
 				{
 					jn_mat[k] = jn_mat[k+1]; /*look how to delete a row from array*/
 				}
 				//jn_mat[jn_mat_ord - 1] delete
 				i = -1; jn_mat_ord--;
-				//continue;
+				continue;
 			}
-			if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows != jn_mat[i + 1].num_rows) //row by row
+			if (symbols[i]==';'&&jn_mat[i].num_columns == jn_mat[i + 1].num_columns/* && jn_mat[i].num_rows != jn_mat[i + 1].num_rows*/) //row by row
 			{
 				jn_mat[i] = row_by_row(jn_mat[i], jn_mat[i + 1]);
+				symbols.erase(symbols.begin()+i);
 				for (int k = i + 1; k < jn_mat_ord-1; k++)
 				{
 					jn_mat[k] = jn_mat[k + 1]; /*look how to delete a row from array*/
 				}
 				i = -1; jn_mat_ord--;
-				//continue;
+				continue;
 			}
-			if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows) //row by row
+			/*if (jn_mat[i].num_columns == jn_mat[i + 1].num_columns && jn_mat[i].num_rows == jn_mat[i + 1].num_rows)
 			{
 				jn_mat[i] = column_by_column(jn_mat[i], jn_mat[i + 1]);
 				for (int k = i + 1; k < jn_mat_ord-1; k++)
 				{
-					jn_mat[k] = jn_mat[k + 1]; /*look how to delete a row from array*/
+					jn_mat[k] = jn_mat[k + 1]; //look how to delete a row from array
 				}
 				i = -1; jn_mat_ord--;
-				//continue;
-			}
+				continue;
+			}*/
 
 		}
-
+		if(jn_mat_ord>1){//there are non-handled matrices
+			string e = "mismatch number of rows or columns\n";
+			throw(e);
+		}
 		matrices[name0] = jn_mat[0];
 }
 
@@ -1649,6 +1663,11 @@ void matrix::fill_matrix_adv(string data, map<const string, matrix>& matrices) {
 				}
 			}//i is on first char after name
 			string name = data.substr(first_letter, i - first_letter);
+			map<const string, matrix>::iterator search = matrices.find(name);
+			if(search == matrices.end()){
+				string e = "matrix name not found \n";
+				throw(e);
+			}
 			string new_str = matrices[name].getString();
 			data.replace(first_letter, i - first_letter, new_str);
 		}
@@ -2509,4 +2528,26 @@ bool matrix::is_complete_brack(string s){
 
 	if(open==close&&open2==close2) return true;
 	return false;
+}
+
+void matrix::trim_before_fill(string& s){//trim between these: , ; [
+	matrix::remove_spaces(s);
+	//spaces after
+	for(int i=0; i<s.length();++i){
+		if(s[i]==' '&&i!=0){
+			if(s[i-1]==','||s[i-1]==';'||s[i-1]=='['){
+				s=s.substr(0,i)+s.substr(i+1);
+				--i;
+			}
+		}
+	}
+	//spaces before
+	for(int i=s.length()-1; i>-1;--i){
+		if(s[i]==' '&&i!=s.length()-1){
+			if(s[i+1]==','||s[i+1]==';'||s[i+1]=='['){
+				s=s.substr(0,i)+s.substr(i+1);
+				++i;
+			}
+		}
+	}
 }
