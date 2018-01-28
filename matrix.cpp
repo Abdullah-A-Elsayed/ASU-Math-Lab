@@ -1107,7 +1107,7 @@ void matrix::decode(string command, string& name1, string& name2, int op_index) 
 void matrix::remove_back_slashes(string& s) {
 	string u = "";
 	for (int i = 0; i<s.length(); ++i) {
-		if (s[i] == '\r') continue;
+		if (s[i] == '\r' || s[i] == '\t') continue;
 		u += s[i];
 	}
 	s = u;
@@ -1486,9 +1486,9 @@ void matrix::run_adv(string fpath)
 								prev_command = line;
 								string e = "syntax error with sqr brack\n"; throw(e);
 							}//no new commands detected
-							remove_spaces(line); /* makes the line doesn't start with a space*/
 							remove_back_slashes(line);
-							command += ' ';		/* adds a space for detiction purposes*/
+							remove_spaces(line); /* makes the line doesn't start with a space*/
+							command += '~';		/* adds a ~ for detiction purposes*/
 							command += line;
 							int opn_brac_count = 0,cls_brac_count = 0;
 							for (int i = 0; i < command.length(); i++)
@@ -1569,7 +1569,8 @@ void matrix::handle_read_adv(map<const string, matrix>& matrices, string command
 	for (int i = 0; i < command.length(); i++)
 	{
 		if ((command[i] == '['&& command[i + 1] != '[') || (command[i] == ';'&&command[i - 1] == ']'&& command[i + 1] != '[')
-			|| (command[i] == ']'&&command[i + 1] == ' ')) // i = start the cut
+			|| (command[i] == ']'&&(command[i+1]==' '||command[i+1]=='~'))
+			) // i = start the cut
 		{
 			for (int j = i+1; j < command.length(); j++) // j = end the cut
 			{
@@ -1587,8 +1588,12 @@ void matrix::handle_read_adv(map<const string, matrix>& matrices, string command
 					if(jn_mat_ord>1){
 						if(command[i] == '['&& command[i + 1] != '[') symbols.push_back(command[i-1]);
 						else if(command[i] == ';'&&command[i - 1] == ']'&& command[i + 1] != '[') symbols.push_back(';');
-						else symbols.push_back(';');
+						else if(command[i] == ']'){
+							if(command[i+1]=='~')symbols.push_back(';');
+							else symbols.push_back(',');
+						}
 						char symbol = symbols[symbols.size()-1];
+						//cout<<symbol<<endl;
 						if(symbol!=','&&symbol!=';') symbols[symbols.size()-1] = ',';//change it if unexpected char came
 					}
 					break;
