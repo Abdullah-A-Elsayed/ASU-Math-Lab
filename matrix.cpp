@@ -1318,14 +1318,15 @@ void matrix::run_adv_command(string command,map<const string, matrix>& matrices)
 	/* if the command didn't have a name it will be named ans */
 	if ((command[0] >= 'A' && command[0] <= 'Z') || (command[0] >= 'a' && command[0] <= 'z'))
 	{
-		name0 = command.substr(0, command.find('=') - 1); /*this means the name must have a space after it*/
+		name0 = command.substr(0, command.find('=')); /*this means the name must have a space after it*/
 		//transform(name0.begin(), name0.end(), name0.begin(), ::toupper);
 	}
 	else
 	{
 		name0 = "ans";
 	}
-
+	//cout<<name0<<"*"<<endl;
+	remove_spaces(name0);
 	//check if after equal is empty
 	int my_eq_ind = command.find('=');
 	if(my_eq_ind!=-1){
