@@ -203,8 +203,8 @@ Diagonal Matrix
 	static void handle_read_adv(map<const string, matrix>& matrices, string command, string name0, int op_index);
 	static void remove_spaces(string& s);
 	static string remove_space_after_semis(string &mat_vals);
-	static string cut_mat_solve(string &mat_val);
-	static string solve_elemnt(string &mat_elemnt);
+	static string cut_mat_solve(string &mat_val, map<const string, matrix> matrices);
+	static string solve_elemnt(string &mat_elemnt,map<const string, matrix> matrices);
 	static bool Isnt_num(string f);
 	/* return 1 if not just a single number and has operation in it*/
 

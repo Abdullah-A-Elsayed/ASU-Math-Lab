@@ -1580,7 +1580,7 @@ void matrix::handle_read_adv(map<const string, matrix>& matrices, string command
 					string mat_val = command.substr(i + 1, j - i - 1);
 					remove_spaces(mat_val);
 					//remove_space_after_semis(mat_val); --> upper trim is more generic
-					cut_mat_solve(mat_val);
+					cut_mat_solve(mat_val,matrices);
 					matrix y;
 					y.fill_matrix_adv(mat_val, matrices);
 					jn_mat[jn_mat_ord] = y;
@@ -1746,8 +1746,14 @@ void matrix::remove_spaces(string& s)
 
 
 /* Cut matrix into elements then send it to solve*/
-string matrix::cut_mat_solve(string &mat_val)
-{
+string matrix::cut_mat_solve(string &mat_val, map<const string, matrix> matrices)
+{	
+	int issue = mat_val.find("  ");
+	if(issue!=-1) mat_val = mat_val.substr(0,issue)+mat_val.substr(issue+1); //replace double space with 1 space
+
+	issue = mat_val.find("   ");
+	if(issue!=-1) mat_val = mat_val.substr(0,issue)+mat_val.substr(issue+2);
+	//cout<<"***"<<mat_val<<"***"<<endl;
 	string mat_elemnt;
 	//int frst_num = mat_val.find_first_not_of(' ');
 	//mat_val = mat_val.substr(frst_num);  //cout << "this::" << mat_val <<"kok"<< endl;
@@ -1759,7 +1765,9 @@ string matrix::cut_mat_solve(string &mat_val)
 	mat_elemnt = mat_val.substr(0, frstspace - 0);
 	if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
 	{
-		solve_elemnt(mat_elemnt);
+		//cout<<mat_elemnt<<endl;
+		solve_elemnt(mat_elemnt,matrices);
+		//mat_elemnt = partial_Solve(mat_elemnt);
 		mat_val.replace(0, frstspace - 0, mat_elemnt); //cout << "this1::" << mat_val << endl;
 	}
 	/* first element */
@@ -1770,7 +1778,9 @@ string matrix::cut_mat_solve(string &mat_val)
 	mat_elemnt = mat_val.substr(lastspace + 1);
 	if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
 	{
-		solve_elemnt(mat_elemnt);
+		//cout<<mat_elemnt<<endl;
+		solve_elemnt(mat_elemnt,matrices);
+		//mat_elemnt = partial_Solve(mat_elemnt);
 		mat_val.replace(lastspace + 1, mat_val.length() - lastspace - 1, mat_elemnt); //cout << "this2::" << mat_val << endl;
 	}
 	/* last element */
@@ -1792,8 +1802,10 @@ string matrix::cut_mat_solve(string &mat_val)
 					mat_elemnt = mat_val.substr(cut1 + 1, cut2 - cut1 - 1);
 					if (Isnt_num(mat_elemnt)) /* this to only send and replace operations not just numbers*/
 					{
-						solve_elemnt(mat_elemnt);
-						mat_val.replace(cut1 + 1, cut2 - cut1 - 1, mat_elemnt); //cout << "this132::" << mat_val << endl;
+						//cout<<mat_elemnt<<endl;
+						solve_elemnt(mat_elemnt,matrices);
+						//mat_elemnt = partial_Solve(mat_elemnt);
+						mat_val.replace(cut1 + 1, cut2 - cut1 - 1, mat_elemnt);
 					}
 					break;
 				}
@@ -1805,7 +1817,7 @@ string matrix::cut_mat_solve(string &mat_val)
 	return (mat_val);
 }
 
-string matrix::solve_elemnt(string &mat_elemnt)
+string matrix::solve_elemnt(string &mat_elemnt, map<const string, matrix> matrices)
 {
 	/* check if it's just a matrix name don't change it*/
 	for (int i = 0; i < mat_elemnt.length(); i++)
@@ -1819,9 +1831,9 @@ string matrix::solve_elemnt(string &mat_elemnt)
 			}
 		}
 	}
-
 	matrix ans;
-	ans = Solve(mat_elemnt);
+	if(mat_elemnt[0]=='~') mat_elemnt = mat_elemnt.substr(1);
+	ans = Solve_any(mat_elemnt,matrices);
 	mat_elemnt = ans.getString();
 	return (mat_elemnt);
 }
@@ -2302,7 +2314,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 				continue;
 			}
 			else{//not found in map and not num error
-				string e = "matrix name not found\n";
+				string e = "matrix name "+ins+" not found\n";
 				throw(e);
 			}
 			//apply sin or .. on the matrix
@@ -2349,7 +2361,7 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 				fix_arr1.push_back(res_tri);
 			}
 			else{
-				string e = "matrix name not found\n";
+				string e = "matrix name "+a+" not found\n";
 				throw(e);
 			}
 		}
@@ -2380,16 +2392,6 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 			call2(arr2, fix_arr1, pos, part_result);
 		}
 
-		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
-		{
-			it = find(arr2.begin(), arr2.end(), ".*");
-			int pos = distance(arr2.begin(), it);
-			matrix number = fix_arr1[pos + 1];
-			double num_value = number.values[0][0];
-			matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
-			call2(arr2, fix_arr1, pos, part_result);
-		}
-
 		else if (find(arr2.begin(), arr2.end(), "./") != arr2.end())
 		{
 			it = find(arr2.begin(), arr2.end(), "./");
@@ -2406,10 +2408,49 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 				}
 			}
 			else{ //both large matrices
-				part_result = rhs.bitwisediv_matrix(lhs);
+				part_result = lhs.bitwisediv_matrix(rhs);
 			}
 			call2(arr2, fix_arr1, pos, part_result);
 		}
+		else if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
+		{
+			it = find(arr2.begin(), arr2.end(), "^");
+			int pos = distance(arr2.begin(), it);
+			matrix part_result = fix_arr1[pos];
+			matrix number = fix_arr1[pos + 1];
+			int num_value = number.values[0][0];
+			part_result = part_result.Pow(num_value);
+			call2(arr2, fix_arr1, pos, part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), ".*") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), ".*");
+			int pos = distance(arr2.begin(), it);
+			matrix number = fix_arr1[pos + 1];
+			double num_value = number.values[0][0];
+			matrix part_result = fix_arr1[pos].mult_const(num_value);//-> added *
+			call2(arr2, fix_arr1, pos, part_result);
+		}
+
+		else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), "*");
+			int pos = distance(arr2.begin(), it);
+			matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
+			call2(arr2, fix_arr1, pos, part_result);
+		}
+
+
+
+		else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
+		{
+			it = find(arr2.begin(), arr2.end(), "/");
+			int pos = distance(arr2.begin(), it);
+			matrix part_result = fix_arr1[pos].div_matrix(fix_arr1[pos + 1]);//->to be edited to new /
+			call2(arr2, fix_arr1, pos, part_result);
+		}
+
 
 		else if (find(arr2.begin(), arr2.end(), ".-") != arr2.end())
 		{
@@ -2431,32 +2472,6 @@ string matrix::partial_Solve2(string data, map<const string, matrix>& matrices) 
 			call2(arr2, fix_arr1, pos, part_result);
 		}
 
-		else if (find(arr2.begin(), arr2.end(), "^") != arr2.end())//find ^ is 1st priority
-		{
-			it = find(arr2.begin(), arr2.end(), "^");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos];
-			matrix number = fix_arr1[pos + 1];
-			int num_value = number.values[0][0];
-			part_result = part_result.Pow(num_value);
-			call2(arr2, fix_arr1, pos, part_result);
-		}
-
-		else if (find(arr2.begin(), arr2.end(), "*") != arr2.end())
-		{
-			it = find(arr2.begin(), arr2.end(), "*");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].mult_matrix(fix_arr1[pos + 1]);//->to be edited to new *
-			call2(arr2, fix_arr1, pos, part_result);
-		}
-
-		else if (find(arr2.begin(), arr2.end(), "/") != arr2.end())
-		{
-			it = find(arr2.begin(), arr2.end(), "/");
-			int pos = distance(arr2.begin(), it);
-			matrix part_result = fix_arr1[pos].div_matrix(fix_arr1[pos + 1]);//->to be edited to new /
-			call2(arr2, fix_arr1, pos, part_result);
-		}
 
 		else if (find(arr2.begin(), arr2.end(), "-") != arr2.end())
 		{
